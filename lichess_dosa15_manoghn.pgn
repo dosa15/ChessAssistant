@@ -1,0 +1,76 @@
+[Event "Casual Rapid game"]
+[Site "https://lichess.org/MF3aZKEV"]
+[Date "2021.08.19"]
+[White "dosa15"]
+[Black "manoghn"]
+[Result "1-0"]
+[UTCDate "2021.08.19"]
+[UTCTime "06:14:32"]
+[WhiteElo "1615"]
+[BlackElo "1194"]
+[Variant "Standard"]
+[TimeControl "600+5"]
+[ECO "D02"]
+[Opening "Queen's Pawn Game: Chigorin Variation"]
+[Termination "Normal"]
+
+1. d4 { [%clk 0:10:00] } 1... d5 { [%clk 0:10:00] } 2. Nf3 { [%clk 0:10:04] } 2... Nc6 { [%clk 0:10:04] } 3. Bf4 { [%clk 0:10:08] } 3... e5 { [%clk 0:10:02] } 4. dxe5 { [%clk 0:10:08] } 4... Nb4 { [%clk 0:09:56] } 5. c3 { [%clk 0:10:10] } 5... Na6 { [%clk 0:09:49] } 6. e3 { [%clk 0:10:13] } 6... Bf5 { [%clk 0:09:52] } 7. Nbd2 { [%clk 0:10:14] } 7... Nc5 { [%clk 0:09:53] } 8. Nb3 { [%clk 0:10:03] } 8... Na4 { [%clk 0:09:38] } 9. Nfd4 { [%clk 0:10:03] } 9... Nxb2 { [%clk 0:09:35] } 10. Qc1 { [%clk 0:09:57] } 10... Nd3+ { [%clk 0:09:35] } 11. Bxd3 { [%clk 0:10:01] } 11... Bxd3 { [%clk 0:09:39] } 12. Qd1 { [%clk 0:09:20] } 12... c5 { [%clk 0:09:21] } 13. Qxd3 { [%clk 0:08:02] } 13... cxd4 { [%clk 0:09:24] } 14. Nxd4 { [%clk 0:08:05] } 14... Qa5 { [%clk 0:09:26] } 15. O-O { [%clk 0:08:03] } 15... Nh6 { [%clk 0:09:03] } 16. Rab1 { [%clk 0:07:55] } 16... b6 { [%clk 0:09:02] } 17. Nb5 { [%clk 0:07:44] } 17... Rb8 { [%clk 0:08:59] } 18. Qxd5 { [%clk 0:07:45] } 18... a6 { [%clk 0:08:42] } 19. Nc7+ { [%clk 0:07:38] } 19... Ke7 { [%clk 0:08:39] } 20. Bg5+ { [%clk 0:07:41] } 20... f6 { [%clk 0:08:36] } 21. exf6+ { [%clk 0:07:43] } 21... gxf6 { [%clk 0:08:35] } 22. Qe6+ { [%clk 0:07:44] } 22... Kd8 { [%clk 0:08:29] } 23. Bxf6+ { [%clk 0:07:46] } 23... Kxc7 { [%clk 0:08:32] } 24. Bxh8 { [%clk 0:07:48] } 24... Qg5 { [%clk 0:08:04] } 25. Be5+ { [%clk 0:07:39] } 25... Kd8 { [%clk 0:08:06] } 26. Bxb8 { [%clk 0:07:39] } 26... Qh4 { [%clk 0:08:00] } 27. Qxb6+ { [%clk 0:07:32] } 27... Ke8 { [%clk 0:08:00] } 28. Qe6+ { [%clk 0:07:19] } 28... Be7 { [%clk 0:08:02] } 29. Rb7 { [%clk 0:07:01] } 29... Ng4 { [%clk 0:08:05] } 30. Qg8+ { [%clk 0:07:02] } 30... Bf8 { [%clk 0:08:07] } 31. Qf7+ { [%clk 0:07:05] } 31... Kd8 { [%clk 0:08:06] } 32. Qd7# { [%clk 0:07:05] } 1-0
+
+
+[Event "Casual Rapid game"]
+[Site "https://lichess.org/6kXtauzE"]
+[Date "2021.08.19"]
+[White "manoghn"]
+[Black "dosa15"]
+[Result "0-1"]
+[UTCDate "2021.08.19"]
+[UTCTime "05:50:31"]
+[WhiteElo "1174"]
+[BlackElo "1615"]
+[Variant "Standard"]
+[TimeControl "600+5"]
+[ECO "C44"]
+[Opening "Ponziani Opening"]
+[Termination "Normal"]
+
+1. e4 { [%clk 0:10:00] } 1... e5 { [%clk 0:10:00] } 2. Nf3 { [%clk 0:10:13] } 2... Nc6 { [%clk 0:10:02] } 3. c3 { [%clk 0:10:11] } 3... Bc5 { [%clk 0:10:04] } 4. d4 { [%clk 0:10:11] } 4... exd4 { [%clk 0:10:07] } 5. cxd4 { [%clk 0:10:15] } 5... Bb4+ { [%clk 0:10:11] } 6. Bd2 { [%clk 0:10:17] } 6... Nf6 { [%clk 0:10:08] } 7. d5 { [%clk 0:10:13] } 7... Nxe4 { [%clk 0:09:43] } 8. dxc6 { [%clk 0:10:13] } 8... Bxd2+ { [%clk 0:09:31] } 9. Nbxd2 { [%clk 0:10:15] } 9... Qe7 { [%clk 0:09:15] } 10. Nc4 { [%clk 0:10:08] } 10... Nc3+ { [%clk 0:09:15] } 11. Nfe5 { [%clk 0:10:04] } 11... Nxd1 { [%clk 0:09:17] } 12. cxd7+ { [%clk 0:10:07] } 12... Bxd7 { [%clk 0:09:18] } 13. Rxd1 { [%clk 0:10:02] } 13... O-O-O { [%clk 0:09:17] } 14. f4 { [%clk 0:09:38] } 14... Bb5 { [%clk 0:09:12] } 15. b3 { [%clk 0:09:20] } 15... f6 { [%clk 0:09:12] } 16. a4 { [%clk 0:08:59] } 16... Bxc4 { [%clk 0:08:55] } 17. bxc4 { [%clk 0:08:57] } 17... fxe5 { [%clk 0:08:59] } 18. f5 { [%clk 0:08:58] } 18... Qb4+ { [%clk 0:08:54] } 19. Rd2 { [%clk 0:08:57] } 19... Qxd2# { [%clk 0:08:52] } 0-1
+
+
+[Event "Casual Rapid game"]
+[Site "https://lichess.org/JV9ORZym"]
+[Date "2021.08.15"]
+[White "manoghn"]
+[Black "dosa15"]
+[Result "0-1"]
+[UTCDate "2021.08.15"]
+[UTCTime "17:50:06"]
+[WhiteElo "1500"]
+[BlackElo "1615"]
+[Variant "Standard"]
+[TimeControl "600+5"]
+[ECO "C42"]
+[Opening "Russian Game"]
+[Termination "Normal"]
+
+1. e4 { [%clk 0:10:00] } 1... e5 { [%clk 0:10:00] } 2. Nf3 { [%clk 0:10:03] } 2... Nf6 { [%clk 0:09:51] } 3. d3 { [%clk 0:10:05] } 3... Bc5 { [%clk 0:09:51] } 4. Nxe5 { [%clk 0:09:48] } 4... Nc6 { [%clk 0:09:54] } 5. Nf3 { [%clk 0:09:45] } 5... O-O { [%clk 0:09:54] } 6. c3 { [%clk 0:09:41] } 6... d5 { [%clk 0:09:34] } 7. d4 { [%clk 0:09:33] } 7... Bb6 { [%clk 0:09:36] } 8. e5 { [%clk 0:09:26] } 8... Ne4 { [%clk 0:09:35] } 9. Qe2 { [%clk 0:09:11] } 9... Bg4 { [%clk 0:09:35] } 10. h3 { [%clk 0:09:06] } 10... Bh5 { [%clk 0:07:59] } 11. g4 { [%clk 0:09:02] } 11... Bg6 { [%clk 0:08:03] } 12. Nh4 { [%clk 0:08:56] } 12... Qxh4 { [%clk 0:08:04] } 13. Be3 { [%clk 0:08:14] } 13... f5 { [%clk 0:07:55] } 14. Bg2 { [%clk 0:07:48] } 14... f4 { [%clk 0:07:29] } 15. Bd2 { [%clk 0:07:19] } 15... f3 { [%clk 0:07:29] } 16. Qxf3 { [%clk 0:06:59] } 16... Rxf3 { [%clk 0:07:31] } 17. Na3 { [%clk 0:05:39] } 17... Qxf2+ { [%clk 0:07:30] } 18. Kd1 { [%clk 0:05:34] } 18... Qxd2# { [%clk 0:07:30] } 0-1
+
+
+[Event "Casual Rapid game"]
+[Site "https://lichess.org/ioTNlgys"]
+[Date "2021.08.15"]
+[White "dosa15"]
+[Black "manoghn"]
+[Result "1-0"]
+[UTCDate "2021.08.15"]
+[UTCTime "17:40:49"]
+[WhiteElo "1615"]
+[BlackElo "1500"]
+[Variant "Standard"]
+[TimeControl "600+5"]
+[ECO "D02"]
+[Opening "Queen's Pawn Game: Chigorin Variation"]
+[Termination "Normal"]
+
+1. d4 { [%clk 0:10:00] } 1... d5 { [%clk 0:10:00] } 2. Nf3 { [%clk 0:10:04] } 2... Nc6 { [%clk 0:10:02] } 3. Bf4 { [%clk 0:10:06] } 3... e6 { [%clk 0:09:41] } 4. e3 { [%clk 0:10:09] } 4... f6 { [%clk 0:09:45] } 5. c4 { [%clk 0:10:10] } 5... e5 { [%clk 0:09:47] } 6. dxe5 { [%clk 0:10:13] } 6... fxe5 { [%clk 0:09:50] } 7. Bg5 { [%clk 0:10:01] } 7... e4 { [%clk 0:09:52] } 8. Bxd8 { [%clk 0:10:03] } 8... Bb4+ { [%clk 0:09:49] } 9. Nc3 { [%clk 0:10:05] } 9... exf3 { [%clk 0:09:46] } 10. cxd5 { [%clk 0:10:03] } 10... Bf5 { [%clk 0:09:32] } 11. dxc6 { [%clk 0:10:03] } 11... bxc6 { [%clk 0:09:32] } 12. Bc4 { [%clk 0:09:54] } 12... Rxd8 { [%clk 0:09:34] } 13. Qa4 { [%clk 0:09:51] } 13... Bd6 { [%clk 0:09:14] } 14. Qxc6+ { [%clk 0:09:53] } 14... Rd7 { [%clk 0:09:14] } 15. Nd5 { [%clk 0:09:55] } 15... Bb4+ { [%clk 0:09:13] } 16. Nxb4 { [%clk 0:09:57] } 16... Ne7 { [%clk 0:08:48] } 17. Qa8+ { [%clk 0:09:46] } 17... Rd8 { [%clk 0:08:45] } 18. Bb5+ { [%clk 0:09:48] } 18... Kf7 { [%clk 0:08:40] } 19. Qxa7 { [%clk 0:09:42] } 19... c5 { [%clk 0:08:14] } 20. Nd5 { [%clk 0:09:41] } 20... Rxd5 { [%clk 0:08:05] } 21. O-O { [%clk 0:09:39] } 21... Rd7 { [%clk 0:07:43] } 22. Bxd7 { [%clk 0:09:39] } 22... Rd8 { [%clk 0:07:22] } 23. Bxf5 { [%clk 0:09:41] } 23... Rd7 { [%clk 0:06:26] } 24. Qxd7 { [%clk 0:09:43] } 24... g6 { [%clk 0:06:28] } 25. Qe6+ { [%clk 0:09:44] } 25... Kf8 { [%clk 0:06:27] } 26. Rfd1 { [%clk 0:09:45] } 26... Nxf5 { [%clk 0:06:23] } 27. Rd8+ { [%clk 0:09:46] } 27... Kg7 { [%clk 0:06:26] } 28. g4 { [%clk 0:09:43] } 28... g5 { [%clk 0:06:29] } 29. gxf5 { [%clk 0:09:45] } 29... h5 { [%clk 0:06:23] } 30. Rd7+ { [%clk 0:09:45] } 30... Kh8 { [%clk 0:06:26] } 31. Qe8# { [%clk 0:09:42] } 1-0
+
+

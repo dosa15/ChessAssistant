@@ -19,8 +19,8 @@ with xlsxwriter.Workbook('test.xlsx') as workbook, open("ChessDataset.csv", "a")
     
     csv_writer = csv.writer(chessDataset)
     csv_reader = csv.reader(chessDataset)
-    if csv_reader.line_num == 0:
-        csv_writer.writerow(["Game ID", "White", "Black", "Date of Game", "Winner", "Time Control", "Opening", "Black ELO", "White ELO", "Termination", "Variant", "Game Movelist"])
+    # if csv_reader.line_num == 0:
+        # csv_writer.writerow(["Game ID", "White", "Black", "Date of Game", "Winner", "Time Control", "Opening", "Black ELO", "White ELO", "Termination", "Variant", "Game Movelist"])
     
     game = chess.pgn.read_game(pgn)
     while game is not None:

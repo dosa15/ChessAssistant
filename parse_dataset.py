@@ -7,9 +7,14 @@ import hashlib
 
 pgn = open('games/'+sys.argv[1])
 
-with xlsxwriter.Workbook('test.xlsx') as workbook, open("ChessDataset.csv", "w") as chessDataset:
+with xlsxwriter.Workbook('test.xlsx') as workbook, open("ChessDataset.csv", "a") as chessDataset:
     worksheet = workbook.add_worksheet()
     xlsxRow = 0
+    
+    gameIDList = pd.read_csv("ChessDataset.csv", usecols=["Game ID"])
+    # print(gameIDList)
+    gameIDList = list(gameIDList["Game ID"])
+    
     csv_writer = csv.writer(chessDataset)
     csv_reader = csv.reader(chessDataset)
     if csv_reader.line_num == 0:
@@ -17,6 +22,18 @@ with xlsxwriter.Workbook('test.xlsx') as workbook, open("ChessDataset.csv", "w")
     
     game = chess.pgn.read_game(pgn)
     while game is not None:
+        movelist = list()
+        moveString = ""
+        for move in game.mainline():
+            movelist.append(move.san())
+            moveString += move.san() + " "
+        
+        gameID = hashlib.sha1(','.join(sorted(movelist)).encode("utf-8"))
+
+        if gameID.hexdigest() in gameIDList:
+            game = chess.pgn.read_game(pgn)
+            continue
+
         white = game.headers["White"]
         black = game.headers["Black"]
         datePlayed = game.headers["Date"]
@@ -29,13 +46,6 @@ with xlsxwriter.Workbook('test.xlsx') as workbook, open("ChessDataset.csv", "w")
         termination = game.headers["Termination"] 
         variant = game.headers["Variant"]
         
-        movelist = list()
-        moveString = ""
-        for move in game.mainline():
-            movelist.append(move.san())
-            moveString += move.san() + " "
-        
-        gameID = hashlib.sha1(','.join(movelist).encode("utf-8"))
 
         detailsList = [gameID.hexdigest(), white, black, datePlayed, winner, timeControl, opening, blackElo, whiteElo, termination, variant]
         # print("White: ", white)

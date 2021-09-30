@@ -1,3 +1,5 @@
+import chess
+from chess import pgn
 import chess.pgn
 import sys, time
 import xlsxwriter

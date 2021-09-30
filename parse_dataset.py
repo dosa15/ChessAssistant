@@ -30,7 +30,7 @@ with xlsxwriter.Workbook('test.xlsx') as workbook, open("ChessDataset.csv", "a")
             movelist.append(move.san())
             moveString += move.san() + " "
         
-        gameID = hashlib.sha1(','.join(movelist).encode("utf-8"))
+        gameID = hashlib.sha1(','.join(movelist).encode("utf-8"))a
 
         if gameID.hexdigest() in gameIDList:
             game = chess.pgn.read_game(pgn)

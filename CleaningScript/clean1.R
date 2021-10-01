@@ -14,12 +14,12 @@ for(i in 1:nrow(cleanChessData)){
   cleanChessData[i, "Num.Moves"] = length(unlist(strsplit(cleanChessData[i, "Game.Movelist"], ",")))
 }
 
-cleanChessData[cleanChessData$Num.Moves < 10 & cleanChessData$Termination == "Time Forfeit", ] <- NA
-na.omit(cleanChessData)
+cleanChessData[cleanChessData$Num.Moves < 10 & cleanChessData$Termination == "Time forfeit", ] <- NA
+cleanChessData<-na.omit(cleanChessData)
 
 
-#excludes<-cleanChessData[cleanChessData$Num.Moves < 10 & cleanChessData$Termination == "Time Forfeit", ]
-#anti_join(cleanChessData, excludes)
+#excludes<-cleanChessData[cleanChessData$Num.Moves < 10 & cleanChessData$Termination == "Time forfeit", ]
+#cleanChessData<-anti_join(cleanChessData, excludes)
 
 cleanChessData
 write.csv(cleanChessData, "D:/sem5/Project/ChessAssistantGithub/ChessAssistant/CleanedChessDataset.csv", row.names=FALSE)

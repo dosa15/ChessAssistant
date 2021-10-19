@@ -2,38 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet'>
     <link rel="stylesheet" href="chessboardjs/css/chessboard-0.3.0.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="board" class="board"></div>
-<div class="info">
-    Search depth:
-    <select id="search-depth">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3" selected>3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-    </select>
-
-    <br>
-    <span>Positions evaluated: <span id="position-count"></span></span>
-    <br>
-    <span>Time: <span id="time"></span></span>
-    <br>
-    <span>Positions/s: <span id="positions-per-s"></span> </span>
-    <br>
-    <br>
-    <div id="move-history" class="move-history">
+    <nav class="navbar navbar-light bg-dark">
+        <span id="page-title" class="navbar-brand ml-30 text-light"><h1 class="display-5">Chess Assistant</h1></span>
+    </nav>
+    <div class="vertical-space"></div>
+    <div class="container">
+        <div class="row">
+            <!--<button class="btn btn-primary">Test</button>-->
+            <div class="col col-7">
+                <div id="board"></div>
+            </div>
+            <div class="col col-5">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Game Movelist</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-body">
+                            <div class="table table-striped" id="move-history"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="vertical-space"></div>
+        <div class="row justify-content-center">
+            <div class="col col-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Search depth:</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text text-center">
+                            <select class="form-select form-select-lg form-select-font-size-lg" id="search-depth">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3" selected>3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Positions evaluated:</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text text-center">
+                            <span id="position-count">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Time: </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text text-center">
+                            <span id="time">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Positions/s:</div>
+                    </div> 
+                    <div class="card-body">
+                        <div class="card-text text-center">
+                            <span id="positions-per-s">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<script src="jquery/jquery-3.2.1.min.js"></script>
-<script src="chessboardjs/js/chess.js"></script>
-<script src="chessboardjs/js/chessboard-0.3.0.js"></script>
-<script src="script.js"></script>
-<script>
-
-</script>
+    <div class="vertical-space"></div>
+    <script src="jquery/jquery-3.2.1.min.js"></script>
+    <script src="chessboardjs/js/chess.js"></script>
+    <script src="chessboardjs/js/chessboard-0.3.0.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

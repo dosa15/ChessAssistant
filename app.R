@@ -11,6 +11,6 @@ ui<-
 )
   
 # Run the app ----
-#shinyApp(ui = htmlTemplate("index.html"), server = server)
-shinyApp(ui = ui, server = server)
+shinyApp(ui = htmlTemplate("index.html"), server = server)
+#shinyApp(ui = ui, server = server)
 

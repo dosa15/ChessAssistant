@@ -1,5 +1,4 @@
-var board,
-    game = new Chess();
+var board, game = new Chess();
 
 /*The "AI" part starts here */
 
@@ -221,8 +220,17 @@ var getBestMove = function (game) {
 var renderMoveHistory = function (moves) {
     var historyElement = $('#move-history').empty();
     historyElement.empty();
+    historyElement.append(`
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">White</th>
+                <th scope="col">Black</th>
+            </tr>
+        </thead>
+    `);
     for (var i = 0; i < moves.length; i = i + 2) {
-        historyElement.append('<span>' + moves[i] + ' ' + ( moves[i + 1] ? moves[i + 1] : ' ') + '</span><br>')
+        historyElement.append('<tr> <th scope="row">' + (i+1) + "</th> <td>" + moves[i] + '</td> <td>' + ( moves[i + 1] ? moves[i + 1] : ' ') + '</td> </tr>');
     }
     historyElement.scrollTop(historyElement[0].scrollHeight);
 

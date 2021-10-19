@@ -1,14 +1,37 @@
-.board {
-    width: 400px;
-    margin: auto
+body {
+    margin: 0;
+    padding: 0;
+    background-image: linear-gradient(to bottom right, rgb(20, 40, 80), rgb(60, 100, 190));
+    background-repeat: no-repeat;
+}
+
+#page-title {
+    font-family: 'Audiowide';
+    font-size: 88px;
+    margin-left: 30px;
+}
+
+#move-history {
+    /*height: 350px;*/
+    min-height: 475px;
+    max-height: 475px;
+    width: 100%;
+    overflow-y: scroll;
+    margin: 0;
+}
+
+.vertical-space {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+/*
+#board {
+    height: 500px;
 }
 
 .info {
     width: 400px;
     margin: auto;
 }
-
-.move-history {
-    max-height: 100px;
-    overflow-y: scroll;
-}
+*/

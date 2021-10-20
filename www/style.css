@@ -13,11 +13,15 @@ body {
 
 #move-history {
     /*height: 350px;*/
-    min-height: 475px;
-    max-height: 475px;
+    min-height: 470px;
+    max-height: 470px;
     width: 100%;
     overflow-y: scroll;
     margin: 0;
+}
+
+.table-responsive {
+    max-height: 470px;
 }
 
 .vertical-space {
@@ -25,10 +29,11 @@ body {
     padding-bottom: 15px;
 }
 
-/*
 #board {
-    height: 500px;
+    max-height: 400px;
+    margin: 0px 50px 0px 50px;
 }
+/*
 
 .info {
     width: 400px;

@@ -228,28 +228,6 @@ var getBestMove = function (game) {
     return bestMove;
 };
 
-var renderMoveHistory = function (moves) {
-    var historyElement = $('#move-history').empty();
-    historyElement.empty();
-    historyElement.className += "table-striped";
-    historyElement.append(`
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">White</th>
-                <th scope="col">Black</th>
-            </tr>
-        </thead>
-        <tbody>
-    `);
-    for (var i = 0; i < moves.length; i = i + 2) {
-        historyElement.append('<tr> <th scope="row">' + (i/2 + 1) + "</th> <td>" + moves[i] + '</td> <td>' + (moves[i + 1] ? moves[i + 1] : ' ') + '</td> </tr>');
-    }
-    historyElement.append("</tbody>");
-    /*historyElement.scrollTop(historyElement[0].scrollHeight);*/
-    historyElement.stop().animate({scrollTop: $('tbody').get(0).scrollHeight}, 2000);
-};
-
 var onDrop = function (source, target) {
 
     var move = game.move({

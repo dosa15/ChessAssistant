@@ -6,6 +6,33 @@
     <link href='https://fonts.googleapis.com/css?family=Audiowide|Aclonica' rel='stylesheet'>
     <link rel="stylesheet" href="chessboardjs/css/chessboard-0.3.0.css">
     <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" charset="utf-8">
+      var renderMoveHistory = function (moves) {
+          var historyElement = $('#move-history').empty();
+          historyElement.empty();
+          historyElement.className += "table-striped";
+          historyElement.append(`
+              <thead>
+                  <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">White</th>
+                      <th scope="col">Black</th>
+                  </tr>
+              </thead>
+              <tbody>
+          `);
+          for (var i = 0; i < moves.length; i = i + 2) {
+              historyElement.append('<tr> <th scope="row">' + (i/2 + 1) + "</th> <td>" + moves[i] + '</td> <td>' + (moves[i + 1] ? moves[i + 1] : ' ') + '</td> </tr>');
+          }
+          historyElement.append("</tbody>");
+          /*historyElement.scrollTop(historyElement[0].scrollHeight);*/
+          historyElement.stop().animate({scrollTop: $('tbody').get(0).scrollHeight}, 2000);
+      };
+      
+      function closePostGameAnalysis() {
+          $('#post-game').hide();
+      }
+    </script>
 </head>
 <body>
     <nav class="navbar navbar-light bg-dark">
@@ -91,11 +118,6 @@
         </div>
     </div>
     <div class="vertical-space"></div>
-    <script type="text/javascript" charset="utf-8">
-      function closePostGameAnalysis() {
-          $('#post-game').hide();
-      }
-    </script>
     <div id="post-game">
         <div class="vertical-space-30">
         </div>
@@ -118,7 +140,7 @@
                 </ol>
                 <div class="carousel-inner">
                   <div class="carousel-item active">
-                      <img class="d-block w-100 h-50" src="sasthaplot.png" alt="Bubble Chart">
+                      <img class="d-block w-100 h-50" src="./sasthaplot.png" alt="Bubble Chart">
                   </div>
                   <div class="carousel-item">
                       <img class="d-block w-100 h-50" src="..." alt="Second graph">
@@ -147,6 +169,6 @@
     <script src="jquery/jquery-3.2.1.min.js"></script>
     <script src="chessboardjs/js/chess.js"></script>
     <script src="chessboardjs/js/chessboard-0.3.0.js"></script>
-    <!--<script src="script.js"></script>-->
+    <script src="script.js"></script>
 </body>
 </html>

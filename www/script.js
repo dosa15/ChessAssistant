@@ -1,3 +1,7 @@
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 var board, game = new Chess();
 
 /*The "AI" part starts here */
@@ -185,13 +189,20 @@ var onDragStart = function (source, piece, position, orientation) {
     }
 };
 
+async function endGame() {
+    await sleep(1000);
+    alert('Game over');
+    $("#post-game").show();
+    //window.setTimeout(function(){ window.location.replace("/postgame.html"); }, 1000);
+}
+
 var makeBestMove = function () {
     var bestMove = getBestMove(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
     if (game.game_over()) {
-        alert('Game over');
+        endGame();
     }
 };
 
@@ -199,7 +210,7 @@ var makeBestMove = function () {
 var positionCount;
 var getBestMove = function (game) {
     if (game.game_over()) {
-        alert('Game over');
+        endGame();
     }
 
     positionCount = 0;
@@ -220,7 +231,7 @@ var getBestMove = function (game) {
 var renderMoveHistory = function (moves) {
     var historyElement = $('#move-history').empty();
     historyElement.empty();
-    historyElement.className += "table-striped"
+    historyElement.className += "table-striped";
     historyElement.append(`
         <thead>
             <tr>
@@ -236,8 +247,7 @@ var renderMoveHistory = function (moves) {
     }
     historyElement.append("</tbody>");
     /*historyElement.scrollTop(historyElement[0].scrollHeight);*/
-    historyElement.stop().animate({scrollTop: $('tbody').get(0).scrollHeight}, 2000); 
-
+    historyElement.stop().animate({scrollTop: $('tbody').get(0).scrollHeight}, 2000);
 };
 
 var onDrop = function (source, target) {
@@ -304,4 +314,5 @@ var cfg = {
     onMouseoverSquare: onMouseoverSquare,
     onSnapEnd: onSnapEnd
 };
+
 board = ChessBoard('board', cfg);

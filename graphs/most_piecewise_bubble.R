@@ -6,3 +6,4 @@ pieces<-c("Queen","Knight","Bishop","Rook","Pawn")
 barplot(bar_mostfinal,names.arg = pieces,xlab="Piece",ylab="No. of moves",col="red",
         main="Piece wise number of moves in each game",border="red")
 
+

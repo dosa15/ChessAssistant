@@ -1,6 +1,6 @@
 document.write('<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>');
 
-var alpha, pieces, number;
+var alpha, piece, number;
 
 function initialize(){
     tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
@@ -15,14 +15,6 @@ function initialize(){
 
 }
 
-function predict() {
-    if (alpha && number && pieces) {
-        //pass board to each model
-        alpha.predict();
-        number.predict();
-        pieces.predict();
-    }
-}
 
 function make_matrix(fen) { //converts fen to reqd matrix format
     var pieces = fen.split(" ")[0];
@@ -327,6 +319,22 @@ var makeBestMove = function () {
     //and translate functions and then pass to ml model(yet to do)
     var matrix = make_matrix(game.fen());
     var translatedMatrix = translate(matrix);
+    
+    var moveAlpha, movePiece, moveNumber;
+    alpha.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
+        array().then(function (move) {
+            moveAlpha = move;
+        });
+
+    number.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
+        array().then(function (move) {
+            moveNumber = move;
+        });
+
+    piece.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
+        array().then(function (move) {
+            movePiece = move;
+        });
 
     //bestMove is a dictionary, it looks like
     //{"color": "b","from": 1,"to": 34,"flags": 1,"piece": "n"}

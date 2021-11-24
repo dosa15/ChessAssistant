@@ -1,23 +1,64 @@
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>
+document.write('<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>');
 
-tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
-    alpha.model = model;
-});
-tf.loadLayersModel('models/model_number/model.json').then(function (model) {
-    number.model = model;
-});
-tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
-    pieces.model = model;
-});
+var alpha, pieces, number;
 
-var predict = function(input){
-    if (alpha.model && number.model && pieces.model) {
+function initialize(){
+    tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
+        alpha = model;
+    });
+    tf.loadLayersModel('models/model_number/model.json').then(function (model) {
+        number = model;
+    });
+    tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
+        pieces = model;     
+    });
+
+}
+
+function predict() {
+    if (alpha && number && pieces) {
         //pass board to each model
-        alpha.model.predict();
-        number.model.predict();
-        pieces.model.predict();
+        alpha.predict();
+        number.predict();
+        pieces.predict();
     }
-};
+}
+
+function make_matrix(fen) { //converts fen to reqd matrix format
+    var pieces = fen.split(" ")[0];
+    var rows = pieces.split("/");
+    var arr = [];
+
+    for (let i = 0; i < rows.length; ++i){
+        console.log(rows[i]);
+        var arr2 = [];
+        for (let j = 0; j < rows[i].length; ++j){
+            if (rows[i][j] > '0' && rows[i][j] < '9') {
+                for (let k = 0; k < rows[i][j]; ++k){
+                    arr2.push('.');
+                }
+            }
+            else {
+                arr2.push(rows[i][j]);
+            }
+        }
+        arr.push(arr2);
+    }
+    return arr;
+}
+
+function translate(matrix) { //translates matrix format to 1's and 0's
+    var rows = []
+    for (let i = 0; i < matrix.length; ++i) {
+        var terms = [];
+        for (let j = 0; j < matrix[i].length; ++j){
+            terms.push(chess_dict[matrix[i][j]]);
+        }
+        rows.push(terms);
+    }
+    console.log(rows);
+    return rows;
+}
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -27,7 +68,7 @@ var board, game = new Chess();
 
 /*The "AI" part starts here */
 
-var minimaxRoot =function(depth, game, isMaximisingPlayer) {
+var minimaxRoot = function(depth, game, isMaximisingPlayer) {
 
     var newGameMoves = game.ugly_moves();
     var bestMove = -9999;
@@ -93,6 +134,42 @@ var evaluateBoard = function (board) {
 
 var reverseArray = function(array) {
     return array.slice().reverse();
+};
+
+var chess_dict = {
+    'p': [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    'P': [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    'n': [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    'N': [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    'b': [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    'B': [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+    'r': [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    'R': [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+    'q': [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+    'Q': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    'k': [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    'K': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    '.': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+};
+var alpha_dict = {
+    'a': [0, 0, 0, 0, 0, 0, 0],
+    'b': [1, 0, 0, 0, 0, 0, 0],
+    'c': [0, 1, 0, 0, 0, 0, 0],
+    'd': [0, 0, 1, 0, 0, 0, 0],
+    'e': [0, 0, 0, 1, 0, 0, 0],
+    'f': [0, 0, 0, 0, 1, 0, 0],
+    'g': [0, 0, 0, 0, 0, 1, 0],
+    'h': [0, 0, 0, 0, 0, 0, 1],
+};
+var number_dict = {
+    1: [0, 0, 0, 0, 0, 0, 0],
+    2: [1, 0, 0, 0, 0, 0, 0],
+    3: [0, 1, 0, 0, 0, 0, 0],
+    4: [0, 0, 1, 0, 0, 0, 0],
+    5: [0, 0, 0, 1, 0, 0, 0],
+    6: [0, 0, 0, 0, 1, 0, 0],
+    7: [0, 0, 0, 0, 0, 1, 0],
+    8: [0, 0, 0, 0, 0, 0, 1],
 };
 
 var pawnEvalWhite =
@@ -236,12 +313,29 @@ async function endGame() {
     //window.setTimeout(function(){ window.location.replace("/postgame.html"); }, 1000);
 }
 
+//Yet to complete, check move_from_san() in chess.js, might be of use here
+// function getBestMoveFromSAN(san) {
+//     // var move = (obj instanceof Array) ? [] : {};
+//     resMove =         
+// }
+
 var makeBestMove = function () {
     var bestMove = getBestMove(game);
+    console.log(bestMove);
     
-    //instead of using getBestMove, pass game.fen() to ml model
+    //instead of getBestMove, pass game.fen() to the make_matrix 
+    //and translate functions and then pass to ml model(yet to do)
+    var matrix = make_matrix(game.fen());
+    var translatedMatrix = translate(matrix);
 
+    //bestMove is a dictionary, it looks like
+    //{"color": "b","from": 1,"to": 34,"flags": 1,"piece": "n"}
+    //our move is in SAN notation (eg d6)
+    //have to convert it to the type of bestMove so that
+    //it can be passed to the make_move function.
+    //check getBestMoveFromSAN function on top
 
+    //both of the below lines run on the logic, not ml model
     game.ugly_move(bestMove);
     board.position(game.fen());
 

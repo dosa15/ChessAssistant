@@ -1,19 +1,16 @@
-document.write('<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>');
+//var alpha, piece, number;
 
-var alpha, piece, number;
-
-function initialize(){
+// function initialize() {
     tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
-        alpha = model;
+        window.alpha = model;
     });
     tf.loadLayersModel('models/model_number/model.json').then(function (model) {
-        number = model;
+        window.number = model;
     });
     tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
-        pieces = model;     
+        window.pieces = model;     
     });
-
-}
+// }
 
 
 function make_matrix(fen) { //converts fen to reqd matrix format
@@ -48,7 +45,7 @@ function translate(matrix) { //translates matrix format to 1's and 0's
         }
         rows.push(terms);
     }
-    console.log(rows);
+    //console.log(rows);
     return rows;
 }
 
@@ -143,6 +140,7 @@ var chess_dict = {
     'K': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     '.': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 };
+
 var alpha_dict = {
     'a': [0, 0, 0, 0, 0, 0, 0],
     'b': [1, 0, 0, 0, 0, 0, 0],
@@ -153,6 +151,7 @@ var alpha_dict = {
     'g': [0, 0, 0, 0, 0, 1, 0],
     'h': [0, 0, 0, 0, 0, 0, 1],
 };
+
 var number_dict = {
     1: [0, 0, 0, 0, 0, 0, 0],
     2: [1, 0, 0, 0, 0, 0, 0],
@@ -163,6 +162,27 @@ var number_dict = {
     7: [0, 0, 0, 0, 0, 1, 0],
     8: [0, 0, 0, 0, 0, 0, 1],
 };
+
+var new_chess_dict = {}, new_alpha_dict = {}, new_number_dict = {};
+
+for (var term in chess_dict) {
+    var definition = chess_dict[term];
+    new_chess_dict[definition.toString()] = term;
+    new_chess_dict[term] = definition;
+}
+    
+for (var term in alpha_dict) {
+    definition = alpha_dict[term];
+    new_alpha_dict[definition.toString()] = term;
+    new_alpha_dict[term] = definition;
+}
+    
+for (var term in number_dict) {
+    definition = number_dict[term];
+    new_number_dict[definition.toString()] = term;
+    new_number_dict[term] = definition;
+}
+
 
 var pawnEvalWhite =
     [
@@ -311,31 +331,64 @@ async function endGame() {
 //     resMove =         
 // }
 
-var makeBestMove = function () {
+function translate_pred(pred) {
+    translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
+    index = pred[0].indexOf(Math.max(pred[0]));
+    translation[0][index] = 1;
+    return translation[0];
+}
+
+var makeBestMove = async function () {
     var bestMove = getBestMove(game);
-    console.log(bestMove);
+    //console.log(bestMove);
     
     //instead of getBestMove, pass game.fen() to the make_matrix 
     //and translate functions and then pass to ml model(yet to do)
     var matrix = make_matrix(game.fen());
     var translatedMatrix = translate(matrix);
     
-    var moveAlpha, movePiece, moveNumber;
-    alpha.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
+    
+    //var moveAlpha, movePiece, moveNumber;
+    await window.alpha.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
         array().then(function (move) {
-            moveAlpha = move;
+          // Translated to R code from ipynb.
+          var tMove = translate_pred(move);
+          console.log("T Alpha: ", tMove);
+          window.moveAlpha = new_alpha_dict[tMove.toString()];
         });
 
-    number.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
+    await window.number.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
         array().then(function (move) {
-            moveNumber = move;
+          // Translated to R code from ipynb.
+          var tMove = translate_pred(move);
+          console.log("T Number: ", tMove);
+          window.moveNumber = new_number_dict[tMove.toString()];
         });
 
-    piece.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
+    await window.pieces.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
         array().then(function (move) {
-            movePiece = move;
+          // Translated to R code from ipynb.
+          var tMove = translate_pred(move);
+          console.log("T Piece: ", tMove);
+          window.movePiece = new_chess_dict[tMove.toString()];
         });
 
+    //await sleep(2000);        // Wait till the model is done making its predictions to print the values onto the console
+    console.log("Alpha: ", window.moveAlpha);
+    console.log("Number: ", window.moveNumber);
+    console.log("Piece: ", window.movePiece);
+    var nextMove = ((window.movePiece == 'p' ||     // If move is a pawn move
+                        window.movePiece == '.')    // I have no idea why '.' appears, gotta fix this
+                        ? ''                        // Remove 'p' from the SAN notation
+                        : window.movePiece)         // Else retain the piece's character
+                    + window.moveAlpha + window.moveNumber;
+    console.log("ADAM Next Move in SAN: ", nextMove);
+    
+    // Yet to complete getBestMoveFromSAN function
+    
+    //console.log("ADAM Best Move: ", getBestMoveFromSAN(nextMove));
+    
+    
     //bestMove is a dictionary, it looks like
     //{"color": "b","from": 1,"to": 34,"flags": 1,"piece": "n"}
     //our move is in SAN notation (eg d6)
@@ -347,7 +400,7 @@ var makeBestMove = function () {
     game.ugly_move(bestMove);
     board.position(game.fen());
 
-    console.log(board.position()); //this gives san notation
+    console.log("Minimax Board Position: ", board.position()); //this gives san notation
     renderMoveHistory(game.history());
     if (game.game_over()) {
         endGame();

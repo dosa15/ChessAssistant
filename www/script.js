@@ -1,3 +1,4 @@
+// import {reshape} from math.js;
 //var alpha, piece, number;
 
 // function initialize() {
@@ -12,46 +13,25 @@
     });
 // }
 
-
-function make_matrix(fen) { //converts fen to reqd matrix format
-    var pieces = fen.split(" ")[0];
-    var rows = pieces.split("/");
-    var arr = [];
-
-    for (let i = 0; i < rows.length; ++i){
-        console.log(rows[i]);
-        var arr2 = [];
-        for (let j = 0; j < rows[i].length; ++j){
-            if (rows[i][j] > '0' && rows[i][j] < '9') {
-                for (let k = 0; k < rows[i][j]; ++k){
-                    arr2.push('.');
-                }
-            }
-            else {
-                arr2.push(rows[i][j]);
-            }
-        }
-        arr.push(arr2);
-    }
-    return arr;
-}
-
-function translate(matrix) { //translates matrix format to 1's and 0's
-    var rows = []
-    for (let i = 0; i < matrix.length; ++i) {
-        var terms = [];
-        for (let j = 0; j < matrix[i].length; ++j){
-            terms.push(chess_dict[matrix[i][j]]);
-        }
-        rows.push(terms);
-    }
-    //console.log(rows);
-    return rows;
-}
-
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+const reshapeArray = (arr, r, c) => {
+   if (r * c !== arr.length * arr[0].length) {
+      return arr;
+   }
+   const res = [];
+   let row = [];
+   arr.forEach(items => items.forEach((num) => {
+      row.push(num);
+      if (row.length === c) {
+         res.push(row);
+         row = [];
+      }
+   }))
+   return res;
+};
 
 var board, game = new Chess();
 
@@ -325,6 +305,42 @@ async function endGame() {
     //window.setTimeout(function(){ window.location.replace("/postgame.html"); }, 1000);
 }
 
+function make_matrix(fen) { //converts fen to reqd matrix format
+    var pieces = fen.split(" ")[0];
+    var rows = pieces.split("/");
+    var arr = [];
+
+    for (let i = 0; i < rows.length; ++i){
+        console.log(rows[i]);
+        var arr2 = [];
+        for (let j = 0; j < rows[i].length; ++j){
+            if (rows[i][j] > '0' && rows[i][j] < '9') {
+                for (let k = 0; k < rows[i][j]; ++k){
+                    arr2.push('.');
+                }
+            }
+            else {
+                arr2.push(rows[i][j]);
+            }
+        }
+        arr.push(arr2);
+    }
+    return arr;
+}
+
+function translate(matrix) { //translates matrix format to 1's and 0's
+    var rows = []
+    for (let i = 0; i < matrix.length; ++i) {
+        var terms = [];
+        for (let j = 0; j < matrix[i].length; ++j){
+            terms.push(chess_dict[matrix[i][j]]);
+        }
+        rows.push(terms);
+    }
+    //console.log(rows);
+    return rows;
+}
+
 //Yet to complete, check move_from_san() in chess.js, might be of use here
 // function getBestMoveFromSAN(san) {
 //     // var move = (obj instanceof Array) ? [] : {};
@@ -346,10 +362,11 @@ var makeBestMove = async function () {
     //and translate functions and then pass to ml model(yet to do)
     var matrix = make_matrix(game.fen());
     var translatedMatrix = translate(matrix);
-    
+    translatedMatrix = math.reshape(translatedMatrix, [1, 8, 8, 12]);
+    console.log("TM: ", translatedMatrix);
     
     //var moveAlpha, movePiece, moveNumber;
-    await window.alpha.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
+    await window.alpha.predict(translatedMatrix).
         array().then(function (move) {
           // Translated to R code from ipynb.
           var tMove = translate_pred(move);
@@ -357,7 +374,7 @@ var makeBestMove = async function () {
           window.moveAlpha = new_alpha_dict[tMove.toString()];
         });
 
-    await window.number.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
+    await window.number.predict(translatedMatrix).
         array().then(function (move) {
           // Translated to R code from ipynb.
           var tMove = translate_pred(move);
@@ -365,7 +382,7 @@ var makeBestMove = async function () {
           window.moveNumber = new_number_dict[tMove.toString()];
         });
 
-    await window.pieces.predict([tf.tensor(translatedMatrix).reshape([1, 8, 8, 12])]).
+    await window.pieces.predict(translatedMatrix).
         array().then(function (move) {
           // Translated to R code from ipynb.
           var tMove = translate_pred(move);

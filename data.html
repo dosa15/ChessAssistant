@@ -14,39 +14,41 @@
 		
 		<!--Firestore Libraries-->
 		<script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-auth-compat.js"></script>
-<script>
-   
-</script>
-		
+    <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-auth-compat.js"></script>
+
 		<script type="module">
 		  // Import the functions you need from the SDKs you need
-		  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.5.0/firebase-app.js";
+		  //import { initializeApp } from "https://www.gstatic.com/firebasejs/9.5.0/firebase-app.js";
 		  
 			const firebaseConfig = {
-			apiKey: "AIzaSyDzLZApIrnX6lEaLU2DzrTvwvAafRjm-E0",
-			authDomain: "chessassistant-adam1.firebaseapp.com",
-			databaseURL: "https://chessassistant-adam1-default-rtdb.asia-southeast1.firebasedatabase.app",
-			projectId: "chessassistant-adam1",
-			storageBucket: "chessassistant-adam1.appspot.com",
-			messagingSenderId: "968793669366",
-			appId: "1:968793669366:web:c3b759804ebba80ee276d7"
+  			apiKey: "AIzaSyDzLZApIrnX6lEaLU2DzrTvwvAafRjm-E0",
+  			authDomain: "chessassistant-adam1.firebaseapp.com",
+  			databaseURL: "https://chessassistant-adam1-default-rtdb.asia-southeast1.firebasedatabase.app",
+  			projectId: "chessassistant-adam1",
+  			storageBucket: "chessassistant-adam1.appspot.com",
+  			messagingSenderId: "968793669366",
+  			appId: "1:968793669366:web:c3b759804ebba80ee276d7"
 		  };
-		   const firebaseApp = firebase.initializeApp({firebaseConfig}); 
-		   const db = firebaseApp.firestore();
-		   const auth = firebaseApp.auth();
 		  // TODO: Add SDKs for Firebase products that you want to use
 		  // https://firebase.google.com/docs/web/setup#available-libraries
 
+      /* 
+        Error Solved: 
+          These "import {...}" modules had already been imported through the script tags above.
+          The firebaseApp was initialized twice.
+      */
+      
 		  // Your web app's Firebase configuration
-			import{
-				getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteDoc, deleteField
-			}
-			from "https://www.gstatic.com/firebasejs/9.5.0/firebase-firestore.js";
+			// import{
+			//	getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteDoc, deleteField
+			// }
+			// from "https://www.gstatic.com/firebasejs/9.5.0/firebase-firestore.js";
 
 		  // Initialize Firebase
-		  const app = initializeApp(firebaseConfig);
+  	   const firebaseApp = firebase.initializeApp(firebaseConfig); 
+  	   const db = firebaseApp.firestore();
+  	   const auth = firebaseApp.auth();
 		</script>
 		
 		

@@ -362,11 +362,12 @@ var makeBestMove = async function () {
     //and translate functions and then pass to ml model(yet to do)
     var matrix = make_matrix(game.fen());
     var translatedMatrix = translate(matrix);
-    translatedMatrix = math.reshape(translatedMatrix, [1, 8, 8, 12]);
+    tf.reshape(translatedMatrix, [1, 8, 8, 12]).print();
+    // translatedMatrix.print();
     console.log("TM: ", translatedMatrix);
     
     //var moveAlpha, movePiece, moveNumber;
-    await window.alpha.predict(translatedMatrix).
+    await window.alpha.predict([translatedMatrix]).
         array().then(function (move) {
           // Translated to R code from ipynb.
           var tMove = translate_pred(move);
@@ -374,7 +375,7 @@ var makeBestMove = async function () {
           window.moveAlpha = new_alpha_dict[tMove.toString()];
         });
 
-    await window.number.predict(translatedMatrix).
+    await window.number.predict([translatedMatrix]).
         array().then(function (move) {
           // Translated to R code from ipynb.
           var tMove = translate_pred(move);
@@ -382,7 +383,7 @@ var makeBestMove = async function () {
           window.moveNumber = new_number_dict[tMove.toString()];
         });
 
-    await window.pieces.predict(translatedMatrix).
+    await window.pieces.predict([translatedMatrix]).
         array().then(function (move) {
           // Translated to R code from ipynb.
           var tMove = translate_pred(move);

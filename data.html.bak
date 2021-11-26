@@ -69,7 +69,7 @@
 			}
 			
 			function Fetch_Record(){
-				db.collection("moves").doc(fetchdetail.value).get()
+				db.collection("moves").doc().get()
 				.then(function(doc){
 					if(doc.exists){
 						document.write(doc.data().v1, " ",doc.data().v2," ",doc.data().v3);

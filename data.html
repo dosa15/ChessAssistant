@@ -35,9 +35,9 @@
 		   const db = firebaseApp.firestore();
 		   const auth = firebaseApp.auth();
 		   
-		    let v1= document.getElementById('v1').value;
-			let v2= document.getElementById('v2').value;
-			let v3= document.getElementById('v3').value;
+		    let v1= document.getElementById('v1');
+			let v2= document.getElementById('v2');
+			let v3= document.getElementById('v3');
 		
 			
 			let cloudDB = firebase.firestore();
@@ -45,9 +45,9 @@
 			function Add_Record(){
 				db.collection("moves").add(
 					{
-						var1: v1,
-						var2: v2,
-						var3: v3
+						var1: v1.value,
+						var2: v2.value,
+						var3: v3.value
 					}
 				)
 				.then(function(docRef){

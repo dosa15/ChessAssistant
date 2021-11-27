@@ -25,13 +25,14 @@
       }
       socket.on('newmsg', function(data){
          if(user){
+			console.log(data);
             document.getElementById('message-container').innerHTML +='<div><b>' + data.user + '</b>: ' + data.message + '</div>'
          }
       })
    </script>
    <body>
       <div id="error-container"></div>
-      <input id="name" type="text" name="name" value="" placeholder="Enter your name!">
-      <button type="button" name="button" onclick="setUsername()">Let me chat!</button>
+      <input id="name" type="text" name="name" value="" placeholder="Enter the name of the node!">
+      <button type="button" name="button" onclick="setUsername()">Start sending moves</button>
       </body>
    </html>

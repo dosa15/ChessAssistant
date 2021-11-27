@@ -6,7 +6,7 @@ app.get('/', function(req, res){
    res.sendFile(__dirname+'/index.html');});
 users = [];
 io.on('connection', function(socket){
-   console.log('A user connected');
+   console.log('A client is connected');
    socket.on('setUsername', function(data){
       console.log(data);
       if(users.indexOf(data) > -1){
@@ -16,8 +16,23 @@ io.on('connection', function(socket){
          socket.emit('userSet', {username: data});
       }
    });
+   moves=[];
+   count=0;
    socket.on('msg', function(data){
       //Send message to everyone
+	  if(users.length==3 && count>=2){
+		count=count+1;
+		moves.push(data.message);
+		console.log("Received moves", moves);
+		pos=Math.floor(Math.random() * count);
+		console.log("Best move ", moves[pos]);
+	  }
+	  else{
+		console.log("Not enough clients/moves");
+		count=count+1;
+		moves.push(data.message);
+	  }
+	
       io.sockets.emit('newmsg', data);
    })
 });

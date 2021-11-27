@@ -18,6 +18,9 @@
 		<h1>Fetching moves made</h1><br>
 		<input type="text" id="fetchname"><br>
 		<button id="fetch">Fetch</button>
+		<div id="fetchresult">
+		
+		</div>
 		
 		<!--Firestore Libraries-->
 		<script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-app-compat.js"></script>
@@ -72,7 +75,9 @@
 				db.collection("moves").doc(fetchdetail.value).get()
 				.then(function(doc){
 					if(doc.exists){
-						document.write(doc.data().v1, " ",doc.data().v2," ",doc.data().v3);
+						//document.getElementById("fetchresult").innerHTML+=" "+(doc.data().var1, " - ",doc.data().var2," - ",doc.data().var3);
+						var x = String(doc.data().var1, " - ",doc.data().var2," - ",doc.data().var3)
+						document.getElementById("fetchresult").innerHTML="<br>"+ doc.data().var1+" - "+doc.data().var2+" - "+doc.data().var3;
 						//Fetching computed records
 					}
 					else{

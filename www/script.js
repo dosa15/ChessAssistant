@@ -348,8 +348,10 @@ function translate(matrix) { //translates matrix format to 1's and 0's
 // }
 
 function translate_pred(pred) {
-    translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
-    index = pred[0].indexOf(Math.max(pred[0]));
+    //translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
+    console.log("Pred", pred);
+    var translation = tf.zeros(pred.shape);
+    var index = pred[0].indexOf(Math.max(pred[0]));
     translation[0][index] = 1;
     return translation[0];
 }
@@ -362,34 +364,45 @@ var makeBestMove = async function () {
     //and translate functions and then pass to ml model(yet to do)
     var matrix = make_matrix(game.fen());
     var translatedMatrix = translate(matrix);
-    tf.reshape(translatedMatrix, [1, 8, 8, 12]).print();
-    // translatedMatrix.print();
+    translatedMatrix = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
+    translatedMatrix.print();
     console.log("TM: ", translatedMatrix);
     
     //var moveAlpha, movePiece, moveNumber;
-    await window.alpha.predict([translatedMatrix]).
+    /*
+    await window.alpha.predict(translatedMatrix).
         array().then(function (move) {
           // Translated to R code from ipynb.
-          var tMove = translate_pred(move);
+          console.log("M Alpha: ", move);
+          var tMove = translate_pred(tf.tensor(move));
           console.log("T Alpha: ", tMove);
           window.moveAlpha = new_alpha_dict[tMove.toString()];
         });
 
-    await window.number.predict([translatedMatrix]).
+    await window.number.predict(translatedMatrix).
         array().then(function (move) {
           // Translated to R code from ipynb.
-          var tMove = translate_pred(move);
+          console.log("M Number: ", move);
+          var tMove = translate_pred(tf.tensor(move));
           console.log("T Number: ", tMove);
           window.moveNumber = new_number_dict[tMove.toString()];
         });
 
-    await window.pieces.predict([translatedMatrix]).
+    await window.pieces.predict(translatedMatrix).
         array().then(function (move) {
           // Translated to R code from ipynb.
-          var tMove = translate_pred(move);
+          console.log("M Piece: ", move);
+          var tMove = translate_pred(tf.tensor(move));
           console.log("T Piece: ", tMove);
           window.movePiece = new_chess_dict[tMove.toString()];
         });
+    */
+    var ma = await window.alpha.predict(translatedMatrix).array();
+    console.log("WA before: ", ma);
+    window.moveAlpha = translate_pred(tf.tensor(ma));
+    console.log("WA after: ", ma);
+    window.moveNumber = translate_pred(window.number.predict(translatedMatrix));
+    window.movePiece = translate_pred(window.piece.predict(translatedMatrix));
 
     //await sleep(2000);        // Wait till the model is done making its predictions to print the values onto the console
     console.log("Alpha: ", window.moveAlpha);

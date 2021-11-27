@@ -20,9 +20,11 @@ io.on('connection', function(socket){
    count=0;
    socket.on('msg', function(data){
       //Send message to everyone
-	  if(users.length==3 && count==3){
+	  if(users.length==3 && count>=2){
+		count=count+1;
+		moves.push(data.message);
 		console.log("Received moves", moves);
-		pos=Math.floor(Math.random() * 3);
+		pos=Math.floor(Math.random() * count);
 		console.log("Best move ", moves[pos]);
 	  }
 	  else{

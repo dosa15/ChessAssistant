@@ -46,7 +46,7 @@ body {
 
 
 #post-game {
-  /*display: none;*/
+  display: none;
   position: fixed;
   margin: 0;
   top: 0;

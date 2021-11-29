@@ -29,8 +29,16 @@
           historyElement.stop().animate({scrollTop: $('tbody').get(0).scrollHeight}, 2000);
       };
       
-      function closePostGameAnalysis() {
+      function closePostGameAnalysis(newGame=false) {
           $('#post-game').hide();
+          if(newGame) {
+            location.reload();
+          }
+      }
+      
+      function showPostGameAnalysis() {
+          $('#post-game').show();
+          $('#NewGameBtn').show();
       }
     </script>
 </head>
@@ -59,7 +67,12 @@
             </div>
         </div>
         <div class="vertical-space"></div>
-        <div class="row justify-content-center">
+        <div class="row align-items-center justify-content-center">
+            <button id="NewGameBtn" class="btn btn-primary text-dark mx-5" onclick="closePostGameAnalysis(true)" style="display: none">New Game</button>
+            <button class="btn btn-danger text-white mx-5" onclick="showPostGameAnalysis()">Resign</button>
+        </div>
+        <div class="vertical-space"></div>
+        <div class="row justify-content-center" style="display: none">
             <div class="col col-auto">
                 <div class="card">
                     <div class="card-header bg-dark text-white">
@@ -131,6 +144,7 @@
             </div>
         </div>
     </div>
+    
     <div class="vertical-space"></div>
     <div id="post-game">
         <div class="vertical-space-30">
@@ -176,13 +190,14 @@
         <div class="vertical-space-30">
         </div>
         <div class="row align-items-center justify-content-center">
-            <button class="btn btn-primary text-dark mx-5" onclick="closePostGameAnalysis()">New Game</button>
-            <button class="btn btn-secondary text-dark mx-5" onclick="closePostGameAnalysis()">Review Game</button>
+            <button class="btn btn-primary text-dark mx-5" onclick="closePostGameAnalysis(true)">New Game</button>
+            <button class="btn btn-secondary text-dark mx-5" onclick="closePostGameAnalysis(false)">Review Game</button>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>
     <script src="jquery/jquery-3.2.1.min.js"></script>
     <script src="chessboardjs/js/chess.js"></script>
+    <!--<script type="module" src="js/chess.js"></script>-->
     <script src="chessboardjs/js/chessboard-0.3.0.js"></script>
     <script src="script.js"></script>
 </body>

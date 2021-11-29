@@ -1,16 +1,17 @@
 // import {reshape} from math.js;
+// import {generate_moves} from "js/chess.js";
 //var alpha, piece, number;
 
 // const { Chess } = require("./chessboardjs/js/chess");
 
 // function initialize() {
-    tf.loadLayersModel('newModels/model_alpha/model.json').then(function (model) {
+    tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
         window.alpha = model;
     });
-    tf.loadLayersModel('newModels/model_numbers/model.json').then(function (model) {
+    tf.loadLayersModel('models/model_numbers/model.json').then(function (model) {
         window.number = model;
     });
-    tf.loadLayersModel('newModels/model_pieces/model.json').then(function (model) {
+    tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
         window.pieces = model;     
     });
 // }
@@ -123,6 +124,22 @@ var chess_dict = {
     '.': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 };
 
+var new_chess_dict = {
+    "1,0,0,0,0,0,0,0,0,0,0,0": 'p',
+    "0,0,0,0,0,0,1,0,0,0,0,0": 'P',
+    "0,1,0,0,0,0,0,0,0,0,0,0": 'n',
+    "0,0,0,0,0,0,0,1,0,0,0,0": 'N',
+    "0,0,1,0,0,0,0,0,0,0,0,0": 'b',
+    "0,0,0,0,0,0,0,0,1,0,0,0": 'B',
+    "0,0,0,1,0,0,0,0,0,0,0,0": 'r',
+    "0,0,0,0,0,0,0,0,0,1,0,0": 'R',
+    "0,0,0,0,1,0,0,0,0,0,0,0": 'q',
+    "0,0,0,0,0,0,0,0,0,0,1,0": 'Q',
+    "0,0,0,0,0,1,0,0,0,0,0,0": 'k',
+    "0,0,0,0,0,0,0,0,0,0,0,1": 'K',
+    "0,0,0,0,0,0,0,0,0,0,0,0": '.',
+};
+
 var alpha_dict = {
     'a': [0, 0, 0, 0, 0, 0, 0],
     'b': [1, 0, 0, 0, 0, 0, 0],
@@ -132,6 +149,17 @@ var alpha_dict = {
     'f': [0, 0, 0, 0, 1, 0, 0],
     'g': [0, 0, 0, 0, 0, 1, 0],
     'h': [0, 0, 0, 0, 0, 0, 1],
+};
+
+var new_alpha_dict = {
+    '1,0,0,0,0,0,0': 'b',
+    '0,1,0,0,0,0,0': 'c',
+    '0,0,1,0,0,0,0': 'd',
+    '0,0,0,1,0,0,0': 'e',
+    '0,0,0,0,1,0,0': 'f',
+    '0,0,0,0,0,1,0': 'g',
+    '0,0,0,0,0,0,1': 'h',
+    '0,0,0,0,0,0,0': 'a',
 };
 
 var number_dict = {
@@ -145,6 +173,18 @@ var number_dict = {
     8: [0, 0, 0, 0, 0, 0, 1],
 };
 
+var new_number_dict = {
+    '1,0,0,0,0,0,0': 2,
+    '0,1,0,0,0,0,0': 3,
+    '0,0,1,0,0,0,0': 4,
+    '0,0,0,1,0,0,0': 5,
+    '0,0,0,0,1,0,0': 6,
+    '0,0,0,0,0,1,0': 7,
+    '0,0,0,0,0,0,1': 8,
+    '0,0,0,0,0,0,0': 1,
+};
+
+/*
 var new_chess_dict = {}, new_alpha_dict = {}, new_number_dict = {};
 
 for (var term in chess_dict) {
@@ -164,6 +204,7 @@ for (var term in number_dict) {
     new_number_dict[definition.toString()] = term;
     new_number_dict[term] = definition;
 }
+*/
 
 
 var pawnEvalWhite =
@@ -304,7 +345,6 @@ async function endGame() {
     await sleep(1000);
     alert('Game over');
     $("#post-game").show();
-    //window.setTimeout(function(){ window.location.replace("/postgame.html"); }, 1000);
 }
 
 function make_matrix(fen) { //converts fen to reqd matrix format
@@ -346,14 +386,15 @@ function translate(matrix) { //translates matrix format to 1's and 0's
 function translate_pred(pred) {
     //pred is a numpy array
     //translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
-    console.log("Pred", pred);
+    // console.log("Pred", pred);
     var dimensionsPred = [pred.length, pred[0].length];
-    console.log("Pred dimensions: " + dimensionsPred)
+    // console.log("Pred dimensions: " + dimensionsPred)
     var translation = Array(pred.length).fill().map(() =>
-        Array(pred[0].length).fill(0));
+       Array(pred[0].length).fill(0));
+    // var translation = tf.zeros([pred.length, pred[0].length]);
     
-    console.log("Translation: " + translation);
-    // var translation = tf.zeros(dimensionsPred);
+    // console.log("Translation: " + translation);
+    // translation.print();
     // console.log(translation.length + " " + translation[0].length);
 
     // var index = pred[0].indexOf(Math.max(pred[0]));
@@ -365,6 +406,7 @@ function translate_pred(pred) {
 
 var makeBestMove = async function () {
     var bestMove = getBestMove(game);
+    window.bestMove = bestMove;
     
     //instead of getBestMove, pass game.fen() to the make_matrix 
     //and translate functions and then pass to ml model(yet to do)
@@ -379,7 +421,7 @@ var makeBestMove = async function () {
           // Translated to R code from ipynb.
           console.log("M Alpha: ", move);
           var tMove = translate_pred(move);
-          console.log("T Alpha: ", tMove);
+          // console.log("T Alpha: ", tMove);
           window.moveAlpha = new_alpha_dict[tMove.toString()];
         });
 
@@ -388,7 +430,7 @@ var makeBestMove = async function () {
           // Translated to R code from ipynb.
           console.log("M Number: ", move);
           var tMove = translate_pred(move); 
-        //   console.log("T Number: ", tMove);
+          // console.log("T Number: ", tMove);
           window.moveNumber = new_number_dict[tMove.toString()];
         });
     
@@ -397,7 +439,7 @@ var makeBestMove = async function () {
           // Translated to R code from ipynb.
           console.log("M Piece: ", move);
           var tMove = translate_pred(move);
-        //   console.log("T Piece: ", tMove);
+          // console.log("T Piece: ", tMove.toString());
           window.movePiece = new_chess_dict[tMove.toString()];
         });
     
@@ -415,10 +457,10 @@ var makeBestMove = async function () {
     console.log("Alpha: ", window.moveAlpha);
     console.log("Number: ", window.moveNumber);
     console.log("Piece: ", window.movePiece);
-    var nextMove = ((window.movePiece == 'p' ||     // If move is a pawn move
+    var nextMove = ((window.movePiece == 'p' || window.movePiece == 'P' ||    // If move is a pawn move
                         window.movePiece == '.')    // I have no idea why '.' appears, gotta fix this
                         ? ''                        // Remove 'p' from the SAN notation
-                        : window.movePiece)         // Else retain the piece's character
+                        : window.movePiece.toUpperCase())         // Else retain the piece's character
                     + window.moveAlpha + window.moveNumber;
     console.log("ADAM Next Move in SAN: ", nextMove);
     
@@ -431,12 +473,13 @@ var makeBestMove = async function () {
     //it can be passed to the make_move function.    
     //Defined a global function getMoveFromSAN in chess.js and invoking here.
     var finalMove = window.getMoveFromSAN(nextMove)
+    window.finalMove = finalMove;
     console.log(finalMove);
 
     
     //~both of the below lines run on the logic, not ml model~
     //(UPDATE) Move predicted by model passed to function
-    game.ugly_move(finalMove);
+    make_best_move(bestMove);
     board.position(game.fen());
 
     console.log("Minimax Board Position: ", board.position()); //this gives san notation
@@ -467,6 +510,14 @@ var getBestMove = function (game) {
     $('#positions-per-s').text(positionsPerS);
     return bestMove;
 };
+
+function make_best_move(move) {
+  try {
+    game.ugly_move(window.finalMove);
+  } catch(e) {
+    game.ugly_move(window.bestMove);
+  }
+}
 
 var onDrop = function (source, target) {
 

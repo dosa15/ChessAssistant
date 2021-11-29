@@ -4,13 +4,13 @@
 // const { Chess } = require("./chessboardjs/js/chess");
 
 // function initialize() {
-    tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
+    tf.loadLayersModel('newModels/model_alpha/model.json').then(function (model) {
         window.alpha = model;
     });
-    tf.loadLayersModel('models/model_number/model.json').then(function (model) {
+    tf.loadLayersModel('newModels/model_numbers/model.json').then(function (model) {
         window.number = model;
     });
-    tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
+    tf.loadLayersModel('newModels/model_pieces/model.json').then(function (model) {
         window.pieces = model;     
     });
 // }

@@ -1,6 +1,8 @@
 // import {reshape} from math.js;
 //var alpha, piece, number;
 
+// const { Chess } = require("./chessboardjs/js/chess");
+
 // function initialize() {
     tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
         window.alpha = model;
@@ -420,17 +422,21 @@ var makeBestMove = async function () {
                     + window.moveAlpha + window.moveNumber;
     console.log("ADAM Next Move in SAN: ", nextMove);
     
+
     //console.log("ADAM Best Move: ", getBestMoveFromSAN(nextMove));    
-    
     //bestMove is a dictionary, it looks like
     //{"color": "b","from": 1,"to": 34,"flags": 1,"piece": "n"}
     //our move is in SAN notation (eg d6)
     //have to convert it to the type of bestMove so that
-    //it can be passed to the make_move function.
-    //check getBestMoveFromSAN function on top
+    //it can be passed to the make_move function.    
+    //Defined a global function getMoveFromSAN in chess.js and invoking here.
+    var finalMove = window.getMoveFromSAN(nextMove)
+    console.log(finalMove);
 
-    //both of the below lines run on the logic, not ml model
-    game.ugly_move(bestMove);
+    
+    //~both of the below lines run on the logic, not ml model~
+    //(UPDATE) Move predicted by model passed to function
+    game.ugly_move(finalMove);
     board.position(game.fen());
 
     console.log("Minimax Board Position: ", board.position()); //this gives san notation

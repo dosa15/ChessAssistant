@@ -1,6 +1,8 @@
 // import {reshape} from math.js;
 //var alpha, piece, number;
 
+// const { Chess } = require("./chessboardjs/js/chess");
+
 // function initialize() {
     tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
         window.alpha = model;
@@ -341,68 +343,73 @@ function translate(matrix) { //translates matrix format to 1's and 0's
     return rows;
 }
 
-//Yet to complete, check move_from_san() in chess.js, might be of use here
-// function getBestMoveFromSAN(san) {
-//     // var move = (obj instanceof Array) ? [] : {};
-//     resMove =         
-// }
-
 function translate_pred(pred) {
+    //pred is a numpy array
     //translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
     console.log("Pred", pred);
-    var translation = tf.zeros(pred.shape);
-    var index = pred[0].indexOf(Math.max(pred[0]));
+    var dimensionsPred = [pred.length, pred[0].length];
+    console.log("Pred dimensions: " + dimensionsPred)
+    var translation = Array(pred.length).fill().map(() =>
+        Array(pred[0].length).fill(0));
+    
+    console.log("Translation: " + translation);
+    // var translation = tf.zeros(dimensionsPred);
+    // console.log(translation.length + " " + translation[0].length);
+
+    // var index = pred[0].indexOf(Math.max(pred[0]));
+    var index = pred[0].indexOf(Math.max(...pred[0]));
+    console.log(index);
     translation[0][index] = 1;
     return translation[0];
 }
 
 var makeBestMove = async function () {
     var bestMove = getBestMove(game);
-    //console.log(bestMove);
     
     //instead of getBestMove, pass game.fen() to the make_matrix 
     //and translate functions and then pass to ml model(yet to do)
     var matrix = make_matrix(game.fen());
     var translatedMatrix = translate(matrix);
-    translatedMatrix = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
-    translatedMatrix.print();
+    var t1 = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
+    t1.print();
     console.log("TM: ", translatedMatrix);
-    
-    //var moveAlpha, movePiece, moveNumber;
-    /*
-    await window.alpha.predict(translatedMatrix).
+
+    await window.alpha.predict(t1).
         array().then(function (move) {
           // Translated to R code from ipynb.
           console.log("M Alpha: ", move);
-          var tMove = translate_pred(tf.tensor(move));
+          var tMove = translate_pred(move);
           console.log("T Alpha: ", tMove);
           window.moveAlpha = new_alpha_dict[tMove.toString()];
         });
 
-    await window.number.predict(translatedMatrix).
+    await window.number.predict(t1).
         array().then(function (move) {
           // Translated to R code from ipynb.
           console.log("M Number: ", move);
-          var tMove = translate_pred(tf.tensor(move));
-          console.log("T Number: ", tMove);
+          var tMove = translate_pred(move); 
+        //   console.log("T Number: ", tMove);
           window.moveNumber = new_number_dict[tMove.toString()];
         });
-
-    await window.pieces.predict(translatedMatrix).
+    
+    await window.pieces.predict(t1).
         array().then(function (move) {
           // Translated to R code from ipynb.
           console.log("M Piece: ", move);
-          var tMove = translate_pred(tf.tensor(move));
-          console.log("T Piece: ", tMove);
+          var tMove = translate_pred(move);
+        //   console.log("T Piece: ", tMove);
           window.movePiece = new_chess_dict[tMove.toString()];
         });
-    */
-    var ma = await window.alpha.predict(translatedMatrix).array();
-    console.log("WA before: ", ma);
-    window.moveAlpha = translate_pred(tf.tensor(ma));
-    console.log("WA after: ", ma);
-    window.moveNumber = translate_pred(window.number.predict(translatedMatrix));
-    window.movePiece = translate_pred(window.piece.predict(translatedMatrix));
+    
+    
+    // var ma = await window.alpha.predict(t1).array();
+    // console.log("WA before: ", ma);
+    // window.moveAlpha = translate_pred(tf.tensor(ma));
+    // console.log("WA after: ", ma);
+    // window.moveNumber = translate_pred(window.number.predict(t1));
+    // console.log(window.moveNumber);
+    // window.movePiece = translate_pred(window.piece.predict(t1));
+    // console.log(window.movePiece);
 
     //await sleep(2000);        // Wait till the model is done making its predictions to print the values onto the console
     console.log("Alpha: ", window.moveAlpha);
@@ -415,20 +422,21 @@ var makeBestMove = async function () {
                     + window.moveAlpha + window.moveNumber;
     console.log("ADAM Next Move in SAN: ", nextMove);
     
-    // Yet to complete getBestMoveFromSAN function
-    
-    //console.log("ADAM Best Move: ", getBestMoveFromSAN(nextMove));
-    
-    
+
+    //console.log("ADAM Best Move: ", getBestMoveFromSAN(nextMove));    
     //bestMove is a dictionary, it looks like
     //{"color": "b","from": 1,"to": 34,"flags": 1,"piece": "n"}
     //our move is in SAN notation (eg d6)
     //have to convert it to the type of bestMove so that
-    //it can be passed to the make_move function.
-    //check getBestMoveFromSAN function on top
+    //it can be passed to the make_move function.    
+    //Defined a global function getMoveFromSAN in chess.js and invoking here.
+    var finalMove = window.getMoveFromSAN(nextMove)
+    console.log(finalMove);
 
-    //both of the below lines run on the logic, not ml model
-    game.ugly_move(bestMove);
+    
+    //~both of the below lines run on the logic, not ml model~
+    //(UPDATE) Move predicted by model passed to function
+    game.ugly_move(finalMove);
     board.position(game.fen());
 
     console.log("Minimax Board Position: ", board.position()); //this gives san notation

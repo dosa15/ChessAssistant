@@ -1,0 +1,102 @@
+<html>
+	<head>
+		<title>Moves data</title>
+	</head>
+	<body>
+	
+		<!-- Inserting records into the database-->
+		<h1>Inserting played moves</h1><br>
+		<input id="gamename" type="text"><br>
+		<input id="v1" type="text"><br>
+		<input id="v2" type="text"><br>
+		<input id="v3" type="text"><br>
+		
+		<button id="insert">Insert</button>
+		
+		<!-- Fetching the details from the database -->
+		<br><br><br><br>
+		<h1>Fetching moves made</h1><br>
+		<input type="text" id="fetchname"><br>
+		<button id="fetch">Fetch</button>
+		<div id="fetchresult">
+		
+		</div>
+		
+		<!--Firestore Libraries-->
+		<script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-app-compat.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-firestore-compat.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-auth-compat.js"></script>
+		
+		<script type="module">
+		  
+			const firebaseConfig = {
+  			apiKey: "AIzaSyDzLZApIrnX6lEaLU2DzrTvwvAafRjm-E0",
+  			authDomain: "chessassistant-adam1.firebaseapp.com",
+  			databaseURL: "https://chessassistant-adam1-default-rtdb.asia-southeast1.firebasedatabase.app",
+  			projectId: "chessassistant-adam1",
+  			storageBucket: "chessassistant-adam1.appspot.com",
+  			messagingSenderId: "968793669366",
+  			appId: "1:968793669366:web:c3b759804ebba80ee276d7"
+		  };
+
+
+			// Initialize Firebase
+		   const firebaseApp = firebase.initializeApp(firebaseConfig); 
+		   const db = firebaseApp.firestore();
+		   const auth = firebaseApp.auth();
+		   
+		    let v1= document.getElementById('v1');
+			let v2= document.getElementById('v2');
+			let v3= document.getElementById('v3');
+			let gamename = document.getElementById('gamename');
+			let fetchdetail = document.getElementById('fetchname');
+			
+			let cloudDB = firebase.firestore();
+			
+			function Add_Record(){
+				//Code for computation
+				db.collection("moves").doc(gamename.value).set(
+					{
+						var1: v1.value,
+						var2: v2.value,
+						var3: v3.value,
+						//Inserting computed code
+					}
+				)
+				.then(function(docRef){
+					console.log("Inserted ID: ", gamename.value);
+				})
+				.catch(function(error){
+					console.error("Error: ", error);
+				}) 
+			}
+			
+			function Fetch_Record(){
+				db.collection("moves").doc(fetchdetail.value).get()
+				.then(function(doc){
+					if(doc.exists){
+						//document.getElementById("fetchresult").innerHTML+=" "+(doc.data().var1, " - ",doc.data().var2," - ",doc.data().var3);
+						var x = String(doc.data().var1, " - ",doc.data().var2," - ",doc.data().var3)
+						document.getElementById("fetchresult").innerHTML="<br>"+ doc.data().var1+" - "+doc.data().var2+" - "+doc.data().var3;
+						//Fetching computed records
+					}
+					else{
+						alert("That game does not exist");
+					}
+				})
+			}
+			
+			
+			document.getElementById("insert").onclick=function(){
+				Add_Record();
+			}
+			
+			document.getElementById("fetch").onclick=function(){
+				Fetch_Record();
+			}
+			
+			
+		</script>
+		
+	</body>
+</html>

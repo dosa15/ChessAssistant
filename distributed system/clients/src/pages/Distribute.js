@@ -19,39 +19,6 @@ async function lockable(userState) {
     bus.emit('unlocked');
 }
 
-const ChooseUser = async () => new Promise((resolve) => {
-	var user = null;
-	Alert.alert(
-		'Choose User',
-		'...',
-		[
-			{
-				text: 'MASTER',
-				onPress: () => {
-					user = "MASTER";
-					resolve('YES');
-				},
-			},
-			{
-				text: 'CLIENT1',
-				onPress: () => {
-					user = "CLIENT1";
-					resolve('YES');
-				},
-			},
-			{
-				text: 'CLIENT2',
-				onPress: () => {
-					user = "CLIENT2";
-					resolve('YES');
-				},
-			},
-		],
-		{ cancelable: false },
-	);
-	return user;
-  });
-
 export default class Distribute extends Component {
 	constructor(props) {
 		super(props);
@@ -112,8 +79,8 @@ export default class Distribute extends Component {
 						// chats.push(snapshot.val());
 						this.setState({ master: snapshot.val() });
 						// if(initial) {
-							this.setState({ client1: snapshot.val() });
-							this.setState({ client2: snapshot.val() });
+						// 	this.setState({ client1: snapshot.val() });
+						// 	this.setState({ client2: snapshot.val() });
 						// }
 						console.log(`Master Value: ${this.state.master.value}`);
 					}
@@ -126,10 +93,10 @@ export default class Distribute extends Component {
 				db.ref("MASTER").on("value", snapshot => {
 					if(snapshot.exists()) {
 						this.setState({ client1: snapshot.val() });
+						this.computeClientData(this.state.client1, 1);
 					}
 				})
 
-				await this.computeClientData(this.state.client1, 1);
 				
 			} else if (this.state.user === "CLIENT2") {
 				console.log("This is client 2");
@@ -137,13 +104,13 @@ export default class Distribute extends Component {
 				db.ref("MASTER").on("value", snapshot => {
 					if(snapshot.exists()) {
 						this.setState({ client2: snapshot.val() });
+						this.computeClientData(this.state.client2, 2);
 					}
 				});
 
-				await this.computeClientData(this.state.client2, 2);
 				
 			}
-			
+			/*
 			db.ref("CLIENT1").on("value", snapshot => {
 				// snapshot.forEach((snap) => {
 				//   chats.push(snap.val());
@@ -165,6 +132,7 @@ export default class Distribute extends Component {
 					console.log(`Client2 Value: ${this.state.client2.value}`);
 				}
 			});
+			*/
 		
 			// while(this.state.master.value === this.state.client1.value);
 			// console.log("While over");
@@ -239,22 +207,25 @@ export default class Distribute extends Component {
 	async computeClientData(clientData, clientNo) {
 		var movelist = clientData.value;
 		console.log(`Client${clientNo} movelist: ${movelist}`);
-		movelist += " gives the best move: .a" + clientNo;
 		clientData.value = movelist;
-		if (clientNo === 1)
+		if (clientNo === 1) {
+			movelist += " gives the 1st best move: .a1";
 			this.setState({ client1: clientData });
-		else if (clientNo === 2)
+		} else if (clientNo === 2) {
+			movelist += " gives the 2nd best move: .a2";
 			this.setState({ client2: clientData });
-		
+		}
+
 		await db.ref("CLIENT"+clientNo).set({
 			user: this.state.user,
 			value: clientData.value,
 			timestamp: Date.now()
+		}).then(() => {
+			document.getElementById("sendDataForm").submit();
 		}); 
 
 		/* Replaced with code within loadMasterData() */
 		// this.loadClientData();
-		// document.getElementById("#sendDataForm").submit();
 		
 		// db.ref("CLIENT"+clientNo).on("value", snapshot => {
 		// 	if(snapshot.exists()) {
@@ -308,6 +279,8 @@ export default class Distribute extends Component {
 
 	// This function is in-built, and is the first to automatically execute every time the page loads
 	async componentDidMount() {
+		/* Add some sort of pop-up box or manipulate existing ButtonGroup such that allows us to pick the user role. 
+		If a pop-up, the function should return a Promise<void> or Promise<String> such that we can await for its response and only then proceed to loadMasterData() */
 		this.clearServerData();
 		await this.loadMasterData();
 	}
@@ -317,7 +290,8 @@ export default class Distribute extends Component {
 			value: event.target.value
 		});
 	}
-
+	
+	// This function handles the form that is used to submit data to the server
 	async handleSubmit(event) {
 		if (event)
 			event.preventDefault();
@@ -467,6 +441,7 @@ export default class Distribute extends Component {
 				</div>
 		
 				<form id="sendDataForm" onSubmit={this.handleSubmit} className="mx-3">
+					{console.log("Submitting form...")}
 					<textarea className="form-control" name="content" onChange={this.handleChange} value={this.state.value} disabled={this.state.user !== "MASTER"}></textarea>
 					{this.state.readError ? <p className="text-danger">{this.state.readError}</p> : null}
 					{this.state.writeError ? <p className="text-danger">{this.state.writeError}</p> : null}

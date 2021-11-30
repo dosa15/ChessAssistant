@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="chessboardjs/css/chessboard-0.3.0.css">
     <link rel="stylesheet" href="style.css">
     
+    <!--
     http://127.0.0.1:9280/openapi.json
     
     graph1() => graph1(window.movelist)
+    -->
     
     <script type="text/javascript" charset="utf-8">
       var renderMoveHistory = function (moves) {
@@ -42,6 +44,9 @@
       }
       
       function showPostGameAnalysis() {
+          // set the value of window.movelist
+          const response = await fetch('http://127.0.0.1:8000/graph1?s=' + window.movelist);
+          const myJson = await response.json();
           $('#post-game').show();
           $('#NewGameBtn').show();
       }

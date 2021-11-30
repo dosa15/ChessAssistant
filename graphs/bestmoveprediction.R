@@ -39,18 +39,20 @@ bestmovepredict <- function(moves){
       engine$quit()
     }
   }
-  print(bestmoves)
-  print(playermoves)
+  #print(bestmoves)
+  #print(playermoves)
   countbest=0
   for (i in 5:length(bestmoves)) {
     #ap<-analyze_position(engine = "C:/Users/rohit/Downloads/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe",san = m,depth= 6)
-    #ap$score
+    ap <- analyze_position(engine = "/Applications/Stockfish.app/Contents/MacOS/Stockfish", san = m, depth = 6)
+    print(ap$score)
     if(playermoves[i]==substr(bestmoves[i],4,nchar(bestmoves[i]))){
+      # print(substr(bestmoves[i],4,nchar(bestmoves[i])))
       #print(i)
       countbest=countbest+1
     }
   }
-  print(countbest)
+  # print(countbest)
   countworst= length(playermoves)-countbest
   bvsw<-c(countbest,countworst)
   barplot(bvsw,names.arg=c("best moves", "worst moves"),xlab = "Moves type", ylab = "Count", main = "Bargraph showing best moves vs worst moves in a game of chess")

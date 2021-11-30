@@ -2,6 +2,7 @@ library(stockfish)
 library(chess)
 library(bigchess)
 library(rchess)
+require(magrittr)
 
 bestmovepredict <- function(moves){
   
@@ -25,12 +26,14 @@ bestmovepredict <- function(moves){
       engine$process
       engine$position(new_game$fen())
       m<-engine$go()
-      m<-substr(m,10,13)
-      m<-lan2san(m)
-      m<-substr(m,4,nchar(m))
-      if(m[1]=="x"){
-        m<-substr(m,2,nchar(m))
+      if(m!="bestmove (none)"){
+        m<-substr(m,10,13)
+        m<-lan2san(m)
       }
+      else{
+        break
+      }
+      
       bestmoves<- c(bestmoves,m)
       playermoves<-c(playermoves,movesaf[[1]][i])
       engine$quit()
@@ -39,8 +42,11 @@ bestmovepredict <- function(moves){
   print(bestmoves)
   print(playermoves)
   countbest=0
-  for (i in 4:length(playermoves)) {
-    if(playermoves[i]==bestmoves[i]){
+  for (i in 5:length(bestmoves)) {
+    #ap<-analyze_position(engine = "C:/Users/rohit/Downloads/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe",san = m,depth= 6)
+    #ap$score
+    if(playermoves[i]==substr(bestmoves[i],4,nchar(bestmoves[i]))){
+      #print(i)
       countbest=countbest+1
     }
   }
@@ -49,5 +55,5 @@ bestmovepredict <- function(moves){
   bvsw<-c(countbest,countworst)
   barplot(bvsw,names.arg=c("best moves", "worst moves"),xlab = "Moves type", ylab = "Count", main = "Bargraph showing best moves vs worst moves in a game of chess")
 }
-s="e4,Nf6,f3,d5,Qe2,Nc6,Qd3,e6,e5,Nb4,Qc3,d4,Qb3,Nfd5,Bb5+,Bd7,Bc4,Nf4,Qxb4,Bxb4,c3,Bc5,d3,Nxd3+,Kd1,Nxc1,Kxc1,Qg5+,f4,Qxg2,Ne2,Qxh1+,Ng1,Qxg1+,Kc2,Qxh2+,Kc1,Qxf4+,Kc2,Qf2+,Kd1,Ba4+,b3,Qf3+,Kc2,dxc3,bxa4,Rd8,Nxc3,Qf5+,Bd3,Qxe5,Re1,Qh2+,Re2,Qf4,Rd2,Ke7,a5,Rd6,a6,bxa6,a4,Rhd8,a5,Rxd3,Rxd3,Rxd3,Kxd3,Qd4+,Kc2,f5,Kb3,f4,Ne2,Qd3+,Nc3,f3,Kb2,f2,Nd1,Qxd1"
+s="e4,e5,Nf3,Nc6,Nc3,d6,d4,b5,dxe5,dxe5,Nxb5,a6,Nxe5,Nxe5,Qxd8+,Kxd8,Bf4,Ng4,f3,Bb4+,c3,Ne3,cxb4,Nc2+,Kd1,Nxa1,Nc3,Be6,Be5,Bxa2,Bxg7,Bb3+,Kd2,Rc8,Bxa6,Nc2,Bxc8,Kxc8,Bxh8,Ne7,Bf6,Nc6,Nd5,N6xb4,Nxb4,c5,Nxc2,Bc4,Rc1,Bb3,Na3,c4,Rxc4+,Bxc4,Nxc4,h5,Ne5,h4,Nxf7,h3,gxh3,Kd7,h4,Ke6,h5,Kxf6,h6,Kxf7,h7,Kg7,b4,Kxh7,b5,Kg8,b6,Kf8,b7,Ke8,b8=Q+,Kd7,Qb6,Kc8,e5,Kd7,f4,Ke7,h4,Kd7,f5,Ke7,h5,Kf7,h6,Kg8,f6,Kh7,e6,Kxh6,e7,Kh7,e8=Q,Kh6,f7+,Kg7,f8=Q+,Kh7,Kc1"
 bestmovepredict(s)

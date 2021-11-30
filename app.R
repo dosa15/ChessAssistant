@@ -17,5 +17,5 @@ shinyApp(ui = htmlTemplate("index.html"), server = server)
 # shinyApp(ui = ui, server = server)
 
 
-pr ("graphs/graphs_all.R")
-pr$run()
+pr ("graphs/graphs_all.R") %>%
+  pr_run(port = 8000)

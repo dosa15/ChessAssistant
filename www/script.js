@@ -334,6 +334,29 @@ var getPieceValue = function (piece, x, y) {
 
 /* board visualization and games state handling */
 
+var renderMoveHistory = function (moves) {
+  window.movelist = moves.join();
+  var historyElement = $('#move-history').empty();
+  historyElement.empty();
+  historyElement.className += "table-striped";
+  historyElement.append(`
+      <thead>
+          <tr>
+              <th scope="col">#</th>
+              <th scope="col">White</th>
+              <th scope="col">Black</th>
+          </tr>
+      </thead>
+      <tbody>
+  `);
+  for (var i = 0; i < moves.length; i = i + 2) {
+    historyElement.append('<tr> <th scope="row">' + (i/2 + 1) + "</th> <td>" + moves[i] + '</td> <td>' + (moves[i + 1] ? moves[i + 1] : ' ') + '</td> </tr>');
+          }
+    historyElement.append("</tbody>");
+    /*historyElement.scrollTop(historyElement[0].scrollHeight);*/
+    historyElement.stop().animate({scrollTop: $('tbody').get(0).scrollHeight}, 2000);
+};
+
 var onDragStart = function (source, piece, position, orientation) {
     if (game.in_checkmate() === true || game.in_draw() === true ||
         piece.search(/^b/) !== -1) {
@@ -344,6 +367,10 @@ var onDragStart = function (source, piece, position, orientation) {
 async function endGame() {
     await sleep(1000);
     alert('Game over');
+    //const response = await fetch('http://127.0.0.1:8000/graph1?s=' + window.movelist);
+    const response = await fetch('https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/4b90f7f9/graph1?s=' + window.movelist, { mode: 'no-cors' });
+    const myJson = await response.json();
+    var fen = game.fen();
     $("#post-game").show();
 }
 

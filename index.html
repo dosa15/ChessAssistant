@@ -7,12 +7,15 @@
     <link rel="stylesheet" href="chessboardjs/css/chessboard-0.3.0.css">
     <link rel="stylesheet" href="style.css">
     
+    <!--
     http://127.0.0.1:9280/openapi.json
     
     graph1() => graph1(window.movelist)
+    -->
     
     <script type="text/javascript" charset="utf-8">
       var renderMoveHistory = function (moves) {
+          window.movelist = moves.join();
           var historyElement = $('#move-history').empty();
           historyElement.empty();
           historyElement.className += "table-striped";
@@ -41,7 +44,12 @@
           }
       }
       
-      function showPostGameAnalysis() {
+      async function showPostGameAnalysis() {
+          // set the value of window.movelist
+          //const response = await fetch('http://127.0.0.1:8000/graph1?s=' + window.movelist);
+          //console.log("Called show game analysis");
+          const response = await fetch('https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/4b90f7f9/graph1?s=' + window.movelist, { mode: 'no-cors' });
+          //const myJson = await response.json();
           $('#post-game').show();
           $('#NewGameBtn').show();
       }
@@ -173,7 +181,8 @@
                 </ol>
                 <div class="carousel-inner">
                   <div class="carousel-item active">
-                      <img id="postGameGraph" class="d-block w-100 px-1" src="/img/bubblechart.png" alt="Bubble Chart">
+                      <!--<img id="postGameGraph" class="d-block w-100 px-1" src="/img/bubblechart.png" alt="Bubble Chart">-->
+                      <img id="postGameGraph" class="d-block w-100 px-1" src="https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png" alt="Bubble Chart">
                   </div>
                   <div class="carousel-item">
                       <img id="postGameGraph" class="d-block w-100 px-1" src="/img/sampleplot.png" alt="Second graph">
@@ -206,5 +215,8 @@
     <script src="chessboardjs/js/chessboard-0.3.0.js"></script>
     <script type="module" src="script.js"></script>
     <script src="script.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

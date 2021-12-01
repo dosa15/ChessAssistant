@@ -44,7 +44,7 @@ bestmovepredict <- function(moves){
   countbest=0
   for (i in 5:length(bestmoves)) {
     #ap<-analyze_position(engine = "C:/Users/rohit/Downloads/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe",san = m,depth= 6)
-    ap <- analyze_position(engine = "/Applications/Stockfish.app/Contents/MacOS/Stockfish", san = m, depth = 6)
+    ap <- analyze_position(engine = "/Applications/Stockfish.app/Contents/Resources/stockfish-x86-64-bmi2", san = m, depth = 6)
     print(ap$score)
     if(playermoves[i]==substr(bestmoves[i],4,nchar(bestmoves[i]))){
       # print(substr(bestmoves[i],4,nchar(bestmoves[i])))

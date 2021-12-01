@@ -40,7 +40,7 @@ graph1 <- function (s) {
   print(pawn)
   
   pieces <- as.factor(c("Queen", "Knight", "Bishop", "Rook", "Pawn"))
-  moves_per_piece <- c(queen,knight, bishop, rook, pawn)
+  moves_per_piece <- c(queen, knight, bishop, rook, pawn)
   chessTest <- data.frame(pieces, moves_per_piece)
   p1 <- ggplot(chessTest) + 
     geom_point(aes(x=pieces, y=moves_per_piece, size = moves_per_piece, color= pieces, label=moves_per_piece)) +

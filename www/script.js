@@ -364,14 +364,36 @@ var onDragStart = function (source, piece, position, orientation) {
     }
 };
 
-async function endGame() {
-    await sleep(1000);
+async function endgame() {
+    await sleep(750);
     alert('Game over');
     //const response = await fetch('http://127.0.0.1:8000/graph1?s=' + window.movelist);
-    const response = await fetch('https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/4b90f7f9/graph1?s=' + window.movelist, { mode: 'no-cors' });
-    const myJson = await response.json();
-    var fen = game.fen();
-    $("#post-game").show();
+    renderMoveHistory(window.gameHistory);
+    console.log("Final movelist: " + window.movelist);
+    let myHeaders = new Headers();
+    myHeaders.append('Accept', '*/*');
+    var response = await fetch('https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/a0dc22f6/graph1?s=' + window.movelist, { 
+            mode: 'no-cors' ,
+            method: 'GET',
+            headers: myHeaders
+          })
+      .then(() => {
+        /*
+      var carouselElement = $("#carouselGraphViewer").empty();
+      //await sleep(100);
+      carouselElement.append(`
+      <div class="carousel-item active">
+          <img id="postGameGraph" class="d-block w-100 px-1" src="https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png" alt="Bubble Chart">
+      </div>
+      `);
+      */
+      document.getElementById("image1").src = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+      })
+      .then(() => {
+        $('#post-game').show();
+        $('#NewGameBtn').show();
+      });
+  //var fen = game.fen();
 }
 
 function make_matrix(fen) { //converts fen to reqd matrix format
@@ -510,7 +532,8 @@ var makeBestMove = async function () {
     board.position(game.fen());
 
     console.log("Minimax Board Position: ", board.position()); //this gives san notation
-    renderMoveHistory(game.history());
+    window.gameHistory = game.history();
+    renderMoveHistory(window.gameHistory);
     if (game.game_over()) {
         endGame();
     }

@@ -17,21 +17,24 @@ for (i in movesaf[[1]]) {
 }
 for (i in playermoves) {
   print(i)
-  try(pp<-analyze_position(engine = "C:/Users/rohit/Downloads/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe",san = "1. b4 b6 2. e4 c5 3. bxc5 bxc5 4. Bc4 e6 5. Bb2 Ba6 
-6. Bxa6 Nxa6 7. Qg4 f5 8. exf5 exf5 9. Qh5+ g6 10. Qe2+ Qe7 
-11. Bxh8 Nb4 12. a3 Nxc2+ 13. Kf1 Nd4 14. Qe3 Nc2 15. Qb3 Qe1#  0-1",depth=10),silent= TRUE)
+  pp<-analyze_position(engine = "C:/Users/rohit/Downloads/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe",lan = i,depth=10)
   
   if(pp$score>35)
     good=good+1
   else if(pp$score<35)
     bad=bad+1
   else
-    neutral=neutral
+    neutral=neutral+1
   #print(pp$bestmove_lan)
 }
 
+good
+bad
+neutral
 x<- c(good, bad,neutral)
-labels<-c("Good Moves","Bad Moves","Neutral Moves")
+labels<-c(good,bad,neutral)
 png(file="D:/college/datavisualization/project/ChessAssistant/www/img/piechart.png")
 pie(x,labels)
+legend("topleft", legend = c("Good Moves", "Bad Moves", "Neutral Moves"),
+       fill =  c("white", "lightblue", "mistyrose"))
 dev.off()

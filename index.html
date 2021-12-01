@@ -47,6 +47,7 @@
       }
       
       async function showPostGameAnalysis() {
+			//Fun();
           // set the value of window.movelist
           //const response = await fetch('http://127.0.0.1:8000/graph1?s=' + window.movelist);
           //console.log("Called show game analysis");
@@ -67,8 +68,10 @@
           //moan response url
           var moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/graph1?s=";
 
+			
+
           //replace ______Response with your respective one
-          var response = await fetch(atulResponse + window.movelist, { 
+          var response = await fetch(boomsResponse + window.movelist, { 
             mode: 'no-cors' ,
             method: 'GET',
             headers: myHeaders
@@ -76,9 +79,17 @@
             //.then(() => {
             //  const myJson = response.json();
             //})
-            .then(() => {
-              /*
-            var carouselElement = $("#carouselGraphViewer").empty();
+            .then(async function() {
+			console.log(window.movelist, boomsResponse + window.movelist);
+			
+			var wnd;
+			wnd = window.open(boomsResponse + window.movelist, "wnd","width=200, height=100");
+			await sleep(500);
+			wnd.close();
+			/*setTimeout(function() {
+			  wnd.close();
+			}, 10); */
+            /*var carouselElement = $("#carouselGraphViewer").empty();
             //await sleep(100);
             carouselElement.append(`
             <div class="carousel-item active">
@@ -95,12 +106,12 @@
 
            //booms ka src
            var boomsBarGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
-
+	
            //moan ka src
            var atulBarGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
            
            //Replace src with your resepective one
-            $('[data-label="graph1"]').src = dosaBarGraphSrc;
+            $('[data-label="graph1"]').src = boomsBarGraphSrc;
           })
           .then(() => {
             $('#post-game').show();
@@ -236,8 +247,17 @@
                 <div id="carouselGraphViewer" class="carousel-inner">
                   <div class="carousel-item active">
                       <!--<img id="postGameGraph" class="d-block w-100 px-1" src="/img/bubblechart.png" alt="Bubble Chart">-->
-                      <img id="postGameGraph" data-label="graph1" class="d-block w-100 px-1" src="" alt="Bubble Chart">
-                  </div>
+					  <script>
+							/*function Fun() {
+									var img = document.createElement('img');
+									img.src = boomsResponse + window.movelist;
+									document.getElementById('body').appendChild(img);
+									down.innerHTML = "Image Element Added."; 
+							}*/
+					  </script>
+                      <img id="postGameGraph" data-label="graph1" class="d-block w-100 px-1" src="<" alt="Bubble Chart">
+                 
+				  </div>
                   <div class="carousel-item">
                       <img id="postGameGraph" data-label="graph2" class="d-block w-100 px-1" src="/img/sampleplot.png" alt="Second graph">
                   </div>

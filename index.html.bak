@@ -79,12 +79,12 @@
             //.then(() => {
             //  const myJson = response.json();
             //})
-            .then(() => {
+            .then(async function() {
 			console.log(window.movelist, boomsResponse + window.movelist);
 			
 			var wnd;
 			wnd = window.open(boomsResponse + window.movelist, "wnd","width=200, height=100");
-			sleep(500);
+			await sleep(500);
 			wnd.close();
 			/*setTimeout(function() {
 			  wnd.close();
@@ -255,7 +255,7 @@
 									down.innerHTML = "Image Element Added."; 
 							}*/
 					  </script>
-                      <img id="postGameGraph" data-label="graph1" class="d-block w-100 px-1" src="<" alt="Bubble Chart">
+                      <img id="postGameGraph" data-label="graph1" class="d-block w-100 px-1" src="https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png" alt="Bubble Chart">
                  
 				  </div>
                   <div class="carousel-item">

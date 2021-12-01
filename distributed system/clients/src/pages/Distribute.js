@@ -66,16 +66,14 @@ export default class Distribute extends Component {
 	}
 
 	async loadMasterData() {
-		this.setState({
-			showModal: false
-		})
+		console.log("master data loaded from " + this.state.user);
 
 		// if(!this.state.user) {
 		// 	window.setTimeout(this.state.user, 10);
 		// 	return;
 		// }
 
-		this.setState({ readError: null, loadingChats: true });
+		this.setState({ readError: null, loadingChats: true, showModal: false });
 		const chatArea = this.myRef.current;
 		try {
 			// let chats = [];
@@ -117,7 +115,6 @@ export default class Distribute extends Component {
 						this.computeClientData(this.state.client2, 2);
 					}
 				});
-
 				
 			}
 			/*
@@ -143,7 +140,7 @@ export default class Distribute extends Component {
 				}
 			});
 			*/
-		
+			
 			// while(this.state.master.value === this.state.client1.value);
 			// console.log("While over");
 			
@@ -230,9 +227,10 @@ export default class Distribute extends Component {
 			user: this.state.user,
 			value: clientData.value,
 			timestamp: Date.now()
-		}).then(() => {
-			document.getElementById("sendDataForm").submit();
-		}); 
+		})
+		// .then(() => {
+		// 	document.getElementById("sendDataForm").submit();
+		// }); 
 
 		/* Replaced with code within loadMasterData() */
 		// this.loadClientData();
@@ -321,8 +319,8 @@ export default class Distribute extends Component {
 			await this.loadMasterData();
 			// this.loadClientData();
 			
-			if (this.state.user === "MASTER")
-				this.getClientData();
+			// if (this.state.user === "MASTER")
+			// 	this.getClientData();
 		} catch (error) {
 			this.setState({ writeError: error.message });
 		}

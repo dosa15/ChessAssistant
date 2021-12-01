@@ -1,12 +1,18 @@
-import React, { Component } from "react";
+import React, { useEffect, useState, Component, Alert } from "react";
 import { Route, BrowserRouter as Router, Routes, Navigate, Outlet } from "react-router-dom";
 import Home from "./pages/Home";
 import Chat from "./pages/Distribute";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import { auth } from "./services/firebase";
+import { auth, db } from "./services/firebase";
 import './styles.css';
 import Distribute from "./pages/Distribute";
+import MasterUser from "./pages/MasterUser";
+import ClientUser1 from "./pages/ClientUser1";
+import ClientUser2 from "./pages/ClientUser2";
+import { ButtonGroup, Button, Modal } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 function PrivateRoute({ component: Component, authenticated, ...rest }) {
   return (
@@ -73,7 +79,7 @@ class App extends Component {
     ) : (
         <Router>
           <Routes>
-            <Route exact path="/" element={<Distribute/>} />
+            <Route exact path="/" element={<Home/>} />
             <Route
               path="/chat"
               authenticated={this.state.authenticated}
@@ -90,6 +96,24 @@ class App extends Component {
               path="/login"
               authenticated={this.state.authenticated}
               component={Login}
+              element={<PrivateRoute/>}
+            />
+			<Route
+              path="/master"
+              authenticated={this.state.authenticated}
+              component={MasterUser}
+              element={<PrivateRoute/>}
+            />
+			<Route
+              path="/client1"
+              authenticated={this.state.authenticated}
+              component={ClientUser1}
+              element={<PrivateRoute/>}
+            />
+			<Route
+              path="/client2"
+              authenticated={this.state.authenticated}
+              component={ClientUser2}
               element={<PrivateRoute/>}
             />
           </Routes>

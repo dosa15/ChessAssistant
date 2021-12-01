@@ -370,6 +370,7 @@ async function endGame() {
     //const response = await fetch('http://127.0.0.1:8000/graph1?s=' + window.movelist);
     const response = await fetch('https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/4b90f7f9/graph1?s=' + window.movelist, { mode: 'no-cors' });
     const myJson = await response.json();
+    var fen = game.fen();
     $("#post-game").show();
 }
 

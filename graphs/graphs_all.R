@@ -21,17 +21,17 @@ graph1 <- function (s) {
       
       temptext=substring(j,1,1)
       if(temptext=="N")
-        knight=knight+1
+        knight <- knight+1
       else if(temptext=="B")
-        bishop=bishop+1
+        bishop <- bishop+1
       else if(temptext=="Q")
-        queen=queen+1
+        queen <- queen+1
       else if(temptext=="R")
-        rook=rook+1
+        rook <- rook+1
       else
-        pawn=pawn+1
+        pawn <- pawn+1
     }
-   
+    
   }
   print(queen)
   print(knight)
@@ -44,7 +44,7 @@ graph1 <- function (s) {
   chessTest <- data.frame(pieces, moves_per_piece)
   p1 <- ggplot(chessTest) + 
     geom_point(aes(x=pieces, y=moves_per_piece, size = moves_per_piece, color= pieces, label=moves_per_piece)) +
-    geom_text(aes(pieces, moves_per_piece, label = paste(levels(pieces), rep('\n', length(pieces)), moves_per_piece)), hjust=0.5, vjust=0.5) +
+    geom_text(aes(pieces, moves_per_piece, label = paste(c("Queen", "Knight", "Bishop", "Rook", "Pawn"), rep('\n', length(pieces)), moves_per_piece)), hjust=0.5, vjust=0.5) +
     ggtitle("Number of Moves per Individual Piece") +
     ylim(0, max(c(queen, knight, bishop, rook, pawn))+5) + 
     scale_size(range = c(ifelse(num_moves/10 < 10, 10, num_moves/10), ifelse(num_moves > 60, 60, num_moves))) + 
@@ -54,8 +54,9 @@ graph1 <- function (s) {
           #legend.key.size = unit(0.2,"cm"), legend.key.width = unit(0.5,"cm"), legend.margin = margin(t=0.5,r=0.5,b=0.5,l=0.5,unit = "mm"),
           legend.position = "none",
           panel.grid.major = element_blank(),panel.grid.minor = element_blank()
-        )
-  save_loc <- "../www/img/bubblechart.png"
+    )
+  # save_loc <- "../www/img/bubblechart.png"
+  save_loc <- "bubblechart.png"
   print(save_loc)
   ggsave(save_loc, plot = p1)
 }

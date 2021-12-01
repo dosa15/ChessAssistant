@@ -47,30 +47,23 @@
       }
       
       async function showPostGameAnalysis() {
-			//Fun();
-          // set the value of window.movelist
-          //const response = await fetch('http://127.0.0.1:8000/graph1?s=' + window.movelist);
-          //console.log("Called show game analysis");
           renderMoveHistory(window.gameHistory);
           console.log("Final movelist: " + window.movelist);
           let myHeaders = new Headers();
           myHeaders.append('Accept', '*/*');
 
           //atul response url
-          var atulResponse = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/p/779bddb6/graph1?s=";
+          window.atulResponse = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/p/779bddb6/graph1?s=";
 
           //dosa response url
-          var dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/940c8a06/graph1?s=";
+          window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/940c8a06/graph1?s=";
 
           //booms response url
-          var boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/graph1?s=";
+          window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/graph1?s=";
 
           //moan response url
-          var moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/graph1?s=";
+          window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/graph1?s=";
 
-			
-
-          //replace ______Response with your respective one
           /*
           var response = await fetch(dosaResponse + window.movelist, { 
             mode: 'no-cors' ,
@@ -82,37 +75,41 @@
             //})
             .then(async function() {
             */
-      			console.log(window.movelist, atulResponse + window.movelist);
+            
+          //replace ______Response with your respective one
       			
-      			var wnd = window.open(atulResponse + window.movelist, "wnd","width=0, height=0");
-      			await sleep(10);
+      			const url1 = window.dosaResponse + encodeURIComponent(window.movelist);
+      			console.log(url1);
+      			var wnd = window.open(url1, "wnd","width=0, height=0");
+      			await sleep(500);
       			wnd.close();
 
            //atul ka src
-           var atulBarGraphSrc = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+           window.atulBarGraphSrc = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
            
            //dosa ka src
-           var dosaBarGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+           window.dosaBarGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
 
            //booms ka src
-           var boomsBarGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+           window.boomsBarGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
 	
            //moan ka src
-           var moanBarGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
-           
-            var carouselElement = $("#carouselGraphViewer").empty();
-            carouselElement.append(`
-            <div class="carousel-item active">
-                <img id="postGameGraph" class="d-block w-100 px-1" src="` + atulBarGraphSrc + `" alt="Bubble Chart">
-            </div>
+            window.moanBarGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+            
+            var carouselLinks = $("#carouselGraphLinks").empty();
+            carouselLinks.append(`
+              <li data-target="#postGameGraphsCarousel" data-slide-to="0" class="active"></li>
             `);
+            
+            var carouselElements = $("#carouselGraphViewer").empty();
+            carouselElements.append(`
+              <div class="carousel-item active">
+                  <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.dosaBarGraphSrc + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
+              </div>
+            `);
+            
             $('#post-game').show();
             $('#NewGameBtn').show();
-            /*
-          })
-          .then(() => {
-          });
-          */
       }
     </script>
 </head>

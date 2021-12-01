@@ -364,35 +364,69 @@ var onDragStart = function (source, piece, position, orientation) {
     }
 };
 
-async function endgame() {
+async function endGame() {
     await sleep(750);
     alert('Game over');
     //const response = await fetch('http://127.0.0.1:8000/graph1?s=' + window.movelist);
     renderMoveHistory(window.gameHistory);
     console.log("Final movelist: " + window.movelist);
-    let myHeaders = new Headers();
-    myHeaders.append('Accept', '*/*');
-    var response = await fetch('https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/a0dc22f6/graph1?s=' + window.movelist, { 
-            mode: 'no-cors' ,
-            method: 'GET',
-            headers: myHeaders
-          })
-      .then(() => {
-        /*
-      var carouselElement = $("#carouselGraphViewer").empty();
-      //await sleep(100);
-      carouselElement.append(`
-      <div class="carousel-item active">
-          <img id="postGameGraph" class="d-block w-100 px-1" src="https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png" alt="Bubble Chart">
-      </div>
-      `);
+    
+    //atul response url
+    window.atulResponse = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/p/779bddb6/graph1?s=";
+
+    //dosa response url
+    window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/940c8a06/graph1?s=";
+
+    //booms response url
+    window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/graph1?s=";
+
+    //moan response url
+    window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/graph1?s=";
+    /*
+    var response = await fetch(dosaResponse + window.movelist, { 
+      mode: 'no-cors' ,
+      method: 'GET',
+      headers: myHeaders
+    })
+      //.then(() => {
+      //  const myJson = response.json();
+      //})
+      .then(async function() {
       */
-      document.getElementById("image1").src = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
-      })
-      .then(() => {
-        $('#post-game').show();
-        $('#NewGameBtn').show();
-      });
+      
+    //replace ______Response with your respective one
+			const url1 = window.dosaResponse + encodeURIComponent(window.movelist);
+			console.log(url1);
+			var wnd = window.open(url1, "wnd","width=0, height=0");
+			await sleep(500);
+			wnd.close();
+			
+			//atul ka src
+       window.atulBarGraphSrc = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+       
+       //dosa ka src
+       window.dosaBarGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+
+       //booms ka src
+       window.boomsBarGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+
+       //moan ka src
+        window.moanBarGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+      
+      var carouselLinks = $("#carouselGraphLinks").empty();
+      carouselLinks.append(`
+        <li data-target="#postGameGraphsCarousel" data-slide-to="0" class="active"></li>
+      `);
+      
+      var carouselElements = $("#carouselGraphViewer").empty();
+      carouselElements.append(`
+        <div class="carousel-item active">
+            <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.dosaBarGraphSrc + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
+        </div>
+      `);
+      
+      $('#post-game').show();
+      $('#NewGameBtn').show();
   //var fen = game.fen();
 }
 

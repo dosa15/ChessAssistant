@@ -1,9 +1,12 @@
-import { randomInt } from "mathjs";
 import React, { useEffect, useState, Component, Alert } from "react";
 import { ButtonGroup, Button } from 'react-bootstrap';
 import Header from "../components/Header";
 import { auth } from "../services/firebase";
 import { db } from "../services/firebase";
+import { Modal } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Popup from 'reactjs-popup';
 
 const EventEmitter = require('events');
 
@@ -24,7 +27,7 @@ export default class Distribute extends Component {
 		super(props);
 		this.state = {
 			// user: auth().currentUser,
-			user: null,
+			user: "",
 			chats: [],
 			value: '',
 			client: true,
@@ -35,13 +38,15 @@ export default class Distribute extends Component {
 			computed2: false, 
 			readError: null,
 			writeError: null,
-			loadingChats: false
+			loadingChats: false,
+			roleChosen: false,
+			showModal: true
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.loadMasterData = this.loadMasterData.bind(this);
 		this.myRef = React.createRef();
 	}
-
 	async clearServerData() {
 		await db.ref("MASTER").set({
 			user: null,
@@ -61,10 +66,15 @@ export default class Distribute extends Component {
 	}
 
 	async loadMasterData() {
-		if(!this.state.user) {
-			window.setTimeout(this.state.user, 10);
-			return;
-		}
+		this.setState({
+			showModal: false
+		})
+
+		// if(!this.state.user) {
+		// 	window.setTimeout(this.state.user, 10);
+		// 	return;
+		// }
+
 		this.setState({ readError: null, loadingChats: true });
 		const chatArea = this.myRef.current;
 		try {
@@ -151,7 +161,7 @@ export default class Distribute extends Component {
 		}
 	}
 
-	loadClientData() {
+	async loadClientData() {
 		this.setState({ readError: null, loadingChats: true });
 		const chatArea = this.myRef.current;
 		try {
@@ -270,7 +280,7 @@ export default class Distribute extends Component {
 			await db.ref("CLIENT2").set({
 				user: this.state.user,
 				value: this.state.value,
-				timestamp: Date.now()
+				timestamp: Date.now(),
 			}); 
 			// this.loadClientData();
 			this.setState({ computed2: true })
@@ -282,7 +292,7 @@ export default class Distribute extends Component {
 		/* Add some sort of pop-up box or manipulate existing ButtonGroup such that allows us to pick the user role. 
 		If a pop-up, the function should return a Promise<void> or Promise<String> such that we can await for its response and only then proceed to loadMasterData() */
 		this.clearServerData();
-		await this.loadMasterData();
+		// await this.loadMasterData();
 	}
 
 	handleChange(event) {
@@ -323,18 +333,75 @@ export default class Distribute extends Component {
 		const time = `${d.getDate()}/${(d.getMonth()+1)}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
 		return time;
 	}
-  
+
 	render() {
 		// if(this.state.client1 && !this.state.computed1)
 		// 	this.computeClient1Data();
 		// else if(this.state.client2 && !this.state.computed2)
 		// 	this.computeClient2Data();
 		return (
+		//Preliminary modal
 			<div>
+				<Modal
+					show={this.state.showModal}
+					dialogClassName="modal-90w"
+					aria-labelledby="contained-modal-title-vcenter"
+				>
+					<Modal.Header closeButton>
+						<Modal.Title id="contained-modal-title-vcenter">
+							Choose User
+						</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<Row className="text-center justify-content-center">
+							<ButtonGroup>
+								<Button className="btn btn-dark mx-2" id="masterUser" type="checkbox" checked={!this.state.client} onClick={(e) => {
+									this.setState({ client: false, user: "MASTER"});
+									this.loadMasterData();
+									// e.currentTarget.style.className = "mx-2"
+									document.getElementById("masterUser").style.className = "mx-2";
+									document.getElementById("clientUser1").style.className = "btn btn-dark mx-2";
+									document.getElementById("clientUser2").style.className = "btn btn-dark mx-2";
+								}}>
+									MASTER
+								</Button>
+								<Button className="mx-2" id="clientUser1" type="checkbox" checked={this.state.client} onClick={(e) => {
+									this.setState({ client: true, user: "CLIENT1" });
+									this.loadMasterData();
+									// e.currentTarget.style.className = "mx-2"
+									document.getElementById("masterUser").style.className = "btn btn-dark mx-2";
+									document.getElementById("clientUser1").style.className = "mx-2";
+									document.getElementById("clientUser2").style.className = "btn btn-dark mx-2";
+								}}>
+									CLIENT 1
+								</Button>
+								<Button className="mx-2" id="clientUser2" type="checkbox" checked={this.state.client} onClick={(e) => {
+									this.setState({ client: true, user: "CLIENT2" });
+									this.loadMasterData();
+									// e.currentTarget.style.className = "mx-2"
+									document.getElementById("masterUser").style.className = "btn btn-dark mx-2";
+									document.getElementById("clientUser1").style.className = "btn btn-dark mx-2";
+									document.getElementById("clientUser1").style.className = "mx-2";
+								}}>
+									CLIENT 2
+								</Button>
+							</ButtonGroup>
+							{/* <Col>
+								<Button value="Master" onClick={(e) => {this.loadMasterData(e)}} value = "Master"> Master</Button>
+							</Col>
+							<Col>
+								<Button value="Client1" onClick={(e) => { this.loadMasterData(e) }} value="Client1">Client1</Button>
+							</Col>
+							<Col>
+								<Button onClick={(e) => { this.loadMasterData(e) }} value="Client2">Client2</Button>
+							</Col> */}
+						</Row>
+					</Modal.Body>
+				</Modal>
 				{/* Allow users to pick their role */}
 				<div>
 					{/* <input id="masterUser" className="mx-3" type="button" value="MASTER" onClick={this.setUser}/><input id="clientUser" className="mx-3" type="button" value="CLIENT" /> */}
-					<ButtonGroup>
+					{/* <ButtonGroup>
 						<Button className="btn btn-dark mx-2" id="masterUser" type="checkbox" checked={!this.state.client} onClick={(e) => {
 							this.setState({client: false, user: "MASTER"});
 							this.loadMasterData();
@@ -365,7 +432,7 @@ export default class Distribute extends Component {
 						}}>
 							CLIENT 2
 						</Button>
-					</ButtonGroup>
+					</ButtonGroup> */}
 					<br />
 					<span>Current User: {this.state.user} </span>
 				</div>

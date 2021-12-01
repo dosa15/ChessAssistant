@@ -344,6 +344,7 @@ var onDragStart = function (source, piece, position, orientation) {
 async function endGame() {
     await sleep(1000);
     alert('Game over');
+    var fen = game.fen();
     $("#post-game").show();
 }
 

@@ -54,7 +54,18 @@
           console.log("Final movelist: " + window.movelist);
           let myHeaders = new Headers();
           myHeaders.append('Accept', '*/*');
-          var response = await fetch('https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/a0dc22f6/graph1?s=' + window.movelist, { 
+
+          //atul response url
+          var atulResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/graph1?s=";
+
+          //dosa response url
+
+          //booms response url
+
+          //moan response url
+
+          //replace ______Response with your respective one
+          var response = await fetch(atulResponse + window.movelist, { 
             mode: 'no-cors' ,
             method: 'GET',
             headers: myHeaders
@@ -72,7 +83,17 @@
             </div>
             `);
             */
-            $('[data-label="graph1"]').src = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+
+           //atul ka src
+           var atulBarGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+           //dosa ka src
+
+           //booms ka src
+
+           //moan ka src
+           
+           //Replace src with your resepective one
+            $('[data-label="graph1"]').src = atulBarGraphSrc;
             })
             .then(() => {
               $('#post-game').show();

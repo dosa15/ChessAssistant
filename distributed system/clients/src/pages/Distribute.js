@@ -92,7 +92,7 @@ export default class Distribute extends Component {
 						// 	this.setState({ client1: snapshot.val() });
 						// 	this.setState({ client2: snapshot.val() });
 						// }
-						console.log(`Master Value: ${this.state.master.value}`);
+						// console.log(`Master Value: ${this.state.master.value}`);
 					}
 				});
 
@@ -210,8 +210,8 @@ export default class Distribute extends Component {
 			timestamp: Date.now()
 		}); 
 		console.log("Master: " + this.state.master.value);
-		console.log("Client1: " + this.state.client1.value);
-		console.log("Client2: " + this.state.client2.value);
+		// console.log("Client1: " + this.state.client1.value);
+		// console.log("Client2: " + this.state.client2.value);
 	}
 	
 	async computeClientData(clientData, clientNo) {

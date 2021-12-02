@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Component, Alert } from "react";
+import ReactDOM from 'react-dom';
 import { Route, BrowserRouter as Router, Routes, Navigate, Outlet } from "react-router-dom";
 import Home from "./pages/Home";
 import Chat from "./pages/Distribute";
@@ -19,13 +20,7 @@ function PrivateRoute({ component: Component, authenticated, ...rest }) {
     <Outlet
       {...rest}
       render={props =>
-        authenticated === true ? (
           <Component {...props} />
-        ) : (
-            <Navigate
-              to={{ pathname: "/login", state: { from: props.location } }}
-            />
-          )
       }
     />
   );
@@ -72,11 +67,12 @@ class App extends Component {
   }
 
   render() {
-    return this.state.loading === true ? (
-      <div className="spinner-border text-success" role="status">
-        <span className="sr-only">Loading...</span>
-      </div>
-    ) : (
+    // return this.state.loading === true ? (
+    //   <div className="spinner-border text-success" role="status">
+    //     <span className="sr-only">Loading...</span>
+    //   </div>
+    // ) : (
+	return (
         <Router>
           <Routes>
             <Route exact path="/" element={<Home/>} />
@@ -99,27 +95,24 @@ class App extends Component {
               element={<PrivateRoute/>}
             />
 			<Route
-              path="/master"
-              authenticated={this.state.authenticated}
-              component={MasterUser}
-              element={<PrivateRoute/>}
+              exact path="/master"
+              element={<MasterUser/>}
+            //   element={<PrivateRoute/>}
             />
 			<Route
-              path="/client1"
-              authenticated={this.state.authenticated}
-              component={ClientUser1}
-              element={<PrivateRoute/>}
+              exact path="/client1"
+              element={<ClientUser1/>}
+            //   element={<PrivateRoute/>}
             />
 			<Route
-              path="/client2"
-              authenticated={this.state.authenticated}
-              component={ClientUser2}
-              element={<PrivateRoute/>}
+              exact path="/client2"
+              element={<ClientUser2/>}
+            //   element={<PrivateRoute/>}
             />
           </Routes>
         </Router>
-      );
-  }
+		);
+  	}
 }
 
 export default App;

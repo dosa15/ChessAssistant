@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import { ButtonGroup, Button, Modal } from 'react-bootstrap';
 import { db } from "../services/firebase";
@@ -61,6 +62,8 @@ export default class Home extends Component {
 			// 	</section>
 			// 	<Footer></Footer>
 			// </div>
+			<div>
+			<div>React version: {React.version}</div>
 			<Modal
 				show={true}
 				dialogClassName="modal-90w"
@@ -123,6 +126,7 @@ export default class Home extends Component {
 					</Row>
 				</Modal.Body>
 			</Modal>
+			</div>
 		)
 	}
 }

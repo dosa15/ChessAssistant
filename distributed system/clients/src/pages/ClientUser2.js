@@ -46,21 +46,22 @@ export default class ClientUser2 extends Component {
 		this.loadMasterData = this.loadMasterData.bind(this);
 		this.myRef = React.createRef();
 	}
+
 	async clearServerData() {
 		await db.ref("MASTER").set({
-			user: null,
-			value: null,
-			timestamp: null
+			user: "",
+			value: "",
+			timestamp: 0
 		});
 		await db.ref("CLIENT1").set({
-			user: null,
-			value: null,
-			timestamp: null
+			user: "",
+			value: "",
+			timestamp: 0
 		});
 		await db.ref("CLIENT2").set({
-			user: null,
-			value: null,
-			timestamp: null
+			user: "",
+			value: "",
+			timestamp: 0
 		});
 	}
 
@@ -339,62 +340,6 @@ export default class ClientUser2 extends Component {
 		return (
 		//Preliminary modal
 			<div>
-				<Modal
-					show={this.state.showModal}
-					dialogClassName="modal-90w"
-					aria-labelledby="contained-modal-title-vcenter"
-				>
-					<Modal.Header closeButton>
-						<Modal.Title id="contained-modal-title-vcenter">
-							Choose User
-						</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						<Row className="text-center justify-content-center">
-							<ButtonGroup>
-								<Button className="btn btn-dark mx-2" id="masterUser" type="checkbox" checked={!this.state.client} onClick={(e) => {
-									this.setState({ client: false, user: "MASTER"});
-									this.loadMasterData();
-									// e.currentTarget.style.className = "mx-2"
-									document.getElementById("masterUser").style.className = "mx-2";
-									document.getElementById("clientUser1").style.className = "btn btn-dark mx-2";
-									document.getElementById("clientUser2").style.className = "btn btn-dark mx-2";
-								}}>
-									MASTER
-								</Button>
-								<Button className="mx-2" id="clientUser1" type="checkbox" checked={this.state.client} onClick={(e) => {
-									this.setState({ client: true, user: "CLIENT1" });
-									this.loadMasterData();
-									// e.currentTarget.style.className = "mx-2"
-									document.getElementById("masterUser").style.className = "btn btn-dark mx-2";
-									document.getElementById("clientUser1").style.className = "mx-2";
-									document.getElementById("clientUser2").style.className = "btn btn-dark mx-2";
-								}}>
-									CLIENT 1
-								</Button>
-								<Button className="mx-2" id="clientUser2" type="checkbox" checked={this.state.client} onClick={(e) => {
-									this.setState({ client: true, user: "CLIENT2" });
-									this.loadMasterData();
-									// e.currentTarget.style.className = "mx-2"
-									document.getElementById("masterUser").style.className = "btn btn-dark mx-2";
-									document.getElementById("clientUser1").style.className = "btn btn-dark mx-2";
-									document.getElementById("clientUser1").style.className = "mx-2";
-								}}>
-									CLIENT 2
-								</Button>
-							</ButtonGroup>
-							{/* <Col>
-								<Button value="Master" onClick={(e) => {this.loadMasterData(e)}} value = "Master"> Master</Button>
-							</Col>
-							<Col>
-								<Button value="Client1" onClick={(e) => { this.loadMasterData(e) }} value="Client1">Client1</Button>
-							</Col>
-							<Col>
-								<Button onClick={(e) => { this.loadMasterData(e) }} value="Client2">Client2</Button>
-							</Col> */}
-						</Row>
-					</Modal.Body>
-				</Modal>
 				{/* Allow users to pick their role */}
 				<div>
 					{/* <input id="masterUser" className="mx-3" type="button" value="MASTER" onClick={this.setUser}/><input id="clientUser" className="mx-3" type="button" value="CLIENT" /> */}

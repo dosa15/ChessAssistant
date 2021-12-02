@@ -7,26 +7,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
 
-const EventEmitter = require('events');
-
-const bus = new EventEmitter();
-let lock = false;
-
-async function lockable(userState) {
-    if (lock) await new Promise(resolve => bus.once('unlocked', resolve));
-    
-    lock = true;
-    if(userState != null)
-    	lock = false;
-    bus.emit('unlocked');
-}
-
 export default class MasterUser extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			// user: auth().currentUser,
-			user: "",
+			user: "MASTER",
 			chats: [],
 			value: '',
 			client: true,
@@ -49,19 +35,19 @@ export default class MasterUser extends Component {
 	
 	async clearServerData() {
 		await db.ref("MASTER").set({
-			user: null,
-			value: null,
-			timestamp: null
+			user: "",
+			value: "",
+			timestamp: 0
 		});
 		await db.ref("CLIENT1").set({
-			user: null,
-			value: null,
-			timestamp: null
+			user: "",
+			value: "",
+			timestamp: 0
 		});
 		await db.ref("CLIENT2").set({
-			user: null,
-			value: null,
-			timestamp: null
+			user: "",
+			value: "",
+			timestamp: 0
 		});
 	}
 
@@ -93,13 +79,14 @@ export default class MasterUser extends Component {
 				}
 			});
 
-			db.ref("CLIENT1").on("child_added", (snapshot) => {
+			// var key = this.state.client1.timestamp;
+			db.ref("CLIENT1").on("child_changed", (snapshot, _) => {
 				if (snapshot.exists()) {
 					this.setState({ client1: snapshot.val() });
 				}
 			});
 
-			db.ref("CLIENT2").on("child_added", (snapshot) => {
+			db.ref("CLIENT2").on("child_changed", (snapshot, _) => {
 				if (snapshot.exists()) {
 					this.setState({ client2: snapshot.val() });
 				}
@@ -108,10 +95,6 @@ export default class MasterUser extends Component {
 			// chats.sort(function (a, b) { return a.timestamp - b.timestamp })
 			chatArea.scrollBy(0, chatArea.scrollHeight);
 			this.setState({ loadingChats: false });//, computed1: false, computed2: false });
-
-			// if(this.state.user == "MASTER") {
-				
-			// }
 			
 			// this.setState({ chats });
 		} catch (error) {
@@ -171,38 +154,6 @@ export default class MasterUser extends Component {
 				{/* Allow users to pick their role */}
 				<div>
 					{/* <input id="masterUser" className="mx-3" type="button" value="MASTER" onClick={this.setUser}/><input id="clientUser" className="mx-3" type="button" value="CLIENT" /> */}
-					{/* <ButtonGroup>
-						<Button className="btn btn-dark mx-2" id="masterUser" type="checkbox" checked={!this.state.client} onClick={(e) => {
-							this.setState({client: false, user: "MASTER"});
-							this.loadMasterData();
-							// e.currentTarget.style.className = "mx-2"
-							document.getElementById("masterUser").style.className = "mx-2";
-							document.getElementById("clientUser1").style.className = "btn btn-dark mx-2";
-							document.getElementById("clientUser2").style.className = "btn btn-dark mx-2";
-						}}>
-							MASTER
-						</Button>
-						<Button className="mx-2" id="clientUser1" type="checkbox" checked={this.state.client} onClick={(e) => {
-							this.setState({client: true, user: "CLIENT1"});
-							this.loadMasterData();
-							// e.currentTarget.style.className = "mx-2"
-							document.getElementById("masterUser").style.className = "btn btn-dark mx-2";
-							document.getElementById("clientUser1").style.className = "mx-2";
-							document.getElementById("clientUser2").style.className = "btn btn-dark mx-2";
-						}}>
-							CLIENT 1
-						</Button>
-						<Button className="mx-2" id="clientUser2" type="checkbox" checked={this.state.client} onClick={(e) => {
-							this.setState({client: true, user: "CLIENT2"});
-							this.loadMasterData();
-							// e.currentTarget.style.className = "mx-2"
-							document.getElementById("masterUser").style.className = "btn btn-dark mx-2";
-							document.getElementById("clientUser1").style.className = "btn btn-dark mx-2";
-							document.getElementById("clientUser1").style.className = "mx-2";
-						}}>
-							CLIENT 2
-						</Button>
-					</ButtonGroup> */}
 					<br />
 					<span>Current User: {this.state.user} </span>
 				</div>
@@ -218,28 +169,11 @@ export default class MasterUser extends Component {
 					}
 
 					{/* chat area */}
-					
-					{
-						/* Old chat interface */
-						/* {
-							this.state.chats.map(chat => {
-								// console.log("Chat: " + chat.user + "//" + chat.value + "//" + chat.timestamp);
-								return <p key={chat.timestamp} className={"chat-bubble " + (this.state.user === chat.user ? "current-user" : "")}>
-											<span className="chat-time float-left">{chat.user}</span>
-											<br />
-											{chat.value}
-											<br />
-											<span className="chat-time float-right">{this.formatTime(chat.timestamp)}</span>
-										</p>
-							})
-						}
-						*/
-					}
 
 					{
 						// If master is not null
 						this.state.master // && this.state.user === "MASTER"
-						?	<p className={"chat-bubble " + (this.state.user === this.state.master.user ? "current-user" : "")}>
+						?	<p className={"chat-bubble current-user"}>
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
@@ -252,7 +186,7 @@ export default class MasterUser extends Component {
 					{
 						// If client1 is not null
 						this.state.client1 // && this.state.user === "CLIENT1"
-						?	<p className={"chat-bubble " + (this.state.user === this.state.client1.user ? "current-user" : "")}>
+						?	<p className={"chat-bubble"}>
 								{/* <span className="chat-time float-left">{this.state.client1.user}</span> */}
 								<span className="chat-time float-left">CLIENT1</span>
 								<br />
@@ -265,7 +199,7 @@ export default class MasterUser extends Component {
 					{
 						// If client2 is not null
 						this.state.client2 // && this.state.user === "CLIENT2"
-						?	<p className={"chat-bubble " + (this.state.user === this.state.client2.user ? "current-user" : "")}>
+						?	<p className={"chat-bubble"}>
 								{/* <span className="chat-time float-left">{this.state.client2.user}</span> */}
 								<span className="chat-time float-left">CLIENT2</span>
 								<br />

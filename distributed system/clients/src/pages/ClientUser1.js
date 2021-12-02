@@ -26,7 +26,7 @@ export default class ClientUser1 extends Component {
 		super(props);
 		this.state = {
 			// user: auth().currentUser,
-			user: "",
+			user: "CLIENT1",
 			chats: [],
 			value: '',
 			client: true,
@@ -48,19 +48,19 @@ export default class ClientUser1 extends Component {
 	}
 	async clearServerData() {
 		await db.ref("MASTER").set({
-			user: null,
-			value: null,
-			timestamp: null
+			user: "",
+			value: "",
+			timestamp: 0
 		});
 		await db.ref("CLIENT1").set({
-			user: null,
-			value: null,
-			timestamp: null
+			user: "",
+			value: "",
+			timestamp: 0
 		});
 		await db.ref("CLIENT2").set({
-			user: null,
-			value: null,
-			timestamp: null
+			user: "",
+			value: "",
+			timestamp: 0
 		});
 	}
 
@@ -75,81 +75,26 @@ export default class ClientUser1 extends Component {
 		this.setState({ readError: null, loadingChats: true, showModal: false });
 		const chatArea = this.myRef.current;
 		try {
-			// let chats = [];
-			// if (this.state.user === "MASTER") {
-				db.ref("MASTER").on("value", snapshot => {
-					// snapshot.forEach((snap) => {
-					//   chats.push(snap.val());
-					// });
-
-					if(snapshot.exists()) {
-						// chats.push(snapshot.val());
-						this.setState({ master: snapshot.val() });
-						// if(initial) {
-						// 	this.setState({ client1: snapshot.val() });
-						// 	this.setState({ client2: snapshot.val() });
-						// }
-						// console.log(`Master Value: ${this.state.master.value}`);
-					}
-				});
-
-			//} else 
-			if(this.state.user === "CLIENT1") {
-				console.log("This is client 1");
-
-				db.ref("MASTER").on("value", snapshot => {
-					if(snapshot.exists()) {
-						this.setState({ client1: snapshot.val() });
-						this.computeClientData(this.state.client1, 1);
-					}
-				})
-
-				
-			} else if (this.state.user === "CLIENT2") {
-				console.log("This is client 2");
-				
-				db.ref("MASTER").on("value", snapshot => {
-					if(snapshot.exists()) {
-						this.setState({ client2: snapshot.val() });
-						this.computeClientData(this.state.client2, 2);
-					}
-				});
-				
-			}
-			/*
-			db.ref("CLIENT1").on("value", snapshot => {
+			db.ref("MASTER").on("child_changed", snapshot => {
 				// snapshot.forEach((snap) => {
 				//   chats.push(snap.val());
 				// });
+
 				if(snapshot.exists()) {
 					// chats.push(snapshot.val());
-					this.setState({ client1: snapshot.val() })
-					console.log(`Client1 Value: ${this.state.client1.value}`);
+					this.setState({ client1: snapshot.val() });
+					// if(initial) {
+					// 	this.setState({ client1: snapshot.val() });
+					// 	this.setState({ client2: snapshot.val() });
+					// }
+					// console.log(`Master Value: ${this.state.master.value}`);
+					this.computeClientData(this.state.client1, 1);
 				}
 			});
-		
-			db.ref("CLIENT2").on("value", snapshot => {
-				// snapshot.forEach((snap) => {
-				//   chats.push(snap.val());
-				// });
-				if (snapshot.exists()) {
-					// chats.push(snapshot.val());
-					this.setState({ client2: snapshot.val() });
-					console.log(`Client2 Value: ${this.state.client2.value}`);
-				}
-			});
-			*/
-			
-			// while(this.state.master.value === this.state.client1.value);
-			// console.log("While over");
 			
 			// chats.sort(function (a, b) { return a.timestamp - b.timestamp })
 			chatArea.scrollBy(0, chatArea.scrollHeight);
-			this.setState({ loadingChats: false });//, computed1: false, computed2: false });
-
-			// if(this.state.user == "MASTER") {
-				
-			// }
+			this.setState({ loadingChats: false });
 			
 			// this.setState({ chats });
 		} catch (error) {
@@ -248,7 +193,7 @@ export default class ClientUser1 extends Component {
 
 	/* replaced with computeClientData() */
 	async computeClient1Data() {
-		if (!this.state.computed1) {
+		// if (!this.state.computed1) {
 			var c1 = this.state.client1;
 			var movelist = c1.value;
 			console.log("C1 movelist: " + movelist);
@@ -262,7 +207,7 @@ export default class ClientUser1 extends Component {
 			}); 
 			// this.loadClientData();
 			this.setState({ computed1: true })
-		}
+		// }
 	}
 
 	/* replaced with computeClientData() */
@@ -339,62 +284,6 @@ export default class ClientUser1 extends Component {
 		return (
 		//Preliminary modal
 			<div>
-				<Modal
-					show={this.state.showModal}
-					dialogClassName="modal-90w"
-					aria-labelledby="contained-modal-title-vcenter"
-				>
-					<Modal.Header closeButton>
-						<Modal.Title id="contained-modal-title-vcenter">
-							Choose User
-						</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						<Row className="text-center justify-content-center">
-							<ButtonGroup>
-								<Button className="btn btn-dark mx-2" id="masterUser" type="checkbox" checked={!this.state.client} onClick={(e) => {
-									this.setState({ client: false, user: "MASTER"});
-									this.loadMasterData();
-									// e.currentTarget.style.className = "mx-2"
-									document.getElementById("masterUser").style.className = "mx-2";
-									document.getElementById("clientUser1").style.className = "btn btn-dark mx-2";
-									document.getElementById("clientUser2").style.className = "btn btn-dark mx-2";
-								}}>
-									MASTER
-								</Button>
-								<Button className="mx-2" id="clientUser1" type="checkbox" checked={this.state.client} onClick={(e) => {
-									this.setState({ client: true, user: "CLIENT1" });
-									this.loadMasterData();
-									// e.currentTarget.style.className = "mx-2"
-									document.getElementById("masterUser").style.className = "btn btn-dark mx-2";
-									document.getElementById("clientUser1").style.className = "mx-2";
-									document.getElementById("clientUser2").style.className = "btn btn-dark mx-2";
-								}}>
-									CLIENT 1
-								</Button>
-								<Button className="mx-2" id="clientUser2" type="checkbox" checked={this.state.client} onClick={(e) => {
-									this.setState({ client: true, user: "CLIENT2" });
-									this.loadMasterData();
-									// e.currentTarget.style.className = "mx-2"
-									document.getElementById("masterUser").style.className = "btn btn-dark mx-2";
-									document.getElementById("clientUser1").style.className = "btn btn-dark mx-2";
-									document.getElementById("clientUser1").style.className = "mx-2";
-								}}>
-									CLIENT 2
-								</Button>
-							</ButtonGroup>
-							{/* <Col>
-								<Button value="Master" onClick={(e) => {this.loadMasterData(e)}} value = "Master"> Master</Button>
-							</Col>
-							<Col>
-								<Button value="Client1" onClick={(e) => { this.loadMasterData(e) }} value="Client1">Client1</Button>
-							</Col>
-							<Col>
-								<Button onClick={(e) => { this.loadMasterData(e) }} value="Client2">Client2</Button>
-							</Col> */}
-						</Row>
-					</Modal.Body>
-				</Modal>
 				{/* Allow users to pick their role */}
 				<div>
 					{/* <input id="masterUser" className="mx-3" type="button" value="MASTER" onClick={this.setUser}/><input id="clientUser" className="mx-3" type="button" value="CLIENT" /> */}

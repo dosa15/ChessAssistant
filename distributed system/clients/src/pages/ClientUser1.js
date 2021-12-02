@@ -7,20 +7,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
 
-const EventEmitter = require('events');
-
-const bus = new EventEmitter();
-let lock = false;
-
-async function lockable(userState) {
-    if (lock) await new Promise(resolve => bus.once('unlocked', resolve));
-    
-    lock = true;
-    if(userState != null)
-    	lock = false;
-    bus.emit('unlocked');
-}
-
 export default class ClientUser1 extends Component {
 	constructor(props) {
 		super(props);
@@ -42,25 +28,32 @@ export default class ClientUser1 extends Component {
 			showModal: true
 		};
 		this.handleChange = this.handleChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
+		// this.handleSubmit = this.handleSubmit.bind(this);
 		this.loadMasterData = this.loadMasterData.bind(this);
 		this.myRef = React.createRef();
 	}
+	
 	async clearServerData() {
 		await db.ref("MASTER").set({
-			user: "",
-			value: "",
-			timestamp: 0
+			data: {
+				user: "",
+				value: "",
+				timestamp: 0
+			}
 		});
 		await db.ref("CLIENT1").set({
-			user: "",
-			value: "",
-			timestamp: 0
+			data: {
+				user: "",
+				value: "",
+				timestamp: 0
+			}
 		});
 		await db.ref("CLIENT2").set({
-			user: "",
-			value: "",
-			timestamp: 0
+			data: {
+				user: "",
+				value: "",
+				timestamp: 0
+			}
 		});
 	}
 
@@ -75,20 +68,20 @@ export default class ClientUser1 extends Component {
 		this.setState({ readError: null, loadingChats: true, showModal: false });
 		const chatArea = this.myRef.current;
 		try {
-			db.ref("MASTER").on("child_changed", snapshot => {
+			db.ref("MASTER").on("child_changed", (snapshot, _) => {
 				// snapshot.forEach((snap) => {
 				//   chats.push(snap.val());
 				// });
 
 				if(snapshot.exists()) {
 					// chats.push(snapshot.val());
+					console.log(`Value got from Master: ${snapshot.val()}`);
 					this.setState({ client1: snapshot.val() });
 					// if(initial) {
 					// 	this.setState({ client1: snapshot.val() });
 					// 	this.setState({ client2: snapshot.val() });
 					// }
-					// console.log(`Master Value: ${this.state.master.value}`);
-					this.computeClientData(this.state.client1, 1);
+					this.computeClientData(this.state.client1);
 				}
 			});
 			
@@ -155,20 +148,15 @@ export default class ClientUser1 extends Component {
 		// console.log("Client2: " + this.state.client2.value);
 	}
 	
-	async computeClientData(clientData, clientNo) {
+	async computeClientData(clientData) {
 		var movelist = clientData.value;
-		console.log(`Client${clientNo} movelist: ${movelist}`);
+		console.log(`Client1 movelist: ${movelist}`);
+		movelist += " gives the 1st best move: .a1";
 		clientData.value = movelist;
-		if (clientNo === 1) {
-			movelist += " gives the 1st best move: .a1";
-			this.setState({ client1: clientData });
-		} else if (clientNo === 2) {
-			movelist += " gives the 2nd best move: .a2";
-			this.setState({ client2: clientData });
-		}
+		this.setState({ client1: clientData });
 
-		await db.ref("CLIENT"+clientNo).set({
-			user: this.state.user,
+		await db.ref("CLIENT1").child('data').set({
+			user: "CLIENT1",
 			value: clientData.value,
 			timestamp: Date.now()
 		})
@@ -233,8 +221,8 @@ export default class ClientUser1 extends Component {
 	async componentDidMount() {
 		/* Add some sort of pop-up box or manipulate existing ButtonGroup such that allows us to pick the user role. 
 		If a pop-up, the function should return a Promise<void> or Promise<String> such that we can await for its response and only then proceed to loadMasterData() */
-		this.clearServerData();
-		// await this.loadMasterData();
+		// this.clearServerData();
+		this.loadMasterData();
 	}
 
 	handleChange(event) {
@@ -244,6 +232,7 @@ export default class ClientUser1 extends Component {
 	}
 	
 	// This function handles the form that is used to submit data to the server
+	/*
 	async handleSubmit(event) {
 		if (event)
 			event.preventDefault();
@@ -269,6 +258,7 @@ export default class ClientUser1 extends Component {
 			this.setState({ writeError: error.message });
 		}
 	}
+	*/
 
 	formatTime(timestamp) {
 		const d = new Date(timestamp);
@@ -355,46 +345,46 @@ export default class ClientUser1 extends Component {
 					{
 						// If master is not null
 						this.state.master // && this.state.user === "MASTER"
-						?	<p className={"chat-bubble " + (this.state.user === this.state.master.user ? "current-user" : "")}>
+						?	<p className={"chat-bubble"}>
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
-								{this.state.master.value}
+								{this.state.master.data.value}
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.master.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.master.data.timestamp)}</span>
 							</p>
 						: null
 					}
 					{
 						// If client1 is not null
 						this.state.client1 // && this.state.user === "CLIENT1"
-						?	<p className={"chat-bubble " + (this.state.user === this.state.client1.user ? "current-user" : "")}>
+						?	<p className={"chat-bubble current-user"}>
 								{/* <span className="chat-time float-left">{this.state.client1.user}</span> */}
 								<span className="chat-time float-left">CLIENT1</span>
 								<br />
-								{this.state.client1.value}
+								{this.state.client1.data.value}
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.client1.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.client1.data.timestamp)}</span>
 							</p>
 						: null
 					}
 					{
 						// If client2 is not null
 						this.state.client2 // && this.state.user === "CLIENT2"
-						?	<p className={"chat-bubble " + (this.state.user === this.state.client2.user ? "current-user" : "")}>
+						?	<p className={"chat-bubble"}>
 								{/* <span className="chat-time float-left">{this.state.client2.user}</span> */}
 								<span className="chat-time float-left">CLIENT2</span>
 								<br />
-								{this.state.client2.value}
+								{this.state.client2.data.value}
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.client2.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.client2.data.timestamp)}</span>
 							</p>
 						: null
 					}
 				</div>
 		
 				<form id="sendDataForm" onSubmit={this.handleSubmit} className="mx-3">
-					{console.log("Submitting form...")}
+					{/* {console.log("Submitting form...")} */}
 					<textarea className="form-control" name="content" onChange={this.handleChange} value={this.state.value} disabled={this.state.user !== "MASTER"}></textarea>
 					{this.state.readError ? <p className="text-danger">{this.state.readError}</p> : null}
 					{this.state.writeError ? <p className="text-danger">{this.state.writeError}</p> : null}

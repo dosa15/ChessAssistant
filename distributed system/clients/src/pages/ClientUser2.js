@@ -342,14 +342,14 @@ export default class ClientUser1 extends Component {
 						*/
 					}
 
-					{
+{
 						// If master is not null
 						this.state.master // && this.state.user === "MASTER"
 						?	<p className={"chat-bubble"}>
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
-								{this.state.master.data.value}
+								{ this.state.master ? this.state.master.data.value : ""}
 								<br />
 								<span className="chat-time float-right">{this.formatTime(this.state.master.data.timestamp)}</span>
 							</p>
@@ -362,7 +362,7 @@ export default class ClientUser1 extends Component {
 								{/* <span className="chat-time float-left">{this.state.client1.user}</span> */}
 								<span className="chat-time float-left">CLIENT1</span>
 								<br />
-								{this.state.client1.data.value}
+								{ this.state.client1 ? this.state.client1.data.value : ""}
 								<br />
 								<span className="chat-time float-right">{this.formatTime(this.state.client1.data.timestamp)}</span>
 							</p>
@@ -375,7 +375,7 @@ export default class ClientUser1 extends Component {
 								{/* <span className="chat-time float-left">{this.state.client2.user}</span> */}
 								<span className="chat-time float-left">CLIENT2</span>
 								<br />
-								{this.state.client2.data.value}
+								{ this.state.client2 ? this.state.client2.data.value : ""}
 								<br />
 								<span className="chat-time float-right">{this.formatTime(this.state.client2.data.timestamp)}</span>
 							</p>

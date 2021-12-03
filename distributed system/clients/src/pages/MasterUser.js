@@ -87,7 +87,7 @@ export default class MasterUser extends Component {
 		// 	return;
 		// }
 
-		this.setState({ readError: null, loadingChats: true });
+		this.setState({ readError: null, loadingChats: true, computed1: false, computed2: false });
 		const chatArea = this.myRef.current;
 		try {
 			// let chats = [];
@@ -114,15 +114,17 @@ export default class MasterUser extends Component {
 			// var key = this.state.client1.timestamp;
 			db.ref("CLIENT1").on("child_changed", (snapshot, _) => {
 				if (snapshot.exists()) {
-					this.setState({ client1: snapshot.val() });
-					console.log(`Client1 data: ${this.state.client1.value}`);
+					var newData = { ...this.state.client1, data: snapshot.val() }
+					this.setState({ client1: newData, computed1: true });
+					console.log(`Client1 data: ${this.state.client1.data.value}`);
 				}
 			});
 
 			db.ref("CLIENT2").on("child_changed", (snapshot, _) => {
 				if (snapshot.exists()) {
-					this.setState({ client2: snapshot.val() });
-					console.log(`Client2 data: ${this.state.client2.value}`);
+					var newData = { ...this.state.client1, data: snapshot.val() }
+					this.setState({ client2: newData, computed2: true });
+					console.log(`Client2 data: ${this.state.client2.data.value}`);
 				}
 			});
 
@@ -138,8 +140,6 @@ export default class MasterUser extends Component {
 
 	// This function is in-built, and is the first to automatically execute every time the page loads
 	async componentDidMount() {
-		/* Add some sort of pop-up box or manipulate existing ButtonGroup such that allows us to pick the user role. 
-		If a pop-up, the function should return a Promise<void> or Promise<String> such that we can await for its response and only then proceed to loadMasterData() */
 		this.clearServerData();
 		this.loadMasterData();
 	}
@@ -183,6 +183,14 @@ export default class MasterUser extends Component {
 	}
 
 	render() {
+		if(this.state.computed1 && this.state.computed2) {
+			var masterData = this.state.master.data;
+			var movelist = masterData.value;
+			// Master's computation
+			movelist += " gives the master best move .h8";
+			masterData.value = movelist;
+			this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });
+		}
 		return (
 			<div>
 				{/* Allow users to pick their role */}
@@ -211,9 +219,9 @@ export default class MasterUser extends Component {
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
-								{ this.state.master.data ? this.state.master.data.value : ""}
+								{ this.state.master.data.value }
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.master.data ? this.state.master.data.timestamp : 0)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.master.data.timestamp)}</span>
 							</p>
 						: null
 					}
@@ -224,9 +232,9 @@ export default class MasterUser extends Component {
 								{/* <span className="chat-time float-left">{this.state.client1.user}</span> */}
 								<span className="chat-time float-left">CLIENT1</span>
 								<br />
-								{ this.state.client1.data ? this.state.client1.data.value : ""}
+								{ this.state.client1.data.value }
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.client1.data ? this.state.client1.data.timestamp : 0)}</span>
+								<span className="chat-time float-right">{this.formatTime( this.state.client1.data.timestamp)}</span>
 							</p>
 						: null
 					}
@@ -237,9 +245,9 @@ export default class MasterUser extends Component {
 								{/* <span className="chat-time float-left">{this.state.client2.user}</span> */}
 								<span className="chat-time float-left">CLIENT2</span>
 								<br />
-								{ this.state.client2.data ? this.state.client2.data.value : ""}
+								{ this.state.client2.data.value }
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.client2.data ? this.state.client2.data.timestamp : 0)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.client2.data.timestamp)}</span>
 							</p>
 						: null
 					}

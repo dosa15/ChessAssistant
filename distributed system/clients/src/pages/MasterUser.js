@@ -190,12 +190,6 @@ export default class MasterUser extends Component {
 			movelist += " gives the master best move .h8";
 			masterData.value = movelist;
 			this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });
-
-			await db.ref("MASTER").child('data').set({
-				user: "MASTER",
-				value: masterData.value,
-				timestamp: Date.now()
-			});
 		}
 		return (
 			<div>

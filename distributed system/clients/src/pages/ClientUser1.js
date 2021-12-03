@@ -16,9 +16,27 @@ export default class ClientUser1 extends Component {
 			chats: [],
 			value: '',
 			client: true,
-			master: null,
-			client1: null,
-			client2: null,
+			master: {
+				data: {
+					user: "MASTER",
+					value: "",
+					timestamp: 0
+				}
+			},
+			client1: {
+				data: {
+					user: "CLIENT1",
+					value: "",
+					timestamp: 0
+				}
+			},
+			client2: {
+				data: {
+					user: "CLIENT2",
+					value: "",
+					timestamp: 0
+				}
+			},
 			computed1: false,
 			computed2: false, 
 			readError: null,
@@ -75,13 +93,14 @@ export default class ClientUser1 extends Component {
 
 				if(snapshot.exists()) {
 					// chats.push(snapshot.val());
-					console.log(`Value got from Master: ${snapshot.val()}`);
+					console.log(`Value got from Master: ${snapshot.toJSON()}`);
 					this.setState({ client1: snapshot.val() });
+					console.log(this.state.client1);
 					// if(initial) {
 					// 	this.setState({ client1: snapshot.val() });
 					// 	this.setState({ client2: snapshot.val() });
 					// }
-					this.computeClientData(this.state.client1);
+					this.computeClientData(this.state.client1.data);
 				}
 			});
 			
@@ -100,7 +119,7 @@ export default class ClientUser1 extends Component {
 		const chatArea = this.myRef.current;
 		try {
 			// let chats = [];
-			db.ref("CLIENT1").on("value", snapshot => {
+			db.ref("CLIENT1").once("value", snapshot => {
 				// snapshot.forEach((snap) => {
 				//   chats.push(snap.val());
 				// });
@@ -111,7 +130,7 @@ export default class ClientUser1 extends Component {
 				}
 				// console.log(this.state.client1);
 			});
-			db.ref("CLIENT2").on("value", snapshot => {
+			db.ref("CLIENT2").once("value", snapshot => {
 				// snapshot.forEach((snap) => {
 				//   chats.push(snap.val());
 				// });
@@ -132,23 +151,25 @@ export default class ClientUser1 extends Component {
 	}
 
 	async getClientData() {
-		if(this.state.master == null) {
+		if(this.state.master.data.timestamp == 0) {
 			this.loadMasterData();
 			return;
 		}
-		var movelist = this.state.master.value;
+		var movelist = this.state.master.data.value;
 		movelist += " gives the master best move: .h8";
-		await db.ref("MASTER").set({
+		await db.ref("MASTER").child('data').set({
 			user: this.state.user,
 			value: movelist,
 			timestamp: Date.now()
 		}); 
-		console.log("Master: " + this.state.master.value);
+		console.log("Master: " + this.state.master.data.value);
 		// console.log("Client1: " + this.state.client1.value);
 		// console.log("Client2: " + this.state.client2.value);
 	}
 	
 	async computeClientData(clientData) {
+		console.log(clientData) 
+		console.log(clientData.value);
 		var movelist = clientData.value;
 		console.log(`Client1 movelist: ${movelist}`);
 		movelist += " gives the 1st best move: .a1";
@@ -159,7 +180,10 @@ export default class ClientUser1 extends Component {
 			user: "CLIENT1",
 			value: clientData.value,
 			timestamp: Date.now()
-		})
+		});
+
+		// await this.loadClientData();
+
 		// .then(() => {
 		// 	document.getElementById("sendDataForm").submit();
 		// }); 
@@ -349,9 +373,9 @@ export default class ClientUser1 extends Component {
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
-								{ this.state.master ? this.state.master.data.value : ""}
+								{ this.state.master.data ? this.state.master.data.value : ""}
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.master.data.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.master.data ? this.state.master.data.timestamp : 0)}</span>
 							</p>
 						: null
 					}
@@ -362,9 +386,9 @@ export default class ClientUser1 extends Component {
 								{/* <span className="chat-time float-left">{this.state.client1.user}</span> */}
 								<span className="chat-time float-left">CLIENT1</span>
 								<br />
-								{ this.state.client1 ? this.state.client1.data.value : ""}
+								{ this.state.client1.data ? this.state.client1.data.value : ""}
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.client1.data.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.client1.data ? this.state.client1.data.timestamp : 0)}</span>
 							</p>
 						: null
 					}
@@ -375,9 +399,9 @@ export default class ClientUser1 extends Component {
 								{/* <span className="chat-time float-left">{this.state.client2.user}</span> */}
 								<span className="chat-time float-left">CLIENT2</span>
 								<br />
-								{ this.state.client2 ? this.state.client2.data.value : ""}
+								{ this.state.client2.data ? this.state.client2.data.value : ""}
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.client2.data.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.client2.data ? this.state.client2.data.timestamp : 0)}</span>
 							</p>
 						: null
 					}

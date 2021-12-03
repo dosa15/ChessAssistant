@@ -6,7 +6,6 @@ import { Modal } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
-import { sluDependencies } from "mathjs";
 
 const sleep = (milliseconds) => {
 	return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -21,9 +20,27 @@ export default class MasterUser extends Component {
 			chats: [],
 			value: '',
 			client: true,
-			master: null,
-			client1: null,
-			client2: null,
+			master: {
+				data: {
+					user: "MASTER",
+					value: "",
+					timestamp: 0
+				}
+			},
+			client1: {
+				data: {
+					user: "CLIENT1",
+					value: "",
+					timestamp: 0
+				}
+			},
+			client2: {
+				data: {
+					user: "CLIENT2",
+					value: "",
+					timestamp: 0
+				}
+			},
 			computed1: false,
 			computed2: false, 
 			readError: null,
@@ -98,12 +115,14 @@ export default class MasterUser extends Component {
 			db.ref("CLIENT1").on("child_changed", (snapshot, _) => {
 				if (snapshot.exists()) {
 					this.setState({ client1: snapshot.val() });
+					console.log(`Client1 data: ${this.state.client1.value}`);
 				}
 			});
 
 			db.ref("CLIENT2").on("child_changed", (snapshot, _) => {
 				if (snapshot.exists()) {
 					this.setState({ client2: snapshot.val() });
+					console.log(`Client2 data: ${this.state.client2.value}`);
 				}
 			});
 
@@ -134,8 +153,7 @@ export default class MasterUser extends Component {
 	// This function handles the form that is used to submit data to the server
 	async handleSubmit(event) {
 		console.log("Submitting form...")
-		if (event)
-			event.preventDefault();
+		event.preventDefault();
 
 		this.setState({ writeError: null });
 		const chatArea = this.myRef.current;
@@ -193,9 +211,9 @@ export default class MasterUser extends Component {
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
-								{ this.state.master ? this.state.master.data.value : ""}
+								{ this.state.master.data ? this.state.master.data.value : ""}
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.master.data.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.master.data ? this.state.master.data.timestamp : 0)}</span>
 							</p>
 						: null
 					}
@@ -206,9 +224,9 @@ export default class MasterUser extends Component {
 								{/* <span className="chat-time float-left">{this.state.client1.user}</span> */}
 								<span className="chat-time float-left">CLIENT1</span>
 								<br />
-								{ this.state.client1 ? this.state.client1.data.value : ""}
+								{ this.state.client1.data ? this.state.client1.data.value : ""}
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.client1.data.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.client1.data ? this.state.client1.data.timestamp : 0)}</span>
 							</p>
 						: null
 					}
@@ -219,9 +237,9 @@ export default class MasterUser extends Component {
 								{/* <span className="chat-time float-left">{this.state.client2.user}</span> */}
 								<span className="chat-time float-left">CLIENT2</span>
 								<br />
-								{ this.state.client2 ? this.state.client2.data.value : ""}
+								{ this.state.client2.data ? this.state.client2.data.value : ""}
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.client2.data.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.client2.data ? this.state.client2.data.timestamp : 0)}</span>
 							</p>
 						: null
 					}

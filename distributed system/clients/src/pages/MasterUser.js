@@ -150,6 +150,27 @@ export default class MasterUser extends Component {
 		});
 	}
 	
+	function translate_pred(pred) {
+    //pred is a numpy array
+    //translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
+    // console.log("Pred", pred);
+    var dimensionsPred = [pred.length, pred[0].length];
+    // console.log("Pred dimensions: " + dimensionsPred)
+    var translation = Array(pred.length).fill().map(() =>
+       Array(pred[0].length).fill(0));
+    // var translation = tf.zeros([pred.length, pred[0].length]);
+    
+    // console.log("Translation: " + translation);
+    // translation.print();
+    // console.log(translation.length + " " + translation[0].length);
+
+    // var index = pred[0].indexOf(Math.max(pred[0]));
+    var index = pred[0].indexOf(Math.max(...pred[0]));
+    console.log(index);
+    translation[0][index] = 1;
+    return translation[0];
+}
+	
 	// This function handles the form that is used to submit data to the server
 	async handleSubmit(event) {
 		console.log("Submitting form...")
@@ -187,6 +208,15 @@ export default class MasterUser extends Component {
 			var masterData = this.state.master.data;
 			var movelist = masterData.value;
 			// Master's computation
+			//Piece prediction by master
+			await window.pieces.predict(t1).
+			array().then(function (move) {
+			  // Translated to R code from ipynb.
+			  console.log("M Piece: ", move);
+			  var tMove = translate_pred(move);
+			  // console.log("T Piece: ", tMove.toString());
+			  window.movePiece = new_chess_dict[tMove.toString()];
+			});
 			movelist += " gives the master best move .h8";
 			masterData.value = movelist;
 			this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });

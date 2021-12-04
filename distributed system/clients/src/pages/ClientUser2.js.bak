@@ -142,15 +142,6 @@ export default class ClientUser1 extends Component {
 		var movelist = clientData.value;
 		console.log(`Client2 movelist: ${movelist}`);
 		// Client 2's computation
-		//Number prediction by client2
-		await window.number.predict(t1).
-        array().then(function (move) {
-          // Translated to R code from ipynb.
-          console.log("M Number: ", move);
-          var tMove = translate_pred(move); 
-          // console.log("T Number: ", tMove);
-          window.moveNumber = new_number_dict[tMove.toString()];
-        });
 		movelist += " gives the 2nd best move: .b2";
 		clientData.value = movelist;
 		this.setState({ client2: { ...this.state.client2, data: clientData } });

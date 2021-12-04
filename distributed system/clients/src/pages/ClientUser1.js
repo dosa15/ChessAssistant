@@ -115,12 +115,42 @@ export default class ClientUser1 extends Component {
 		}
 	}
 	
+	function translate_pred(pred) {
+    //pred is a numpy array
+    //translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
+    // console.log("Pred", pred);
+    var dimensionsPred = [pred.length, pred[0].length];
+    // console.log("Pred dimensions: " + dimensionsPred)
+    var translation = Array(pred.length).fill().map(() =>
+       Array(pred[0].length).fill(0));
+    // var translation = tf.zeros([pred.length, pred[0].length]);
+    
+    // console.log("Translation: " + translation);
+    // translation.print();
+    // console.log(translation.length + " " + translation[0].length);
+
+    // var index = pred[0].indexOf(Math.max(pred[0]));
+    var index = pred[0].indexOf(Math.max(...pred[0]));
+    console.log(index);
+    translation[0][index] = 1;
+    return translation[0];
+}
+	
 	async computeClientData(clientData) {
 		console.log(clientData) 
 		console.log(clientData.value);
 		var movelist = clientData.value;
 		console.log(`Client1 movelist: ${movelist}`);
 		// Client 1's computation
+		//Alphabet prediction by client1
+		await window.alpha.predict(t1).
+        array().then(function (move) {
+          // Translated to R code from ipynb.
+          console.log("M Alpha: ", move);
+          var tMove = translate_pred(move);
+          // console.log("T Alpha: ", tMove);
+          window.moveAlpha = new_alpha_dict[tMove.toString()];
+        });
 		movelist += " gives the 1st best move: .a1";
 		clientData.value = movelist;
 		this.setState({ client1: { ...this.state.client1, data: clientData } });

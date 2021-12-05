@@ -5,15 +5,15 @@
 // const { Chess } = require("./chessboardjs/js/chess");
 
 // function initialize() {
-    tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
-        window.alpha = model;
-    });
-    tf.loadLayersModel('models/model_numbers/model.json').then(function (model) {
-        window.number = model;
-    });
-    tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
-        window.pieces = model;     
-    });
+tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
+    window.alpha = model;
+});
+tf.loadLayersModel('models/model_numbers/model.json').then(function (model) {
+    window.number = model;
+});
+tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
+    window.pieces = model;     
+});
 // }
 
 const alpha=window.alpha;
@@ -51,6 +51,7 @@ const reshapeArray = (arr, r, c) => {
 };
 
 var board, game = new Chess();
+window.game = game
 
 /*The "AI" part starts here */
 
@@ -378,6 +379,135 @@ var onDragStart = function (source, piece, position, orientation) {
     }
 };
 
+window.onload = function () {
+
+var black_score = 50, white_score = 50;
+
+var scoreData = [{
+		type: "stackedColumn",
+		name: "White",
+		//showInLegend: "true",
+		//yValueFormatString: "#",
+		dataPoints: [{ x: 10, y: white_score }]
+	},
+  {
+		type: "stackedColumn",
+		name: "Black",
+		//showInLegend: "true",
+		//yValueFormatString: "#",
+		dataPoints: [{ x: 10, y: black_score }]
+	}];
+	
+	CanvasJS.addColorSet("chessColorSet",
+     [
+     "#FEFEFE",
+     "#010101"
+    ]);
+    
+var chart = new CanvasJS.Chart("chartContainer", {
+  title: { text: "Win Status" },
+  backgroundColor: "#213c6f",
+  theme: "dark1",
+  colorSet: "chessColorSet",
+  animationEnabled: true,
+  axisX: {
+    interval: 1,
+    minimum: 9,
+    maximum: 11,
+    gridThickness: 0,
+    tickLength: 0,
+    lineThickness: 0,
+    labelFormatter: function(){
+      return " ";
+    }
+  },
+  axisY: {
+    interval: 1,
+    includeZero: true,
+    gridThickness: 0,
+    tickLength: 0,
+    lineThickness: 0,
+    labelFormatter: function(){
+      return " ";
+    }
+  },
+  toolTip: {
+		shared: false,
+		content: "Score: {y}"
+	},
+	data: scoreData
+});
+
+var xVal = 0;
+var yVal = 100; 
+var updateInterval = 1000;
+
+var updateChart = function () {
+  white_score = black_score = 0;
+  var fen = window.game.fen().split(" ")[0];
+  console.log("FEN: " + fen);
+  for (var i = 0; i < fen.length; i++) {
+    if (fen.charAt(i) == 'p')
+      black_score++;
+    else if(fen.charAt(i) == 'P')
+      white_score++;
+    else if (fen.charAt(i) == 'b')
+      black_score += 3;
+    else if(fen.charAt(i) == 'B')
+      white_score += 3;
+    else if (fen.charAt(i) == 'n')
+      black_score += 3;
+    else if(fen.charAt(i) == 'N')
+      white_score += 3;
+    else if (fen.charAt(i) == 'r')
+      black_score += 5;
+    else if(fen.charAt(i) == 'R')
+      white_score += 5;
+    else if (fen.charAt(i) == 'q')
+      black_score += 9;
+    else if(fen.charAt(i) == 'Q')
+      white_score += 9;
+  }
+  /*
+  black_data.shift();
+  white_data.shift();
+  black_data.push({ x: black_score, y: 10 });
+  white_data.push({ x: white_score, y: 10 });
+  */
+  scoreData.push({
+		type: "stackedColumn",
+		name: "White",
+		//showInLegend: "true",
+		//yValueFormatString: "#",
+		dataPoints: [{ x: 10, y: white_score }]
+	});
+  scoreData.push({
+		type: "stackedColumn",
+		name: "Black",
+		//showInLegend: "true",
+		//yValueFormatString: "#",
+		dataPoints: [{ x: 10, y: black_score }]
+	});
+	scoreData.shift();
+	scoreData.shift();
+  
+  /*
+  if(black_data.length > 1)
+  if(white_data.length > 1)
+    */
+  
+  console.log("White score:" + white_score);
+  console.log("Black score:" + black_score);
+  //console.log("Score Data:" + scoreData.dataPoints.x);
+	chart.render();
+};
+
+updateChart();
+setInterval(function(){updateChart()}, updateInterval);
+
+}
+
+
 async function endGame() {
     await sleep(750);
     alert('Game over');
@@ -386,61 +516,81 @@ async function endGame() {
     console.log("Final movelist: " + window.movelist);
     
     //atul response url
-    window.atulResponse = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/p/779bddb6/graph1?s=";
+    window.atulResponse = "https://1ee9a8602b914e199f82026e0b9fea53.app.rstudio.cloud/p/5bec0ace/";
 
     //dosa response url
-    window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/940c8a06/graph1?s=";
+    window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/4aaca203/";
 
     //booms response url
-    window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/graph1?s=";
+    window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/";
 
     //moan response url
-    window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/graph1?s=";
-    /*
-    var response = await fetch(dosaResponse + window.movelist, { 
-      mode: 'no-cors' ,
-      method: 'GET',
-      headers: myHeaders
-    })
-      //.then(() => {
-      //  const myJson = response.json();
-      //})
-      .then(async function() {
-      */
-      
-    //replace ______Response with your respective one
-			const url1 = window.dosaResponse + encodeURIComponent(window.movelist);
-			console.log(url1);
-			var wnd = window.open(url1, "wnd","width=0, height=0");
-			await sleep(500);
-			wnd.close();
-			
-			//atul ka src
-       window.atulBarGraphSrc = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
-       
-       //dosa ka src
-       window.dosaBarGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+    window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/";
+    
 
-       //booms ka src
-       window.boomsBarGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+    const url1 = window.atulResponse + "graph1?s=" + encodeURIComponent(window.movelist);
+    console.log(url1);
 
-       //moan ka src
-        window.moanBarGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
-      
-      var carouselLinks = $("#carouselGraphLinks").empty();
-      carouselLinks.append(`
-        <li data-target="#postGameGraphsCarousel" data-slide-to="0" class="active"></li>
-      `);
-      
-      var carouselElements = $("#carouselGraphViewer").empty();
-      carouselElements.append(`
-        <div class="carousel-item active">
-            <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.dosaBarGraphSrc + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
-        </div>
-      `);
-      
-      $('#post-game').show();
-      $('#NewGameBtn').show();
+    var wnd1 = window.open(url1, "_blank", "wnd1", "width=100, height=100");
+    //wnd1.resizeTo(0,0); 
+    await sleep(500);
+    //wnd1.body.addEventListener('load', wnd1.close(), true);
+    //await sleep(100);
+
+    const url2 = window.atulResponse + "graph2?s=" + encodeURIComponent(window.movelist);
+    console.log(url2);
+    var wnd2 = window.open(url2, "_blank", "wnd2", "width=100, height=100");
+    //wnd2.resizeTo(0,0); 
+    await sleep(6000);
+    //await sleep(100);
+
+    const url3 = window.atulResponse + "graph3?s=" + encodeURIComponent(window.movelist);
+    console.log(url3);
+    var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
+    //wnd3.resizeTo(0,0); 
+    await sleep(600);
+
+    const url4 = window.atulResponse + "graph4?s=" + encodeURIComponent(window.movelist);
+    console.log(url4);
+    var wnd4 = window.open(url4, "_blank", "wnd4", "width=100, height=100");
+    await sleep(50);
+
+    wnd4.close();
+    wnd3.close();
+    wnd2.close();
+    wnd1.close();
+
+
+    //atul ka src
+    window.atulGraphSrc = "https://1ee9a8602b914e199f82026e0b9fea53.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+
+    //dosa ka src
+    window.dosaGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+
+    //booms ka src
+    window.boomsGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+
+    //moan ka src
+    window.moanGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+
+    graphs = ["bubblechart.png", "linechart.png", "piechart.png", "openingschart.png"]
+
+    var carouselLinks = $("#carouselGraphLinks").empty();
+    var carouselElements = $("#carouselGraphViewer").empty();
+    for (var i = 0; i < graphs.length; i++) {
+        carouselLinks.append(`
+              <li data-target="#postGameGraphsCarousel" data-slide-to="` + i + `" ` + (i == 0 ? 'class="active"' : "") + `></li>
+            `);
+
+        carouselElements.append(`
+              <div class="carousel-item ` + (i == 0 ? "active" : "") + `">
+                  <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.atulGraphSrc + graphs[i] + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
+              </div>
+            `);
+    }
+
+    $('#post-game').show();
+    $('#newGameBtn2').show();
   //var fen = game.fen();
 }
 

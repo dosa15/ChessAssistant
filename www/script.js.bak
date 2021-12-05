@@ -513,6 +513,9 @@ var makeBestMove = async function () {
 	var textFile = null,
 	  makeTextFile = function (text) {
 		var data = new Blob([text], {type: 'text/plain'});
+
+		// If we are replacing a previously generated file we need to
+		// manually revoke the object URL to avoid memory leaks.
 		if (textFile !== null) {
 		  window.URL.revokeObjectURL(textFile);
 		}
@@ -522,8 +525,6 @@ var makeBestMove = async function () {
 		// returns a URL you can use as a href
 		return textFile;
 	  };
-	//Invoking the function
-	
 	
     var t1 = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
     t1.print();

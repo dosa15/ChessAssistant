@@ -6,6 +6,7 @@ import { Modal } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
+import * as tf from "@tensorflow/tfjs";
 
 export default class ClientUser1 extends Component {
 	constructor(props) {

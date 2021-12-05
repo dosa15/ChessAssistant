@@ -6,6 +6,7 @@ import { Modal } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
+import * as tf from "@tensorflow/tfjs";
 
 export default class ClientUser1 extends Component {
 	constructor(props) {
@@ -114,6 +115,27 @@ export default class ClientUser1 extends Component {
 			this.setState({ readError: error.message, loadingChats: false });
 		}
 	}
+	
+translate_pred(pred) {
+	//pred is a numpy array
+	//translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
+	// console.log("Pred", pred);
+	var dimensionsPred = [pred.length, pred[0].length];
+	// console.log("Pred dimensions: " + dimensionsPred)
+	var translation = Array(pred.length).fill().map(() =>
+		Array(pred[0].length).fill(0));
+	// var translation = tf.zeros([pred.length, pred[0].length]);
+	
+	// console.log("Translation: " + translation);
+	// translation.print();
+	// console.log(translation.length + " " + translation[0].length);
+	
+	// var index = pred[0].indexOf(Math.max(pred[0]));
+	var index = pred[0].indexOf(Math.max(...pred[0]));
+	console.log(index);
+	translation[0][index] = 1;
+	return translation[0];
+}
 	
 	async computeClientData(clientData) {
 		console.log(clientData) 

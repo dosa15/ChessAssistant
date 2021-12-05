@@ -146,7 +146,7 @@ export default class MasterUser extends Component {
 		script.src = "../../../../www/script.js";
 		script.async = true;
 		document.body.appendChild(script);
-		//console.log(getAlpha());
+		console.log(getAlpha());
 		this.loadMasterData();
 	}
 

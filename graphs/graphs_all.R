@@ -128,7 +128,8 @@ piechart <- function(s){
   }
   for (i in playermoves) {
     print(i)
-    pp<-analyze_position(engine = "C:/Users/rohit/Downloads/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe",lan = i,depth=10)
+    #pp<-analyze_position(engine = "C:/Users/rohit/Downloads/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe",lan = i,depth=10)
+    pp<-analyze_position(engine = uci_engine(),lan = i,depth=10)
     
     if(pp$score>35)
       good=good+1

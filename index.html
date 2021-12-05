@@ -12,7 +12,7 @@
     
     graph1() => graph1(window.movelist)
     -->
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
       window.movelist = "";
       
@@ -49,68 +49,83 @@
       async function showPostGameAnalysis() {
           renderMoveHistory(window.gameHistory);
           console.log("Final movelist: " + window.movelist);
-          let myHeaders = new Headers();
-          myHeaders.append('Accept', '*/*');
 
           //atul response url
-          window.atulResponse = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/p/779bddb6/graph1?s=";
+          window.atulResponse = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/p/779bddb6/";
 
           //dosa response url
-          window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/940c8a06/graph1?s=";
+          window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/4aaca203/";
 
           //booms response url
-          window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/graph1?s=";
+          window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/";
 
           //moan response url
-          window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/graph1?s=";
-
-          /*
-          var response = await fetch(dosaResponse + window.movelist, { 
-            mode: 'no-cors' ,
-            method: 'GET',
-            headers: myHeaders
-          })
-            //.then(() => {
-            //  const myJson = response.json();
-            //})
-            .then(async function() {
-            */
-            
-          //replace ______Response with your respective one
+          window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/";
+          
       			
-      			const url1 = window.dosaResponse + encodeURIComponent(window.movelist);
-      			console.log(url1);
-      			var wnd = window.open(url1, "wnd","width=0, height=0");
-      			await sleep(500);
-      			wnd.close();
+    			const url1 = window.dosaResponse + "graph1?s=" + encodeURIComponent(window.movelist);
+    			console.log(url1);
+    			
+    			var wnd1 = window.open(url1, "_blank", "wnd1", "width=100, height=100");
+    			//wnd1.resizeTo(0,0); 
+    			await sleep(500);
+    			//wnd1.body.addEventListener('load', wnd1.close(), true);
+          //await sleep(100);
+          
+          const url2 = window.dosaResponse + "graph2?s=" + encodeURIComponent(window.movelist);
+    			console.log(url2);
+    			var wnd2 = window.open(url2, "_blank", "wnd2", "width=100, height=100");
+    			//wnd2.resizeTo(0,0); 
+    			await sleep(6000);
+    			//await sleep(100);
+    			
+    			const url3 = window.dosaResponse + "graph3?s=" + encodeURIComponent(window.movelist);
+    			console.log(url3);
+    			var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
+    			//wnd3.resizeTo(0,0); 
+    			await sleep(600);
+    			wnd3.close();
+    			wnd2.close();
+    			wnd1.close();
 
-           //atul ka src
-           window.atulBarGraphSrc = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
-           
-           //dosa ka src
-           window.dosaBarGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
-
-           //booms ka src
-           window.boomsBarGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+         //atul ka src
+         window.atulGraphSrc = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+         
+         //dosa ka src
+         window.dosaGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+        
+         //booms ka src
+         window.boomsGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
 	
-           //moan ka src
-            window.moanBarGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
-            
-            var carouselLinks = $("#carouselGraphLinks").empty();
+         //moan ka src
+          window.moanGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+          
+          graphs = ["bubblechart.png", "linechart.png", "piechart.png"]
+          
+          var carouselLinks = $("#carouselGraphLinks").empty();
+          var carouselElements = $("#carouselGraphViewer").empty();
+          for(var i = 0; i < graphs.length; i++) {
             carouselLinks.append(`
-              <li data-target="#postGameGraphsCarousel" data-slide-to="0" class="active"></li>
+              <li data-target="#postGameGraphsCarousel" data-slide-to="` + i + `" ` + (i == 0 ? 'class="active"' : "") + `></li>
             `);
             
-            var carouselElements = $("#carouselGraphViewer").empty();
             carouselElements.append(`
-              <div class="carousel-item active">
-                  <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.dosaBarGraphSrc + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
+              <div class="carousel-item ` + (i == 0 ? "active" : "") + `">
+                  <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.dosaGraphSrc + graphs[i] + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
               </div>
             `);
-            
-            $('#post-game').show();
-            $('#NewGameBtn').show();
+          }
+          
+          $('#post-game').show();
+          $('#newGameBtn2').show();
       }
+      
+      $(document).ready(function() {
+        $("#resignBtn").click(showPostGameAnalysis);
+        $("#newGameBtn").click(() => {closePostGameAnalysis(true)});
+        $("reviewGameBtn").click(() => {closePostGameAnalysis(false)});
+      });
+      
     </script>
 </head>
 <body>
@@ -139,8 +154,8 @@
         </div>
         <div class="vertical-space"></div>
         <div class="row align-items-center justify-content-center">
-            <button id="NewGameBtn" class="btn btn-primary text-dark mx-5" onclick="closePostGameAnalysis(true)" style="display: none">New Game</button>
-            <button class="btn btn-danger text-white mx-5" onclick="showPostGameAnalysis()">Resign</button>
+            <button id="newGameBtn2" class="btn btn-primary text-dark mx-5"  style="display: none">New Game</button> <!--onclick="closePostGameAnalysis(true)"-->
+            <button id="resignBtn" class="btn btn-danger text-white mx-5" >Resign</button> <!--onclick="showPostGameAnalysis()"-->
         </div>
         <div class="vertical-space"></div>
         <div class="row justify-content-center" style="display: none">
@@ -262,8 +277,8 @@
         <div class="vertical-space-30">
         </div>
         <div class="row align-items-center justify-content-center">
-            <button class="btn btn-primary text-dark mx-5" onclick="closePostGameAnalysis(true)">New Game</button>
-            <button class="btn btn-secondary text-dark mx-5" onclick="closePostGameAnalysis(false)">Review Game</button>
+            <button id="newGameBtn" class="btn btn-primary text-dark mx-5">New Game</button> <!--onclick="closePostGameAnalysis(true)"-->
+            <button id="reviewGameBtn" class="btn btn-secondary text-dark mx-5" onclick="closePostGameAnalysis(false)">Review Game</button> <!---->
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>

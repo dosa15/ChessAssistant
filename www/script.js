@@ -384,10 +384,22 @@ var scoreData = [{
 		dataPoints: [{ x: 10, y: white_score }]
 	}];
 	
+	CanvasJS.addColorSet("chessColorSet",
+     [
+     "#010101",
+     "#FEFEFE",
+    ]);
+    
 var chart = new CanvasJS.Chart("chartContainer", {
+  title: { text: "Win Status" },
+  backgroundColor: "#213c6f",
+  theme: "dark1",
+  colorSet: "chessColorSet",
   animationEnabled: true,
   axisX: {
     interval: 1,
+    minimum: 9,
+    maximum: 11,
     gridThickness: 0,
     tickLength: 0,
     lineThickness: 0,
@@ -407,6 +419,7 @@ var chart = new CanvasJS.Chart("chartContainer", {
   },
   toolTip: {
 		shared: false,
+		content: "Score: {y}"
 	},
 	data: scoreData
 });
@@ -416,22 +429,6 @@ var yVal = 100;
 var updateInterval = 1000;
 
 var updateChart = function () {
-/*
-	count = count || 1;
-
-	for (var j = 0; j < count; j++) {
-		yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
-		dps.push({
-			x: xVal,
-			y: yVal
-		});
-		xVal++;
-	}
-
-	if (dps.length > dataLength) {
-		dps.shift();
-	}
-*/
   white_score = black_score = 0;
   var fen = window.game.fen().split(" ")[0];
   console.log("FEN: " + fen);
@@ -505,11 +502,7 @@ async function endGame() {
     console.log("Final movelist: " + window.movelist);
     
     //atul response url
-<<<<<<< HEAD
-    window.atulResponse = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/p/779bddb6/";
-=======
     window.atulResponse = "https://1ee9a8602b914e199f82026e0b9fea53.app.rstudio.cloud/p/5bec0ace/";
->>>>>>> 8e087412404509ac452b511e4323b990dedffb87
 
     //dosa response url
     window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/4aaca203/";
@@ -519,67 +512,7 @@ async function endGame() {
 
     //moan response url
     window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/";
-<<<<<<< HEAD
     
-			
-		const url1 = window.dosaResponse + "graph1?s=" + encodeURIComponent(window.movelist);
-		console.log(url1);
-		
-		var wnd1 = window.open(url1, "_blank", "wnd1", "width=100, height=100");
-		//wnd1.resizeTo(0,0); 
-		window.focus();
-		await sleep(500);
-		//wnd1.body.addEventListener('load', wnd1.close(), true);
-    //await sleep(100);
-    
-    const url2 = window.dosaResponse + "graph2?s=" + encodeURIComponent(window.movelist);
-		console.log(url2);
-		var wnd2 = window.open(url2, "_blank", "wnd2", "width=100, height=100");
-		window.focus();
-		//wnd2.resizeTo(0,0); 
-		await sleep(6000);
-		//await sleep(100);
-		
-		const url3 = window.dosaResponse + "graph3?s=" + encodeURIComponent(window.movelist);
-		console.log(url3);
-		var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
-		window.focus();
-		//wnd3.resizeTo(0,0); 
-		await sleep(600);
-		wnd3.close();
-		wnd2.close();
-		wnd1.close();
-
-   //atul ka src
-   window.atulGraphSrc = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-   
-   //dosa ka src
-   window.dosaGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-  
-   //booms ka src
-   window.boomsGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-
-   //moan ka src
-    window.moanGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-    
-    graphs = ["bubblechart.png", "linechart.png", "piechart.png"]
-    
-    var carouselLinks = $("#carouselGraphLinks").empty();
-    var carouselElements = $("#carouselGraphViewer").empty();
-    for(var i = 0; i < graphs.length; i++) {
-      carouselLinks.append(`
-        <li data-target="#postGameGraphsCarousel" data-slide-to="` + i + `" ` + (i == 0 ? 'class="active"' : "") + `></li>
-      `);
-      
-      carouselElements.append(`
-        <div class="carousel-item ` + (i == 0 ? "active" : "") + `">
-            <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.dosaGraphSrc + graphs[i] + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
-        </div>
-      `);
-    }
-    
-=======
-
 
     const url1 = window.atulResponse + "graph1?s=" + encodeURIComponent(window.movelist);
     console.log(url1);
@@ -642,7 +575,6 @@ async function endGame() {
             `);
     }
 
->>>>>>> 8e087412404509ac452b511e4323b990dedffb87
     $('#post-game').show();
     $('#newGameBtn2').show();
   //var fen = game.fen();

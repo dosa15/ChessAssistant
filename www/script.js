@@ -20,6 +20,29 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+    apiKey: "AIzaSyD4ByfhAdgTcKys7hRM1p_OG-zm8nuaH9A",
+    authDomain: "chessassistant-adams.firebaseapp.com",
+    databaseURL: "https://chessassistant-adams-default-rtdb.firebaseio.com",
+    projectId: "chessassistant-adams",
+    storageBucket: "chessassistant-adams.appspot.com",
+    messagingSenderId: "520343244676",
+    appId: "1:520343244676:web:10fa9200f315beef8d57d1",
+    measurementId: "G-Y1BKH1N7SE"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database()
+
+
 const reshapeArray = (arr, r, c) => {
    if (r * c !== arr.length * arr[0].length) {
       return arr;
@@ -559,7 +582,7 @@ async function endGame() {
     //moan ka src
     window.moanGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
 
-    graphs = ["bubblechart.png", "linechart.png", "piechart.png", "openingschart.png"]
+    var graphs = ["bubblechart.png", "linechart.png", "piechart.png", "openingschart.png"]
 
     var carouselLinks = $("#carouselGraphLinks").empty();
     var carouselElements = $("#carouselGraphViewer").empty();
@@ -579,6 +602,10 @@ async function endGame() {
     $('#newGameBtn2').show();
   //var fen = game.fen();
 }
+
+// export function getTranslatedMatrix() {
+//     return window.translatedMatrix;
+// }
 
 function make_matrix(fen) { //converts fen to reqd matrix format
     var pieces = fen.split(" ")[0];
@@ -645,6 +672,19 @@ var makeBestMove = async function () {
     //and translate functions and then pass to ml model(yet to do)
     var matrix = make_matrix(game.fen());
     var translatedMatrix = translate(matrix);
+    window.translatedMatrix = translatedMatrix;
+    
+    // Send translated matrix to firebase
+    var translatedMatrixJSON = { TM: translatedMatrix };
+    db.ref("MASTER/data").set({
+        user: "MASTER",
+        value: translatedMatrix,
+        timestamp: Date.now()
+    }); 
+
+    console.log(JSON.stringify(translatedMatrixJSON));
+    //console.log(fileURL);
+    
     var t1 = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
     t1.print();
     console.log("TM: ", translatedMatrix);
@@ -691,7 +731,7 @@ var makeBestMove = async function () {
     console.log("Number: ", window.moveNumber);
     console.log("Piece: ", window.movePiece);
     var nextMove = ((window.movePiece == 'p' || window.movePiece == 'P' ||    // If move is a pawn move
-                        window.movePiece == '.')    // I have no idea why '.' appears, gotta fix this
+                        window.movePiece == '.')    // Or if move is registered incorrectly
                         ? ''                        // Remove 'p' from the SAN notation
                         : window.movePiece.toUpperCase())         // Else retain the piece's character
                     + window.moveAlpha + window.moveNumber;

@@ -4,13 +4,14 @@ import "firebase/auth";
 // import "firebase/database";
 
 const config = {
-  apiKey: "AIzaSyDzLZApIrnX6lEaLU2DzrTvwvAafRjm-E0",
-  authDomain: "chessassistant-adam1.firebaseapp.com",
-  databaseURL: "https://chessassistant-adam1-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "chessassistant-adam1",
-  storageBucket: "chessassistant-adam1.appspot.com",
-  messagingSenderId: "968793669366",
-  appId: "1:968793669366:web:c3b759804ebba80ee276d7"
+  apiKey: "AIzaSyD4ByfhAdgTcKys7hRM1p_OG-zm8nuaH9A",
+  authDomain: "chessassistant-adams.firebaseapp.com",
+  databaseURL: "https://chessassistant-adams-default-rtdb.firebaseio.com",
+  projectId: "chessassistant-adams",
+  storageBucket: "chessassistant-adams.appspot.com",
+  messagingSenderId: "520343244676",
+  appId: "1:520343244676:web:10fa9200f315beef8d57d1",
+  measurementId: "G-Y1BKH1N7SE"
 };
 
 firebase.initializeApp(config);

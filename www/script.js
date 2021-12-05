@@ -371,23 +371,23 @@ var black_score = 50, white_score = 50;
 
 var scoreData = [{
 		type: "stackedColumn",
-		name: "Black",
-		//showInLegend: "true",
-		//yValueFormatString: "#",
-		dataPoints: [{ x: 10, y: black_score }]
-	},
-	{
-		type: "stackedColumn",
 		name: "White",
 		//showInLegend: "true",
 		//yValueFormatString: "#",
 		dataPoints: [{ x: 10, y: white_score }]
+	},
+  {
+		type: "stackedColumn",
+		name: "Black",
+		//showInLegend: "true",
+		//yValueFormatString: "#",
+		dataPoints: [{ x: 10, y: black_score }]
 	}];
 	
 	CanvasJS.addColorSet("chessColorSet",
      [
-     "#010101",
      "#FEFEFE",
+     "#010101"
     ]);
     
 var chart = new CanvasJS.Chart("chartContainer", {
@@ -462,17 +462,17 @@ var updateChart = function () {
   */
   scoreData.push({
 		type: "stackedColumn",
-		name: "Black",
-		//showInLegend: "true",
-		//yValueFormatString: "#",
-		dataPoints: [{ x: 10, y: black_score }]
-	});
-  scoreData.push({
-		type: "stackedColumn",
 		name: "White",
 		//showInLegend: "true",
 		//yValueFormatString: "#",
 		dataPoints: [{ x: 10, y: white_score }]
+	});
+  scoreData.push({
+		type: "stackedColumn",
+		name: "Black",
+		//showInLegend: "true",
+		//yValueFormatString: "#",
+		dataPoints: [{ x: 10, y: black_score }]
 	});
 	scoreData.shift();
 	scoreData.shift();

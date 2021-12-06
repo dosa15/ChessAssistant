@@ -92,7 +92,7 @@ export default class MasterUser extends Component {
 		const chatArea = this.myRef.current;
 		try {
 			// let chats = [];
-			db.ref("MASTER").on("value", snapshot => {
+			db.ref("MASTER").on("child_changed", snapshot => {
 				// snapshot.forEach((snap) => {
 				//   chats.push(snap.val());
 				// });

@@ -6,39 +6,35 @@ import { Modal } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
-import * as tf from "@tensorflow/tfjs";
-//import {getAlpha} from '../../../../www/script.js';
+// import {loadLayersModel} from 'react-tensorflow';
+import * as tf from "@tensorflow/tfjs"
+
+
 const sleep = (milliseconds) => {
 	return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
-/*const alpha = await tf.loadLayersModel('localstorage://');
-tf.loadLayersModel('file://../models/model_alpha/model.json'); */
-
-const url = {
-alpha: '../models/model_alpha/model.json',
+const alpha_dict = {
+    'a': [0, 0, 0, 0, 0, 0, 0],
+    'b': [1, 0, 0, 0, 0, 0, 0],
+    'c': [0, 1, 0, 0, 0, 0, 0],
+    'd': [0, 0, 1, 0, 0, 0, 0],
+    'e': [0, 0, 0, 1, 0, 0, 0],
+    'f': [0, 0, 0, 0, 1, 0, 0],
+    'g': [0, 0, 0, 0, 0, 1, 0],
+    'h': [0, 0, 0, 0, 0, 0, 1],
 };
-async function loadModel(url) {
-		try {
-		const alpha = await tf.loadLayersModel(url.alpha);
-		setModel(alpha);
-		console.log("Load model success")
-		}
-		catch (err) {
-		console.log(err);
-		}
-	}
-	
-	//React Hook - shows error if I call
-	/*
-		const [alpha, setModel] = useState();
-		useEffect(()=>{
-		tf.ready().then(()=>{
-		loadModel(url)
-		});
-		},[])
-	*/
 
+const new_alpha_dict = {
+    '1,0,0,0,0,0,0': 'b',
+    '0,1,0,0,0,0,0': 'c',
+    '0,0,1,0,0,0,0': 'd',
+    '0,0,0,1,0,0,0': 'e',
+    '0,0,0,0,1,0,0': 'f',
+    '0,0,0,0,0,1,0': 'g',
+    '0,0,0,0,0,0,1': 'h',
+    '0,0,0,0,0,0,0': 'a',
+};
 	 
 export default class MasterUser extends Component {
 	constructor(props) {
@@ -70,6 +66,8 @@ export default class MasterUser extends Component {
 					timestamp: 0
 				}
 			},
+			alpha: null,
+			moveAlpha: "",
 			computed1: false,
 			computed2: false, 
 			readError: null,
@@ -107,6 +105,17 @@ export default class MasterUser extends Component {
 				timestamp: 0
 			}
 		});
+	}
+
+	async loadModels() {
+		try {
+			// var model = await tf.loadLayersModel('https://firebasestorage.googleapis.com/v0/b/chessassistant-adams.appspot.com/o/models%2Fmodel_alpha%2Fmodel.json?alt=media&token=541bb76f-26b8-4251-8b53-656a0cb3fb51');
+			var model = await tf.loadLayersModel('http://127.0.0.1:8080/model_alpha/model.json')
+			this.setState({ alpha: model });
+			console.log(this.state.alpha);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
 	async loadMasterData() {
@@ -171,10 +180,7 @@ export default class MasterUser extends Component {
 	// This function is in-built, and is the first to automatically execute every time the page loads
 	async componentDidMount() {
 		this.clearServerData();
-		const script = document.createElement("script");
-		script.src = "../../../../www/script.js";
-		script.async = true;
-		document.body.appendChild(script);
+		await this.loadModels();
 		//console.log(getAlpha());
 		this.loadMasterData();
 	}
@@ -218,36 +224,41 @@ export default class MasterUser extends Component {
 	}
 
 	translate_pred(pred) {
-    //pred is a numpy array
-    //translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
-    // console.log("Pred", pred);
-    var dimensionsPred = [pred.length, pred[0].length];
-    // console.log("Pred dimensions: " + dimensionsPred)
-    var translation = Array(pred.length).fill().map(() =>
-       Array(pred[0].length).fill(0));
-    // var translation = tf.zeros([pred.length, pred[0].length]);
-    
-    // console.log("Translation: " + translation);
-    // translation.print();
-    // console.log(translation.length + " " + translation[0].length);
+		//pred is a numpy array
+		//translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
+		// console.log("Pred", pred);
+		var dimensionsPred = [pred.length, pred[0].length];
+		// console.log("Pred dimensions: " + dimensionsPred)
+		var translation = Array(pred.length).fill().map(() =>
+		Array(pred[0].length).fill(0));
+		// var translation = tf.zeros([pred.length, pred[0].length]);
+		
+		// console.log("Translation: " + translation);
+		// translation.print();
+		// console.log(translation.length + " " + translation[0].length);
 
-    // var index = pred[0].indexOf(Math.max(pred[0]));
-    var index = pred[0].indexOf(Math.max(...pred[0]));
-    console.log(index);
-    translation[0][index] = 1;
-    return translation[0];
+		// var index = pred[0].indexOf(Math.max(pred[0]));
+		var index = pred[0].indexOf(Math.max(...pred[0]));
+		console.log(index);
+		translation[0][index] = 1;
+		return translation[0];
 	}
 	
 	render() {
 		if(this.state.computed1 && this.state.computed2) {
 			var masterData = this.state.master.data;
-			var movelist = masterData.value;
+			var translatedMatrix = masterData.value;
 			// Master's computation
-			var translatedMatrix = this.state.master.data.value;
-			window.translatedMatrix = translatedMatrix;
-			
-			movelist += " gives the master best move .h8";
-			masterData.value = movelist;
+			var t1 = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
+			console.log("predicting...")
+			this.state.alpha.predict(t1).array().then(function (move) {
+					// Translated to R code from ipynb.
+					console.log("M Alpha: ", move);
+					var tMove = this.translate_pred(move);
+					// console.log("T Alpha: ", tMove);
+					this.setState({ moveAlpha: new_alpha_dict[tMove.toString()] });
+				});
+			masterData.value = this.state.moveAlpha;
 			this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });
 		}
 		return (

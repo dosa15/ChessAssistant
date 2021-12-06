@@ -38,6 +38,7 @@ export default class ClientUser1 extends Component {
 					timestamp: 0
 				}
 			},
+			number: null,
 			computed1: false,
 			computed2: false, 
 			readError: null,
@@ -74,6 +75,17 @@ export default class ClientUser1 extends Component {
 				timestamp: 0
 			}
 		});
+	}
+
+	async loadModels() {
+		try {
+			// var model = await tf.loadLayersModel('https://firebasestorage.googleapis.com/v0/b/chessassistant-adams.appspot.com/o/models%2Fmodel_alpha%2Fmodel.json?alt=media&token=541bb76f-26b8-4251-8b53-656a0cb3fb51');
+			var model = await tf.loadLayersModel('http://127.0.0.1:8080/model_numbers/model.json')
+			this.setState({ number: model });
+			console.log(this.state.number);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
 	async loadMasterData() {
@@ -157,6 +169,7 @@ translate_pred(pred) {
 	// This function is in-built, and is the first to automatically execute every time the page loads
 	async componentDidMount() {
 		// this.clearServerData();
+		await this.loadModels();
 		this.loadMasterData();
 	}
 

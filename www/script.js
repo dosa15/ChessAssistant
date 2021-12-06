@@ -7,12 +7,15 @@
 // function initialize() {
 tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
     window.alpha = model;
+    model.save("localstorage://alpha");
 });
 tf.loadLayersModel('models/model_numbers/model.json').then(function (model) {
     window.number = model;
+    model.save("localstorage://number");
 });
 tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
-    window.pieces = model;     
+    window.pieces = model;
+    model.save("localstorage://pieces");
 });
 // }
 

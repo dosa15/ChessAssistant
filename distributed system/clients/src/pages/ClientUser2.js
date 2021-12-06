@@ -54,26 +54,26 @@ export default class ClientUser1 extends Component {
 	}
 	
 	async clearServerData() {
-		await db.ref("MASTER").set({
-			data: {
+		await db.ref("MASTER/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT1").set({
-			data: {
+		await db.ref("CLIENT1/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT2").set({
-			data: {
+		await db.ref("CLIENT2/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
 	}
 

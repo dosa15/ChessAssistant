@@ -48,21 +48,21 @@ export default class MasterUser extends Component {
 			master: {
 				data: {
 					user: "MASTER",
-					value: [],
+					value: "",
 					timestamp: 0
 				}
 			},
 			client1: {
 				data: {
 					user: "CLIENT1",
-					value: [],
+					value: "",
 					timestamp: 0
 				}
 			},
 			client2: {
 				data: {
 					user: "CLIENT2",
-					value: [],
+					value: "",
 					timestamp: 0
 				}
 			},
@@ -84,26 +84,26 @@ export default class MasterUser extends Component {
 	
 	
 	async clearServerData() {
-		await db.ref("MASTER").set({
-			data: {
+		await db.ref("MASTER/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT1").set({
-			data: {
+		await db.ref("CLIENT1/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT2").set({
-			data: {
+		await db.ref("CLIENT2/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
 	}
 
@@ -140,7 +140,7 @@ export default class MasterUser extends Component {
 					this.setState({ master: snapshot.val() });
 					
 					if (this.state.master) {
-						console.log(this.state.master.data.value);
+						console.log("Got master value: ", (this.state.master.data ? this.state.master.data.value : this.state.master.value));
 					}
 					// if(initial) {
 					// 	this.setState({ client1: snapshot.val() });
@@ -199,7 +199,7 @@ export default class MasterUser extends Component {
 		this.setState({ writeError: null });
 		const chatArea = this.myRef.current;
 		try {
-			await db.ref("MASTER").child('data').set({
+			await db.ref("MASTER/data").set({
 				user: "MASTER",
 				value: this.state.value,
 				timestamp: Date.now()
@@ -245,21 +245,23 @@ export default class MasterUser extends Component {
 	}
 	
 	render() {
+		console.log("MASTER: ", this.state.master);
+		console.log("MASTER value: ", (this.state.master.data ? this.state.master.data.value : this.state.master.value));
 		if(this.state.computed1 && this.state.computed2) {
-			var masterData = this.state.master.data;
-			var translatedMatrix = masterData.value;
+			// var masterData = this.state.master.data;
+			// var translatedMatrix = masterData.value;
 			// Master's computation
-			var t1 = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
+			// var t1 = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
 			console.log("predicting...")
-			this.state.alpha.predict(t1).array().then(function (move) {
-					// Translated to R code from ipynb.
-					console.log("M Alpha: ", move);
-					var tMove = this.translate_pred(move);
-					// console.log("T Alpha: ", tMove);
-					this.setState({ moveAlpha: new_alpha_dict[tMove.toString()] });
-				});
-			masterData.value = this.state.moveAlpha;
-			this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });
+			// this.state.alpha.predict(t1).array().then(function (move) {
+			// 	// Translated to R code from ipynb.
+			// 	console.log("M Alpha: ", move);
+			// 	var tMove = this.translate_pred(move);
+			// 	// console.log("T Alpha: ", tMove);
+			// 	this.setState({ moveAlpha: new_alpha_dict[tMove.toString()] });
+			// });
+			// masterData.value = this.state.moveAlpha;
+			// this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });
 		}
 		return (
 			<div>
@@ -289,9 +291,9 @@ export default class MasterUser extends Component {
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
-								{ console.log(this.state.master.data.value)}
+								{ (this.state.master.data ? this.state.master.data.value : this.state.master.value) }
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.master.data.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime((this.state.master.data ? this.state.master.data.timestamp : this.state.master.timestamp))}</span>
 							</p>
 						: null
 					}

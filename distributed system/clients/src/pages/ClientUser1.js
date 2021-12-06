@@ -54,26 +54,26 @@ export default class ClientUser1 extends Component {
 	}
 	
 	async clearServerData() {
-		await db.ref("MASTER").set({
-			data: {
+		await db.ref("MASTER/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT1").set({
-			data: {
+		await db.ref("CLIENT1/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT2").set({
-			data: {
+		await db.ref("CLIENT2/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
 	}
 
@@ -159,7 +159,7 @@ translate_pred(pred) {
 		clientData.value = movelist;
 		this.setState({ client1: { ...this.state.client1, data: clientData } });
 
-		await db.ref("CLIENT1").child('data').set({
+		await db.ref("CLIENT1/data").set({
 			user: "CLIENT1",
 			value: clientData.value,
 			timestamp: Date.now()

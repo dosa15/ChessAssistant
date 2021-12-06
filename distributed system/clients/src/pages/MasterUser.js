@@ -12,6 +12,34 @@ const sleep = (milliseconds) => {
 	return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+/*const alpha = await tf.loadLayersModel('localstorage://');
+tf.loadLayersModel('file://../models/model_alpha/model.json'); */
+
+const url = {
+alpha: '../models/model_alpha/model.json',
+};
+async function loadModel(url) {
+		try {
+		const alpha = await tf.loadLayersModel(url.alpha);
+		setModel(alpha);
+		console.log("Load model success")
+		}
+		catch (err) {
+		console.log(err);
+		}
+	}
+	
+	//React Hook - shows error if I call
+	/*
+		const [alpha, setModel] = useState();
+		useEffect(()=>{
+		tf.ready().then(()=>{
+		loadModel(url)
+		});
+		},[])
+	*/
+
+	 
 export default class MasterUser extends Component {
 	constructor(props) {
 		super(props);
@@ -24,21 +52,21 @@ export default class MasterUser extends Component {
 			master: {
 				data: {
 					user: "MASTER",
-					value: "",
+					value: [],
 					timestamp: 0
 				}
 			},
 			client1: {
 				data: {
 					user: "CLIENT1",
-					value: "",
+					value: [],
 					timestamp: 0
 				}
 			},
 			client2: {
 				data: {
 					user: "CLIENT2",
-					value: "",
+					value: [],
 					timestamp: 0
 				}
 			},
@@ -55,6 +83,7 @@ export default class MasterUser extends Component {
 		this.loadMasterData = this.loadMasterData.bind(this);
 		this.myRef = React.createRef();
 	}
+	
 	
 	async clearServerData() {
 		await db.ref("MASTER").set({
@@ -188,11 +217,35 @@ export default class MasterUser extends Component {
 		return time;
 	}
 
+	translate_pred(pred) {
+    //pred is a numpy array
+    //translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
+    // console.log("Pred", pred);
+    var dimensionsPred = [pred.length, pred[0].length];
+    // console.log("Pred dimensions: " + dimensionsPred)
+    var translation = Array(pred.length).fill().map(() =>
+       Array(pred[0].length).fill(0));
+    // var translation = tf.zeros([pred.length, pred[0].length]);
+    
+    // console.log("Translation: " + translation);
+    // translation.print();
+    // console.log(translation.length + " " + translation[0].length);
+
+    // var index = pred[0].indexOf(Math.max(pred[0]));
+    var index = pred[0].indexOf(Math.max(...pred[0]));
+    console.log(index);
+    translation[0][index] = 1;
+    return translation[0];
+	}
+	
 	render() {
 		if(this.state.computed1 && this.state.computed2) {
 			var masterData = this.state.master.data;
 			var movelist = masterData.value;
 			// Master's computation
+			var translatedMatrix = this.state.master.data.value;
+			window.translatedMatrix = translatedMatrix;
+			
 			movelist += " gives the master best move .h8";
 			masterData.value = movelist;
 			this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });
@@ -225,7 +278,7 @@ export default class MasterUser extends Component {
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
-								{ this.state.master.data.value }
+								{ console.log(this.state.master.data.value)}
 								<br />
 								<span className="chat-time float-right">{this.formatTime(this.state.master.data.timestamp)}</span>
 							</p>

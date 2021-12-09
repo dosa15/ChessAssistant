@@ -6,11 +6,36 @@ import { Modal } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
+// import {loadLayersModel} from 'react-tensorflow';
+import * as tf from "@tensorflow/tfjs"
+
 
 const sleep = (milliseconds) => {
 	return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+const alpha_dict = {
+    'a': [0, 0, 0, 0, 0, 0, 0],
+    'b': [1, 0, 0, 0, 0, 0, 0],
+    'c': [0, 1, 0, 0, 0, 0, 0],
+    'd': [0, 0, 1, 0, 0, 0, 0],
+    'e': [0, 0, 0, 1, 0, 0, 0],
+    'f': [0, 0, 0, 0, 1, 0, 0],
+    'g': [0, 0, 0, 0, 0, 1, 0],
+    'h': [0, 0, 0, 0, 0, 0, 1],
+};
+
+const new_alpha_dict = {
+    '1,0,0,0,0,0,0': 'b',
+    '0,1,0,0,0,0,0': 'c',
+    '0,0,1,0,0,0,0': 'd',
+    '0,0,0,1,0,0,0': 'e',
+    '0,0,0,0,1,0,0': 'f',
+    '0,0,0,0,0,1,0': 'g',
+    '0,0,0,0,0,0,1': 'h',
+    '0,0,0,0,0,0,0': 'a',
+};
+	 
 export default class MasterUser extends Component {
 	constructor(props) {
 		super(props);
@@ -41,6 +66,8 @@ export default class MasterUser extends Component {
 					timestamp: 0
 				}
 			},
+			alpha: null,
+			moveAlpha: "",
 			computed1: false,
 			computed2: false, 
 			readError: null,
@@ -55,28 +82,40 @@ export default class MasterUser extends Component {
 		this.myRef = React.createRef();
 	}
 	
+	
 	async clearServerData() {
-		await db.ref("MASTER").set({
-			data: {
+		await db.ref("MASTER/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT1").set({
-			data: {
+		await db.ref("CLIENT1/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT2").set({
-			data: {
+		await db.ref("CLIENT2/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
+	}
+
+	async loadModels() {
+		try {
+			// var model = await tf.loadLayersModel('https://firebasestorage.googleapis.com/v0/b/chessassistant-adams.appspot.com/o/models%2Fmodel_alpha%2Fmodel.json?alt=media&token=541bb76f-26b8-4251-8b53-656a0cb3fb51');
+			var model = await tf.loadLayersModel('http://127.0.0.1:8080/model_alpha/model.json')
+			this.setState({ alpha: model });
+			console.log(this.state.alpha);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
 	async loadMasterData() {
@@ -91,7 +130,7 @@ export default class MasterUser extends Component {
 		const chatArea = this.myRef.current;
 		try {
 			// let chats = [];
-			db.ref("MASTER").on("value", snapshot => {
+			db.ref("MASTER").on("child_changed", snapshot => {
 				// snapshot.forEach((snap) => {
 				//   chats.push(snap.val());
 				// });
@@ -101,7 +140,7 @@ export default class MasterUser extends Component {
 					this.setState({ master: snapshot.val() });
 					
 					if (this.state.master) {
-						console.log(this.state.master.data.value);
+						console.log("Got master value: ", (this.state.master.data ? this.state.master.data.value : this.state.master.value));
 					}
 					// if(initial) {
 					// 	this.setState({ client1: snapshot.val() });
@@ -141,6 +180,8 @@ export default class MasterUser extends Component {
 	// This function is in-built, and is the first to automatically execute every time the page loads
 	async componentDidMount() {
 		this.clearServerData();
+		await this.loadModels();
+		//console.log(getAlpha());
 		this.loadMasterData();
 	}
 
@@ -158,7 +199,7 @@ export default class MasterUser extends Component {
 		this.setState({ writeError: null });
 		const chatArea = this.myRef.current;
 		try {
-			await db.ref("MASTER").child('data').set({
+			await db.ref("MASTER/data").set({
 				user: "MASTER",
 				value: this.state.value,
 				timestamp: Date.now()
@@ -182,14 +223,45 @@ export default class MasterUser extends Component {
 		return time;
 	}
 
+	translate_pred(pred) {
+		//pred is a numpy array
+		//translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
+		// console.log("Pred", pred);
+		var dimensionsPred = [pred.length, pred[0].length];
+		// console.log("Pred dimensions: " + dimensionsPred)
+		var translation = Array(pred.length).fill().map(() =>
+		Array(pred[0].length).fill(0));
+		// var translation = tf.zeros([pred.length, pred[0].length]);
+		
+		// console.log("Translation: " + translation);
+		// translation.print();
+		// console.log(translation.length + " " + translation[0].length);
+
+		// var index = pred[0].indexOf(Math.max(pred[0]));
+		var index = pred[0].indexOf(Math.max(...pred[0]));
+		console.log(index);
+		translation[0][index] = 1;
+		return translation[0];
+	}
+	
 	render() {
+		console.log("MASTER: ", this.state.master);
+		console.log("MASTER value: ", (this.state.master.data ? this.state.master.data.value : this.state.master.value));
 		if(this.state.computed1 && this.state.computed2) {
-			var masterData = this.state.master.data;
-			var movelist = masterData.value;
+			// var masterData = this.state.master.data;
+			// var translatedMatrix = masterData.value;
 			// Master's computation
-			movelist += " gives the master best move .h8";
-			masterData.value = movelist;
-			this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });
+			// var t1 = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
+			console.log("predicting...")
+			// this.state.alpha.predict(t1).array().then(function (move) {
+			// 	// Translated to R code from ipynb.
+			// 	console.log("M Alpha: ", move);
+			// 	var tMove = this.translate_pred(move);
+			// 	// console.log("T Alpha: ", tMove);
+			// 	this.setState({ moveAlpha: new_alpha_dict[tMove.toString()] });
+			// });
+			// masterData.value = this.state.moveAlpha;
+			// this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });
 		}
 		return (
 			<div>
@@ -219,9 +291,9 @@ export default class MasterUser extends Component {
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
-								{ this.state.master.data.value }
+								{ (this.state.master.data ? this.state.master.data.value : this.state.master.value) }
 								<br />
-								<span className="chat-time float-right">{this.formatTime(this.state.master.data.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime((this.state.master.data ? this.state.master.data.timestamp : this.state.master.timestamp))}</span>
 							</p>
 						: null
 					}

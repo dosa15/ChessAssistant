@@ -7,38 +7,72 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
 import * as tf from "@tensorflow/tfjs";
+//import {getAlpha} from '../../../../www/script.js';
+const sleep = (milliseconds) => {
+	return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
-export default class ClientUser1 extends Component {
+/*const alpha = await tf.loadLayersModel('localstorage://');
+tf.loadLayersModel('file://../models/model_alpha/model.json'); */
+
+const url = {
+alpha: '../models/model_alpha/model.json',
+};
+async function loadModel(url) {
+		try {
+		// For layered model
+		const alpha = await tf.loadLayersModel(url.alpha);
+		// For graph model
+		// const model = await tf.loadGraphModel(url.model);
+		setModel(alpha);
+		console.log("Load model success")
+		}
+		catch (err) {
+		console.log(err);
+		}
+	}
+	
+	//React Hook - shows error if I call
+	/*
+		const [alpha, setModel] = useState();
+		useEffect(()=>{
+		tf.ready().then(()=>{
+		loadModel(url)
+		});
+		},[])
+	*/
+
+	 
+export default class MasterUser extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			// user: auth().currentUser,
-			user: "CLIENT1",
+			user: "MASTER",
 			chats: [],
 			value: '',
 			client: true,
 			master: {
 				data: {
 					user: "MASTER",
-					value: "",
+					value: [],
 					timestamp: 0
 				}
 			},
 			client1: {
 				data: {
 					user: "CLIENT1",
-					value: "",
+					value: [],
 					timestamp: 0
 				}
 			},
 			client2: {
 				data: {
 					user: "CLIENT2",
-					value: "",
+					value: [],
 					timestamp: 0
 				}
 			},
-			number: null,
 			computed1: false,
 			computed2: false, 
 			readError: null,
@@ -48,128 +82,103 @@ export default class ClientUser1 extends Component {
 			showModal: true
 		};
 		this.handleChange = this.handleChange.bind(this);
-		// this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 		this.loadMasterData = this.loadMasterData.bind(this);
 		this.myRef = React.createRef();
 	}
 	
+	
 	async clearServerData() {
-		await db.ref("MASTER/data").set({
-			// data: {
+		await db.ref("MASTER").set({
+			data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			// }
+			}
 		});
-		await db.ref("CLIENT1/data").set({
-			// data: {
+		await db.ref("CLIENT1").set({
+			data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			// }
+			}
 		});
-		await db.ref("CLIENT2/data").set({
-			// data: {
+		await db.ref("CLIENT2").set({
+			data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			// }
+			}
 		});
-	}
-
-	async loadModels() {
-		try {
-			// var model = await tf.loadLayersModel('https://firebasestorage.googleapis.com/v0/b/chessassistant-adams.appspot.com/o/models%2Fmodel_alpha%2Fmodel.json?alt=media&token=541bb76f-26b8-4251-8b53-656a0cb3fb51');
-			var model = await tf.loadLayersModel('http://127.0.0.1:8080/model_numbers/model.json')
-			this.setState({ number: model });
-			console.log(this.state.number);
-		} catch(e) {
-			console.log(e);
-		}
 	}
 
 	async loadMasterData() {
-		console.log("master data loaded from " + this.state.user);
+		// console.log("master data loaded from " + this.state.user);
 
 		// if(!this.state.user) {
 		// 	window.setTimeout(this.state.user, 10);
 		// 	return;
 		// }
 
-		this.setState({ readError: null, loadingChats: true, showModal: false });
+		this.setState({ readError: null, loadingChats: true, computed1: false, computed2: false });
 		const chatArea = this.myRef.current;
 		try {
-			db.ref("MASTER").on("child_changed", (snapshot, _) => {
+			// let chats = [];
+			db.ref("MASTER").on("value", snapshot => {
 				// snapshot.forEach((snap) => {
 				//   chats.push(snap.val());
 				// });
 
 				if(snapshot.exists()) {
 					// chats.push(snapshot.val());
-					console.log(`Value got from Master: ${snapshot.toJSON()}`);
-					var newData = { ...this.state.client1, data: snapshot.val() }
-					this.setState({ client1: newData, master: newData });
-					console.log(this.state.client1);
+					this.setState({ master: snapshot.val() });
+					
+					if (this.state.master) {
+						console.log(this.state.master.data.value);
+					}
 					// if(initial) {
 					// 	this.setState({ client1: snapshot.val() });
 					// 	this.setState({ client2: snapshot.val() });
 					// }
-					this.computeClientData(this.state.client1.data);
+					// console.log(`Master Value: ${this.state.master.value}`);
 				}
 			});
-			
+
+			// var key = this.state.client1.timestamp;
+			db.ref("CLIENT1").on("child_changed", (snapshot, _) => {
+				if (snapshot.exists()) {
+					var newData = { ...this.state.client1, data: snapshot.val() }
+					this.setState({ client1: newData, computed1: true });
+					console.log(`Client1 data: ${this.state.client1.data.value}`);
+				}
+			});
+
+			db.ref("CLIENT2").on("child_changed", (snapshot, _) => {
+				if (snapshot.exists()) {
+					var newData = { ...this.state.client1, data: snapshot.val() }
+					this.setState({ client2: newData, computed2: true });
+					console.log(`Client2 data: ${this.state.client2.data.value}`);
+				}
+			});
+
 			// chats.sort(function (a, b) { return a.timestamp - b.timestamp })
 			chatArea.scrollBy(0, chatArea.scrollHeight);
-			this.setState({ loadingChats: false });
+			this.setState({ loadingChats: false });//, computed1: false, computed2: false });
 			
 			// this.setState({ chats });
 		} catch (error) {
 			this.setState({ readError: error.message, loadingChats: false });
 		}
 	}
-	
-translate_pred(pred) {
-	//pred is a numpy array
-	//translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
-	// console.log("Pred", pred);
-	var dimensionsPred = [pred.length, pred[0].length];
-	// console.log("Pred dimensions: " + dimensionsPred)
-	var translation = Array(pred.length).fill().map(() =>
-		Array(pred[0].length).fill(0));
-	// var translation = tf.zeros([pred.length, pred[0].length]);
-	
-	// console.log("Translation: " + translation);
-	// translation.print();
-	// console.log(translation.length + " " + translation[0].length);
-	
-	// var index = pred[0].indexOf(Math.max(pred[0]));
-	var index = pred[0].indexOf(Math.max(...pred[0]));
-	console.log(index);
-	translation[0][index] = 1;
-	return translation[0];
-}
-	
-	async computeClientData(clientData) {
-		console.log(clientData) 
-		console.log(clientData.value);
-		var movelist = clientData.value;
-		console.log(`Client1 movelist: ${movelist}`);
-		// Client 1's computation
-		movelist += " gives the 1st best move: .a1";
-		clientData.value = movelist;
-		this.setState({ client1: { ...this.state.client1, data: clientData } });
-
-		await db.ref("CLIENT1/data").set({
-			user: "CLIENT1",
-			value: clientData.value,
-			timestamp: Date.now()
-		});
-	}
 
 	// This function is in-built, and is the first to automatically execute every time the page loads
 	async componentDidMount() {
-		// this.clearServerData();
-		await this.loadModels();
+		this.clearServerData();
+		const script = document.createElement("script");
+		script.src = "../../../../www/script.js";
+		script.async = true;
+		document.body.appendChild(script);
+		//console.log(getAlpha());
 		this.loadMasterData();
 	}
 
@@ -180,17 +189,15 @@ translate_pred(pred) {
 	}
 	
 	// This function handles the form that is used to submit data to the server
-	/*
 	async handleSubmit(event) {
-		if (event)
-			event.preventDefault();
-		else
-			console.log("Client invoked");
+		console.log("Submitting form...")
+		event.preventDefault();
+
 		this.setState({ writeError: null });
 		const chatArea = this.myRef.current;
 		try {
-			await db.ref(this.state.user).set({
-				user: this.state.user,
+			await db.ref("MASTER").child('data').set({
+				user: "MASTER",
 				value: this.state.value,
 				timestamp: Date.now()
 			}); 
@@ -206,7 +213,6 @@ translate_pred(pred) {
 			this.setState({ writeError: error.message });
 		}
 	}
-	*/
 
 	formatTime(timestamp) {
 		const d = new Date(timestamp);
@@ -214,13 +220,40 @@ translate_pred(pred) {
 		return time;
 	}
 
+	translate_pred(pred) {
+    //pred is a numpy array
+    //translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
+    // console.log("Pred", pred);
+    var dimensionsPred = [pred.length, pred[0].length];
+    // console.log("Pred dimensions: " + dimensionsPred)
+    var translation = Array(pred.length).fill().map(() =>
+       Array(pred[0].length).fill(0));
+    // var translation = tf.zeros([pred.length, pred[0].length]);
+    
+    // console.log("Translation: " + translation);
+    // translation.print();
+    // console.log(translation.length + " " + translation[0].length);
+
+    // var index = pred[0].indexOf(Math.max(pred[0]));
+    var index = pred[0].indexOf(Math.max(...pred[0]));
+    console.log(index);
+    translation[0][index] = 1;
+    return translation[0];
+	}
+	
 	render() {
-		// if(this.state.client1 && !this.state.computed1)
-		// 	this.computeClient1Data();
-		// else if(this.state.client2 && !this.state.computed2)
-		// 	this.computeClient2Data();
+		if(this.state.computed1 && this.state.computed2) {
+			var masterData = this.state.master.data;
+			var movelist = masterData.value;
+			// Master's computation
+			var translatedMatrix = this.state.master.data.value;
+			window.translatedMatrix = translatedMatrix;
+			
+			movelist += " gives the master best move .h8";
+			masterData.value = movelist;
+			this.setState({ master: {...this.state.master, data: masterData}, computed1: false, computed2: false });
+		}
 		return (
-		//Preliminary modal
 			<div>
 				{/* Allow users to pick their role */}
 				<div>
@@ -240,15 +273,15 @@ translate_pred(pred) {
 					}
 
 					{/* chat area */}
-					
+
 					{
 						// If master is not null
 						this.state.master // && this.state.user === "MASTER"
-						?	<p className={"chat-bubble"}>
+						?	<p className={"chat-bubble current-user"}>
 								{/* <span className="chat-time float-left">{this.state.master.user}</span> */}
 								<span className="chat-time float-left">MASTER</span>
 								<br />
-								{ this.state.master.data.value }
+								{ console.log(this.state.master.data.value)}
 								<br />
 								<span className="chat-time float-right">{this.formatTime(this.state.master.data.timestamp)}</span>
 							</p>
@@ -257,7 +290,7 @@ translate_pred(pred) {
 					{
 						// If client1 is not null
 						this.state.client1 // && this.state.user === "CLIENT1"
-						?	<p className={"chat-bubble current-user"}>
+						?	<p className={"chat-bubble"}>
 								{/* <span className="chat-time float-left">{this.state.client1.user}</span> */}
 								<span className="chat-time float-left">CLIENT1</span>
 								<br />
@@ -283,7 +316,6 @@ translate_pred(pred) {
 				</div>
 		
 				<form id="sendDataForm" onSubmit={this.handleSubmit} className="mx-3">
-					{/* {console.log("Submitting form...")} */}
 					<textarea className="form-control" name="content" onChange={this.handleChange} value={this.state.value} disabled={this.state.user !== "MASTER"}></textarea>
 					{this.state.readError ? <p className="text-danger">{this.state.readError}</p> : null}
 					{this.state.writeError ? <p className="text-danger">{this.state.writeError}</p> : null}

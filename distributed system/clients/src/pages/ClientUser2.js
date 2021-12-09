@@ -6,6 +6,7 @@ import { Modal } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
+import * as tf from "@tensorflow/tfjs";
 
 export default class ClientUser1 extends Component {
 	constructor(props) {
@@ -37,6 +38,7 @@ export default class ClientUser1 extends Component {
 					timestamp: 0
 				}
 			},
+			pieces: null,
 			computed1: false,
 			computed2: false, 
 			readError: null,
@@ -52,27 +54,38 @@ export default class ClientUser1 extends Component {
 	}
 	
 	async clearServerData() {
-		await db.ref("MASTER").set({
-			data: {
+		await db.ref("MASTER/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT1").set({
-			data: {
+		await db.ref("CLIENT1/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
-		await db.ref("CLIENT2").set({
-			data: {
+		await db.ref("CLIENT2/data").set({
+			// data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			}
+			// }
 		});
+	}
+
+	async loadModels() {
+		try {
+			// var model = await tf.loadLayersModel('https://firebasestorage.googleapis.com/v0/b/chessassistant-adams.appspot.com/o/models%2Fmodel_alpha%2Fmodel.json?alt=media&token=541bb76f-26b8-4251-8b53-656a0cb3fb51');
+			var model = await tf.loadLayersModel('http://127.0.0.1:8080/model_pieces/model.json')
+			this.setState({ pieces: model });
+			console.log(this.state.pieces);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
 	async loadMasterData() {
@@ -135,6 +148,7 @@ export default class ClientUser1 extends Component {
 	// This function is in-built, and is the first to automatically execute every time the page loads
 	async componentDidMount() {
 		// this.clearServerData();
+		await this.loadModels();
 		this.loadMasterData();
 	}
 

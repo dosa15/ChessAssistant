@@ -5,46 +5,34 @@
 // const { Chess } = require("./chessboardjs/js/chess");
 
 // function initialize() {
-tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
-    window.alpha = model;
-    model.save("localstorage://alpha");
-});
-tf.loadLayersModel('models/model_numbers/model.json').then(function (model) {
-    window.number = model;
-    model.save("localstorage://number");
-});
-tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
-    window.pieces = model;
-    model.save("localstorage://pieces");
-});
+    tf.loadLayersModel('models/model_alpha/model.json').then(function (model) {
+        window.alpha = model;
+    });
+    tf.loadLayersModel('models/model_numbers/model.json').then(function (model) {
+        window.number = model;
+    });
+    tf.loadLayersModel('models/model_pieces/model.json').then(function (model) {
+        window.pieces = model;     
+    });
 // }
+
+const alpha=window.alpha;
+const number=window.number;
+const pieces=window.pieces;
+export function getAlpha(){
+	return alpha;
+}
+export function getNumber(){
+	return number;
+}
+export function getPieces(){
+	return pieces;
+}
+
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyD4ByfhAdgTcKys7hRM1p_OG-zm8nuaH9A",
-    authDomain: "chessassistant-adams.firebaseapp.com",
-    databaseURL: "https://chessassistant-adams-default-rtdb.firebaseio.com",
-    projectId: "chessassistant-adams",
-    storageBucket: "chessassistant-adams.appspot.com",
-    messagingSenderId: "520343244676",
-    appId: "1:520343244676:web:10fa9200f315beef8d57d1",
-    measurementId: "G-Y1BKH1N7SE"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.database()
-
 
 const reshapeArray = (arr, r, c) => {
    if (r * c !== arr.length * arr[0].length) {
@@ -63,7 +51,6 @@ const reshapeArray = (arr, r, c) => {
 };
 
 var board, game = new Chess();
-window.game = game
 
 /*The "AI" part starts here */
 
@@ -391,135 +378,6 @@ var onDragStart = function (source, piece, position, orientation) {
     }
 };
 
-window.onload = function () {
-
-var black_score = 50, white_score = 50;
-
-var scoreData = [{
-		type: "stackedColumn",
-		name: "White",
-		//showInLegend: "true",
-		//yValueFormatString: "#",
-		dataPoints: [{ x: 10, y: white_score }]
-	},
-  {
-		type: "stackedColumn",
-		name: "Black",
-		//showInLegend: "true",
-		//yValueFormatString: "#",
-		dataPoints: [{ x: 10, y: black_score }]
-	}];
-	
-	CanvasJS.addColorSet("chessColorSet",
-     [
-     "#FEFEFE",
-     "#010101"
-    ]);
-    
-var chart = new CanvasJS.Chart("chartContainer", {
-  title: { text: "Win Status" },
-  backgroundColor: "#213c6f",
-  theme: "dark1",
-  colorSet: "chessColorSet",
-  animationEnabled: true,
-  axisX: {
-    interval: 1,
-    minimum: 9,
-    maximum: 11,
-    gridThickness: 0,
-    tickLength: 0,
-    lineThickness: 0,
-    labelFormatter: function(){
-      return " ";
-    }
-  },
-  axisY: {
-    interval: 1,
-    includeZero: true,
-    gridThickness: 0,
-    tickLength: 0,
-    lineThickness: 0,
-    labelFormatter: function(){
-      return " ";
-    }
-  },
-  toolTip: {
-		shared: false,
-		content: "Score: {y}"
-	},
-	data: scoreData
-});
-
-var xVal = 0;
-var yVal = 100; 
-var updateInterval = 1000;
-
-var updateChart = function () {
-  white_score = black_score = 0;
-  var fen = window.game.fen().split(" ")[0];
-  console.log("FEN: " + fen);
-  for (var i = 0; i < fen.length; i++) {
-    if (fen.charAt(i) == 'p')
-      black_score++;
-    else if(fen.charAt(i) == 'P')
-      white_score++;
-    else if (fen.charAt(i) == 'b')
-      black_score += 3;
-    else if(fen.charAt(i) == 'B')
-      white_score += 3;
-    else if (fen.charAt(i) == 'n')
-      black_score += 3;
-    else if(fen.charAt(i) == 'N')
-      white_score += 3;
-    else if (fen.charAt(i) == 'r')
-      black_score += 5;
-    else if(fen.charAt(i) == 'R')
-      white_score += 5;
-    else if (fen.charAt(i) == 'q')
-      black_score += 9;
-    else if(fen.charAt(i) == 'Q')
-      white_score += 9;
-  }
-  /*
-  black_data.shift();
-  white_data.shift();
-  black_data.push({ x: black_score, y: 10 });
-  white_data.push({ x: white_score, y: 10 });
-  */
-  scoreData.push({
-		type: "stackedColumn",
-		name: "White",
-		//showInLegend: "true",
-		//yValueFormatString: "#",
-		dataPoints: [{ x: 10, y: white_score }]
-	});
-  scoreData.push({
-		type: "stackedColumn",
-		name: "Black",
-		//showInLegend: "true",
-		//yValueFormatString: "#",
-		dataPoints: [{ x: 10, y: black_score }]
-	});
-	scoreData.shift();
-	scoreData.shift();
-  
-  /*
-  if(black_data.length > 1)
-  if(white_data.length > 1)
-    */
-  
-  console.log("White score:" + white_score);
-  console.log("Black score:" + black_score);
-  //console.log("Score Data:" + scoreData.dataPoints.x);
-	chart.render();
-};
-
-updateChart();
-setInterval(function(){updateChart()}, updateInterval);
-
-}
-
-
 async function endGame() {
     await sleep(750);
     alert('Game over');
@@ -528,105 +386,63 @@ async function endGame() {
     console.log("Final movelist: " + window.movelist);
     
     //atul response url
-    .atulResponse = "https://1ee9a8602b914e199f82026e0b9fea53.app.rstudio.cloud/p/5bec0ace/";
+    window.atulResponse = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/p/779bddb6/graph1?s=";
 
-          //dosa response url
-          window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/819a4d77/";
+    //dosa response url
+    window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/940c8a06/graph1?s=";
 
-          //booms response url
-          window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/";
+    //booms response url
+    window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/graph1?s=";
 
-          //moan response url
-          window.moanResponse = "https://4e31f489e6a34168acfc8d17015c4ad2.app.rstudio.cloud/p/81f4bcc4/";
-          
-      			
-    			const url1 = window.moanResponse + "graph1?s=" + encodeURIComponent(window.movelist);
-    			console.log(url1);
-    			
-    			var wnd1 = window.open(url1, "_blank", "wnd1", "width=100, height=100");
-    			//wnd1.resizeTo(0,0); 
-    			await sleep(500);
-    			//wnd1.body.addEventListener('load', wnd1.close(), true);
-          //await sleep(100);
-          
-          const url2 = window.moanResponse + "graph2?s=" + encodeURIComponent(window.movelist);
-    			console.log(url2);
-    			var wnd2 = window.open(url2, "_blank", "wnd2", "width=100, height=100");
-    			//wnd2.resizeTo(0,0); 
-    			await sleep(6000);
-    			//await sleep(100);
-    			
-<<<<<<< HEAD
-    			const url3 = window.moanResponse + "graph3?s=" + encodeURIComponent(window.movelist);
-    			console.log(url3);
-    			var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
-    			//wnd3.resizeTo(0,0); 
-    			await sleep(600);
-    			wnd3.close();
-    			wnd2.close();
-    			wnd1.close();
-=======
-            const url3 = window.dosaResponse + "graph3?s=" + encodeURIComponent(window.movelist);
-            console.log(url3);
-            var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
-            //wnd3.resizeTo(0,0); 
-            await sleep(600);
+    //moan response url
+    window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/graph1?s=";
+    /*
+    var response = await fetch(dosaResponse + window.movelist, { 
+      mode: 'no-cors' ,
+      method: 'GET',
+      headers: myHeaders
+    })
+      //.then(() => {
+      //  const myJson = response.json();
+      //})
+      .then(async function() {
+      */
+      
+    //replace ______Response with your respective one
+			const url1 = window.dosaResponse + encodeURIComponent(window.movelist);
+			console.log(url1);
+			var wnd = window.open(url1, "wnd","width=0, height=0");
+			await sleep(500);
+			wnd.close();
+			
+			//atul ka src
+       window.atulBarGraphSrc = "https://d8e7982d9131476fade050b7ba5d0f1b.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+       
+       //dosa ka src
+       window.dosaBarGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
 
-            const url4 = window.atulResponse + "graph4?s=" + encodeURIComponent(window.movelist);
-            console.log(url4);
-            var wnd4 = window.open(url4, "_blank", "wnd4", "width=100, height=100");
-            await sleep(50);
-            
-            const url5 = window.atulResponse + "graph5?s=" + encodeURIComponent(window.movelist);
-            console.log(url5);
-            var wnd5 = window.open(url5, "_blank", "wnd4", "width=100, height=100");
-            await sleep(200);
+       //booms ka src
+       window.boomsBarGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
 
-            wnd5.close();
-            wnd4.close();
-            wnd3.close();
-            wnd2.close();
-            wnd1.close();
-
->>>>>>> 8ad27f1e9f92808232a0facea6225af898bb4e90
-
-         //atul ka src
-        window.atulGraphSrc = "https://1ee9a8602b914e199f82026e0b9fea53.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-         
-         //dosa ka src
-         window.dosaGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-        
-         //booms ka src
-         window.boomsGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-	
-         //moan ka src
-          window.moanGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-          
-          var graphs = ["bubblechart.png", "linechart.png", "piechart.png", "openingschart.png", "treemap.png"]
-          
-          var carouselLinks = $("#carouselGraphLinks").empty();
-          var carouselElements = $("#carouselGraphViewer").empty();
-          for(var i = 0; i < graphs.length; i++) {
-            carouselLinks.append(`
-              <li data-target="#postGameGraphsCarousel" data-slide-to="` + i + `" ` + (i == 0 ? 'class="active"' : "") + `></li>
-            `);
-            
-            carouselElements.append(`
-              <div class="carousel-item ` + (i == 0 ? "active" : "") + `">
-                  <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.dosaGraphSrc + graphs[i] + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
-              </div>
-            `);
-          }
-          
-          $('#post-game').show();
-          $('#newGameBtn2').show();
-      }
+       //moan ka src
+        window.moanBarGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fbubblechart.png";
+      
+      var carouselLinks = $("#carouselGraphLinks").empty();
+      carouselLinks.append(`
+        <li data-target="#postGameGraphsCarousel" data-slide-to="0" class="active"></li>
+      `);
+      
+      var carouselElements = $("#carouselGraphViewer").empty();
+      carouselElements.append(`
+        <div class="carousel-item active">
+            <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.dosaBarGraphSrc + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
+        </div>
+      `);
+      
+      $('#post-game').show();
+      $('#NewGameBtn').show();
   //var fen = game.fen();
 }
-
-// export function getTranslatedMatrix() {
-//     return window.translatedMatrix;
-// }
 
 function make_matrix(fen) { //converts fen to reqd matrix format
     var pieces = fen.split(" ")[0];
@@ -693,19 +509,23 @@ var makeBestMove = async function () {
     //and translate functions and then pass to ml model(yet to do)
     var matrix = make_matrix(game.fen());
     var translatedMatrix = translate(matrix);
-    window.translatedMatrix = translatedMatrix;
-    
-    // Send translated matrix to firebase
-    var translatedMatrixJSON = { TM: translatedMatrix };
-    db.ref("MASTER/data").set({
-        user: "MASTER",
-        value: translatedMatrix,
-        timestamp: Date.now()
-    }); 
+	//Writing to JSON file
+	var textFile = null,
+	  makeTextFile = function (text) {
+		var data = new Blob([text], {type: 'text/plain'});
 
-    console.log(JSON.stringify(translatedMatrixJSON));
-    //console.log(fileURL);
-    
+		// If we are replacing a previously generated file we need to
+		// manually revoke the object URL to avoid memory leaks.
+		if (textFile !== null) {
+		  window.URL.revokeObjectURL(textFile);
+		}
+
+		textFile = window.URL.createObjectURL(data);
+
+		// returns a URL you can use as a href
+		return textFile;
+	  };
+	
     var t1 = tf.reshape(translatedMatrix, [1, 8, 8, 12]);
     t1.print();
     console.log("TM: ", translatedMatrix);
@@ -752,7 +572,7 @@ var makeBestMove = async function () {
     console.log("Number: ", window.moveNumber);
     console.log("Piece: ", window.movePiece);
     var nextMove = ((window.movePiece == 'p' || window.movePiece == 'P' ||    // If move is a pawn move
-                        window.movePiece == '.')    // Or if move is registered incorrectly
+                        window.movePiece == '.')    // I have no idea why '.' appears, gotta fix this
                         ? ''                        // Remove 'p' from the SAN notation
                         : window.movePiece.toUpperCase())         // Else retain the piece's character
                     + window.moveAlpha + window.moveNumber;

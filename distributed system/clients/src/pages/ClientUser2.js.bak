@@ -6,14 +6,13 @@ import { Modal } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popup from 'reactjs-popup';
-import * as tf from "@tensorflow/tfjs";
 
 export default class ClientUser1 extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			// user: auth().currentUser,
-			user: "CLIENT1",
+			user: "CLIENT2",
 			chats: [],
 			value: '',
 			client: true,
@@ -38,7 +37,6 @@ export default class ClientUser1 extends Component {
 					timestamp: 0
 				}
 			},
-			number: null,
 			computed1: false,
 			computed2: false, 
 			readError: null,
@@ -54,38 +52,27 @@ export default class ClientUser1 extends Component {
 	}
 	
 	async clearServerData() {
-		await db.ref("MASTER/data").set({
-			// data: {
+		await db.ref("MASTER").set({
+			data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			// }
+			}
 		});
-		await db.ref("CLIENT1/data").set({
-			// data: {
+		await db.ref("CLIENT1").set({
+			data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			// }
+			}
 		});
-		await db.ref("CLIENT2/data").set({
-			// data: {
+		await db.ref("CLIENT2").set({
+			data: {
 				user: "",
 				value: "",
 				timestamp: 0
-			// }
+			}
 		});
-	}
-
-	async loadModels() {
-		try {
-			// var model = await tf.loadLayersModel('https://firebasestorage.googleapis.com/v0/b/chessassistant-adams.appspot.com/o/models%2Fmodel_alpha%2Fmodel.json?alt=media&token=541bb76f-26b8-4251-8b53-656a0cb3fb51');
-			var model = await tf.loadLayersModel('http://127.0.0.1:8080/model_numbers/model.json')
-			this.setState({ number: model });
-			console.log(this.state.number);
-		} catch(e) {
-			console.log(e);
-		}
 	}
 
 	async loadMasterData() {
@@ -107,14 +94,14 @@ export default class ClientUser1 extends Component {
 				if(snapshot.exists()) {
 					// chats.push(snapshot.val());
 					console.log(`Value got from Master: ${snapshot.toJSON()}`);
-					var newData = { ...this.state.client1, data: snapshot.val() }
-					this.setState({ client1: newData, master: newData });
-					console.log(this.state.client1);
+					var newData = { ...this.state.client2, data: snapshot.val() }
+					this.setState({ client2: newData, master: newData });
+					console.log(this.state.client2);
 					// if(initial) {
 					// 	this.setState({ client1: snapshot.val() });
 					// 	this.setState({ client2: snapshot.val() });
 					// }
-					this.computeClientData(this.state.client1.data);
+					this.computeClientData(this.state.client2.data);
 				}
 			});
 			
@@ -128,39 +115,18 @@ export default class ClientUser1 extends Component {
 		}
 	}
 	
-translate_pred(pred) {
-	//pred is a numpy array
-	//translation = Array.from(new Array(pred.length), _ => Array(pred[0].length).fill(0));
-	// console.log("Pred", pred);
-	var dimensionsPred = [pred.length, pred[0].length];
-	// console.log("Pred dimensions: " + dimensionsPred)
-	var translation = Array(pred.length).fill().map(() =>
-		Array(pred[0].length).fill(0));
-	// var translation = tf.zeros([pred.length, pred[0].length]);
-	
-	// console.log("Translation: " + translation);
-	// translation.print();
-	// console.log(translation.length + " " + translation[0].length);
-	
-	// var index = pred[0].indexOf(Math.max(pred[0]));
-	var index = pred[0].indexOf(Math.max(...pred[0]));
-	console.log(index);
-	translation[0][index] = 1;
-	return translation[0];
-}
-	
 	async computeClientData(clientData) {
 		console.log(clientData) 
 		console.log(clientData.value);
 		var movelist = clientData.value;
-		console.log(`Client1 movelist: ${movelist}`);
-		// Client 1's computation
-		movelist += " gives the 1st best move: .a1";
+		console.log(`Client2 movelist: ${movelist}`);
+		// Client 2's computation
+		movelist += " gives the 2nd best move: .b2";
 		clientData.value = movelist;
-		this.setState({ client1: { ...this.state.client1, data: clientData } });
+		this.setState({ client2: { ...this.state.client2, data: clientData } });
 
-		await db.ref("CLIENT1/data").set({
-			user: "CLIENT1",
+		await db.ref("CLIENT2").child('data').set({
+			user: "CLIENT2",
 			value: clientData.value,
 			timestamp: Date.now()
 		});
@@ -169,7 +135,6 @@ translate_pred(pred) {
 	// This function is in-built, and is the first to automatically execute every time the page loads
 	async componentDidMount() {
 		// this.clearServerData();
-		await this.loadModels();
 		this.loadMasterData();
 	}
 
@@ -257,20 +222,20 @@ translate_pred(pred) {
 					{
 						// If client1 is not null
 						this.state.client1 // && this.state.user === "CLIENT1"
-						?	<p className={"chat-bubble current-user"}>
+						?	<p className={"chat-bubble"}>
 								{/* <span className="chat-time float-left">{this.state.client1.user}</span> */}
 								<span className="chat-time float-left">CLIENT1</span>
 								<br />
 								{ this.state.client1.data.value }
 								<br />
-								<span className="chat-time float-right">{this.formatTime( this.state.client1.data.timestamp)}</span>
+								<span className="chat-time float-right">{this.formatTime(this.state.client1.data.timestamp)}</span>
 							</p>
 						: null
 					}
 					{
 						// If client2 is not null
 						this.state.client2 // && this.state.user === "CLIENT2"
-						?	<p className={"chat-bubble"}>
+						?	<p className={"chat-bubble current-user"}>
 								{/* <span className="chat-time float-left">{this.state.client2.user}</span> */}
 								<span className="chat-time float-left">CLIENT2</span>
 								<br />

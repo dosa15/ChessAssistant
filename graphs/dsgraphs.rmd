@@ -1,0 +1,50 @@
+---
+title: "Graphs"
+author: "Manoghn Kandiraju 19BCE1621"
+date: "08/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(gganimate)
+library(gifski)
+library(png)
+library(tidyverse)
+
+finaldata<-read.csv("D:/college/datavisualization/project/ChessAssistant/clean_ds_post_move_analysis.csv")
+#finaldata<-head(finaldata,10)
+finaldata
+withoutpawns<-finaldata[c('Queen','Knight','Bishop','Rook')]
+withoutpawns$totalmoves=withoutpawns$Queen+withoutpawns$Knight+withoutpawns$Bishop+withoutpawns$Rook
+finaldatawithoutpawn1<-withoutpawns %>% arrange(desc(totalmoves))
+pieces <- c("Queen","Knight","Bishop","Rook")
+games<-c(1:108)
+
+
+Values <- matrix(c(finaldatawithoutpawn1$Queen,finaldatawithoutpawn1$Knight,finaldatawithoutpawn1$Bishop,finaldatawithoutpawn1$Rook), nrow = 4, ncol = 108, byrow = TRUE)
+
+bargraph<-barplot(Values, main = "Dataset insights",names.arg = games, xlab = "games", ylab = "moves count", col = c("red","green","blue","grey"))
+legend("topright", pieces, cex = 0.5, fill =c("red","green","blue","grey"))
+
+```
+
+```{r}
+library(dplyr)
+
+df<-read.csv(file = "D:/college/datavisualization/project/ChessAssistant/clean_ds_post_move_analysis.csv")
+
+df1<-table(df$Opening)
+
+barplot(df1,las =2,cex.names = 0.7,xlab = "opening",ylab = "Count")
+```
+
+```{r}
+
+plot=ggplot(df,aes(x=Num.Moves,y=X,fill=Winner))
+plot+geom_area()
+```

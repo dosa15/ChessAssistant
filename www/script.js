@@ -381,10 +381,10 @@ async function endGame() {
           window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/";
 
           //moan response url
-          window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/";
+          window.moanResponse = "https://4e31f489e6a34168acfc8d17015c4ad2.app.rstudio.cloud/p/81f4bcc4/";
           
       			
-    			const url1 = window.dosaResponse + "graph1?s=" + encodeURIComponent(window.movelist);
+    			const url1 = window.moanResponse + "graph1?s=" + encodeURIComponent(window.movelist);
     			console.log(url1);
     			
     			var wnd1 = window.open(url1, "_blank", "wnd1", "width=100, height=100");
@@ -393,14 +393,14 @@ async function endGame() {
     			//wnd1.body.addEventListener('load', wnd1.close(), true);
           //await sleep(100);
           
-          const url2 = window.dosaResponse + "graph2?s=" + encodeURIComponent(window.movelist);
+          const url2 = window.moanResponse + "graph2?s=" + encodeURIComponent(window.movelist);
     			console.log(url2);
     			var wnd2 = window.open(url2, "_blank", "wnd2", "width=100, height=100");
     			//wnd2.resizeTo(0,0); 
     			await sleep(6000);
     			//await sleep(100);
     			
-    			const url3 = window.dosaResponse + "graph3?s=" + encodeURIComponent(window.movelist);
+    			const url3 = window.moanResponse + "graph3?s=" + encodeURIComponent(window.movelist);
     			console.log(url3);
     			var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
     			//wnd3.resizeTo(0,0); 

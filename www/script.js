@@ -528,81 +528,88 @@ async function endGame() {
     console.log("Final movelist: " + window.movelist);
     
     //atul response url
-    window.atulResponse = "https://1ee9a8602b914e199f82026e0b9fea53.app.rstudio.cloud/p/5bec0ace/";
+    .atulResponse = "https://1ee9a8602b914e199f82026e0b9fea53.app.rstudio.cloud/p/5bec0ace/";
 
-    //dosa response url
-    window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/4aaca203/";
+          //dosa response url
+          window.dosaResponse = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/p/819a4d77/";
 
-    //booms response url
-    window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/";
+          //booms response url
+          window.boomsResponse = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/p/9945934a/";
 
-    //moan response url
-    window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/";
-    
+          //moan response url
+          window.moanResponse = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/p/b5fb76e8/";
+          
+      			
+    			const url1 = window.dosaResponse + "graph1?s=" + encodeURIComponent(window.movelist);
+    			console.log(url1);
+    			
+    			var wnd1 = window.open(url1, "_blank", "wnd1", "width=100, height=100");
+    			//wnd1.resizeTo(0,0); 
+    			await sleep(500);
+    			//wnd1.body.addEventListener('load', wnd1.close(), true);
+          //await sleep(100);
+          
+          const url2 = window.dosaResponse + "graph2?s=" + encodeURIComponent(window.movelist);
+    			console.log(url2);
+    			var wnd2 = window.open(url2, "_blank", "wnd2", "width=100, height=100");
+    			//wnd2.resizeTo(0,0); 
+    			await sleep(6000);
+    			//await sleep(100);
+    			
+            const url3 = window.dosaResponse + "graph3?s=" + encodeURIComponent(window.movelist);
+            console.log(url3);
+            var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
+            //wnd3.resizeTo(0,0); 
+            await sleep(600);
 
-    const url1 = window.atulResponse + "graph1?s=" + encodeURIComponent(window.movelist);
-    console.log(url1);
+            const url4 = window.atulResponse + "graph4?s=" + encodeURIComponent(window.movelist);
+            console.log(url4);
+            var wnd4 = window.open(url4, "_blank", "wnd4", "width=100, height=100");
+            await sleep(50);
+            
+            const url5 = window.atulResponse + "graph5?s=" + encodeURIComponent(window.movelist);
+            console.log(url5);
+            var wnd5 = window.open(url5, "_blank", "wnd4", "width=100, height=100");
+            await sleep(200);
 
-    var wnd1 = window.open(url1, "_blank", "wnd1", "width=100, height=100");
-    //wnd1.resizeTo(0,0); 
-    await sleep(500);
-    //wnd1.body.addEventListener('load', wnd1.close(), true);
-    //await sleep(100);
-
-    const url2 = window.atulResponse + "graph2?s=" + encodeURIComponent(window.movelist);
-    console.log(url2);
-    var wnd2 = window.open(url2, "_blank", "wnd2", "width=100, height=100");
-    //wnd2.resizeTo(0,0); 
-    await sleep(6000);
-    //await sleep(100);
-
-    const url3 = window.atulResponse + "graph3?s=" + encodeURIComponent(window.movelist);
-    console.log(url3);
-    var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
-    //wnd3.resizeTo(0,0); 
-    await sleep(600);
-
-    const url4 = window.atulResponse + "graph4?s=" + encodeURIComponent(window.movelist);
-    console.log(url4);
-    var wnd4 = window.open(url4, "_blank", "wnd4", "width=100, height=100");
-    await sleep(50);
-
-    wnd4.close();
-    wnd3.close();
-    wnd2.close();
-    wnd1.close();
+            wnd5.close();
+            wnd4.close();
+            wnd3.close();
+            wnd2.close();
+            wnd1.close();
 
 
-    //atul ka src
-    window.atulGraphSrc = "https://1ee9a8602b914e199f82026e0b9fea53.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-
-    //dosa ka src
-    window.dosaGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-
-    //booms ka src
-    window.boomsGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-
-    //moan ka src
-    window.moanGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
-
-    var graphs = ["bubblechart.png", "linechart.png", "piechart.png", "openingschart.png"]
-
-    var carouselLinks = $("#carouselGraphLinks").empty();
-    var carouselElements = $("#carouselGraphViewer").empty();
-    for (var i = 0; i < graphs.length; i++) {
-        carouselLinks.append(`
+         //atul ka src
+        window.atulGraphSrc = "https://1ee9a8602b914e199f82026e0b9fea53.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+         
+         //dosa ka src
+         window.dosaGraphSrc = "https://d0b4494cbd9d409daca037a968eef0ed.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+        
+         //booms ka src
+         window.boomsGraphSrc = "https://1623749431304f59831478358796d62c.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+	
+         //moan ka src
+          window.moanGraphSrc = "https://b627558d7659494ca4b63f422fc84756.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2F";
+          
+          var graphs = ["bubblechart.png", "linechart.png", "piechart.png", "openingschart.png", "treemap.png"]
+          
+          var carouselLinks = $("#carouselGraphLinks").empty();
+          var carouselElements = $("#carouselGraphViewer").empty();
+          for(var i = 0; i < graphs.length; i++) {
+            carouselLinks.append(`
               <li data-target="#postGameGraphsCarousel" data-slide-to="` + i + `" ` + (i == 0 ? 'class="active"' : "") + `></li>
             `);
-
-        carouselElements.append(`
+            
+            carouselElements.append(`
               <div class="carousel-item ` + (i == 0 ? "active" : "") + `">
-                  <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.atulGraphSrc + graphs[i] + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
+                  <img id="postGameGraph" class="d-block w-100 px-1" src="` + window.dosaGraphSrc + graphs[i] + `&q=` + Math.floor((Math.random() * 100) + 1) + `" alt="Bubble Chart">
               </div>
             `);
-    }
-
-    $('#post-game').show();
-    $('#newGameBtn2').show();
+          }
+          
+          $('#post-game').show();
+          $('#newGameBtn2').show();
+      }
   //var fen = game.fen();
 }
 

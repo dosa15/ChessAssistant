@@ -12,7 +12,6 @@
     
     graph1() => graph1(window.movelist)
     -->
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
       window.movelist = "";
       
@@ -79,16 +78,6 @@
     			await sleep(6000);
     			//await sleep(100);
     			
-<<<<<<< HEAD
-    			const url3 = window.dosaResponse + "graph3?s=" + encodeURIComponent(window.movelist);
-    			console.log(url3);
-    			var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
-    			//wnd3.resizeTo(0,0); 
-    			await sleep(600);
-    			wnd3.close();
-    			wnd2.close();
-    			wnd1.close();
-=======
             const url3 = window.dosaResponse + "graph3?s=" + encodeURIComponent(window.movelist);
             console.log(url3);
             var wnd3 = window.open(url3, "_blank", "wnd3", "width=100, height=100");
@@ -148,7 +137,7 @@
       $(document).ready(function() {
         $("#resignBtn").click(showPostGameAnalysis);
         $("#newGameBtn").click(() => {closePostGameAnalysis(true)});
-        $("reviewGameBtn").click(() => {closePostGameAnalysis(false)});
+        $("#reviewGameBtn").click(() => {closePostGameAnalysis(false)});
       });
       
     </script>
@@ -182,8 +171,8 @@
         </div>
         <div class="vertical-space"></div>
         <div class="row align-items-center justify-content-center">
-            <button id="newGameBtn2" class="btn btn-primary text-dark mx-5"  style="display: none">New Game</button> <!--onclick="closePostGameAnalysis(true)"-->
-            <button id="resignBtn" class="btn btn-danger text-white mx-5" >Resign</button> <!--onclick="showPostGameAnalysis()"-->
+            <button id="newGameBtn2" class="btn btn-primary text-dark mx-5"  style="display: none" onclick="closePostGameAnalysis(true)">New Game</button>
+            <button id="resignBtn" class="btn btn-danger text-white mx-5" onclick="showPostGameAnalysis()">Resign</button> <!--"-->
         </div>
         <div class="vertical-space"></div>
         <div class="row justify-content-center" style="display: none">
@@ -321,5 +310,8 @@
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.js"
+    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
 </body>
 </html>

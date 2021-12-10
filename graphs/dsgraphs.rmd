@@ -2,7 +2,9 @@
 title: "Chess Graphs"
 author: "Atul Suresh Kumar, Dhushyanth Mohan Kumar, Manoghn Kandiraju"
 date: "18/08/2021"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -18,6 +20,7 @@ library(tidyverse)
 library(network)
 library(sna)
 library(GGally)
+library(psych)
 
 finaldata <- read.csv("~/Desktop/FDA/Project/clean_ds_post_move_analysis.csv")
 ```
@@ -69,63 +72,19 @@ plot=ggplot(finaldata,aes(x=Num.Moves,y=X,fill=Winner))
 plot+geom_area()
 ```
 
+# Scatter plot of Pieces
 ```{r}
-library(ggplot2)
-chessData <- read.csv("../ChessDataset.csv")
-player <- "dosa"
-dosaElo <- c()
-manoghnElo <- c()
-atulElo <- c()
-
-chessData$Date.of.Game = as.Date(chessData$Date.of.Game)
-chessData[order(chessData$Date.of.Game),]
-
-print(nrow(chessData))
-for(i in 1:nrow(chessData)){
-  if(chessData$White[i] == "dosa15"){
-    dosaElo <- append(dosaElo, chessData$White.ELO[i])
-  }
-  
-  else if(chessData$Black[i] == "dosa15"){
-    dosaElo <- append(dosaElo, chessData$Black.ELO[i])
-  }
-  else if(chessData$White[i] == "manoghn"){
-    manoghnElo <- append(manoghnElo,chessData$White.ELO[i])
-  }
-  
-  else if(chessData$Black[i] == "manoghn"){
-    manoghnElo <- append(manoghnElo, chessData$Black.ELO[i])
-  }
-  else if(chessData$White[i] == "Atul17"){
-    atulElo <- append(atulElo,chessData$White.ELO[i])
-  }
-  
-  else if(chessData$Black[i] == "Atul17"){
-    atulElo <- append(atulElo, chessData$Black.ELO[i])
-  }
-}
-
-dosaElo <- dosaElo[1:34]
-atulElo <- atulElo[1:34]
-
-elo <- data.frame(dosaElo = dosaElo, manoghnElo = manoghnElo, atulElo = atulElo, Games = 34, ELO = c(800:2000))
-print(elo)
-# lines <- data.frame(dosa = dosaElo, manoghn = manoghnElo, atul = atulElo, date = chessData$Date.of.Game)
-
-plot(dosaElo, type = "l", xlab = "Games", ylab = "ELO", col = "red", pch = 15, ylim = c(800, 2000))
-lines(manoghnElo, type = "l", col = "blue")
-lines(atulElo, type = "l", col = "green")
-
-# ggplot(data=lines) + geom_line(aes(dosa, Date.of.Game)) + geom_line(aes(manoghn, Date.of.Game)) + geom_line(aes(atul, Date.of.Game))
+pairs.panels(finaldata[15:19], 
+             method = "pearson", # correlation method
+             hist.col = "#00AFBB",
+             density = TRUE,  # show density plots
+             ellipses = TRUE # show correlation ellipses
+             )
 ```
 
+# Network map of Openings
 ```{r}
-library(network)
-library(sna)
-library(ggplot2)
-library(GGally)
-
-chessDataset <- read.csv("ChessDataset.csv")
+chessDataset <- read.csv("../ChessDataset.csv")
 # View(chessDataset)
 
 movelists <- list()
@@ -152,6 +111,7 @@ secondMove
 
 thirdMove <- c()
 for(i in df) {
+  if(length(i) >= 3)
   thirdMove <- c(thirdMove, i[[3]])
 }
 thirdMove <- unique(thirdMove)
@@ -159,6 +119,7 @@ thirdMove
 
 fourthMove <- c()
 for(i in df) {
+  if(length(i) >= 4)
   fourthMove <- c(fourthMove, i[[4]])
 }
 fourthMove <- unique(fourthMove)

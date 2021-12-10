@@ -1,7 +1,7 @@
 ---
-title: "Graphs"
-author: "Manoghn Kandiraju 19BCE1621"
-date: "08/12/2021"
+title: "Chess Graphs"
+author: "Atul Suresh Kumar, Dhushyanth Mohan Kumar, Manoghn Kandiraju"
+date: "18/08/2021"
 output: html_document
 ---
 
@@ -15,9 +15,34 @@ library(gganimate)
 library(gifski)
 library(png)
 library(tidyverse)
+library(network)
+library(sna)
+library(GGally)
 
-finaldata<-read.csv("D:/college/datavisualization/project/ChessAssistant/clean_ds_post_move_analysis.csv")
-#finaldata<-head(finaldata,10)
+finaldata <- read.csv("~/Desktop/FDA/Project/clean_ds_post_move_analysis.csv")
+```
+
+```{r}
+suppressWarnings(cat("Mean White ELO: ", mean(na.omit(as.numeric(as.character(finaldata$White.ELO)))), "\n"))
+suppressWarnings(cat("Mean Black ELO: ", mean(na.omit(as.numeric(as.character(finaldata$Black.ELO)))), "\n\n"))
+
+suppressWarnings(atulWhite <- as.numeric(as.character(finaldata[finaldata$White == "Atul17",]$White.ELO)))
+suppressWarnings(dosaWhite <- as.numeric(as.character(finaldata[finaldata$White == "dosa15",]$White.ELO)))
+suppressWarnings(manoWhite <- as.numeric(as.character(finaldata[finaldata$White == "manoghn",]$White.ELO)))
+suppressWarnings(atulWhite <- na.omit(as.numeric(atulWhite[2:length(atulWhite)])))
+suppressWarnings(dosaWhite <- na.omit(as.numeric(dosaWhite[2:length(dosaWhite)])))
+suppressWarnings(manoWhite <- na.omit(as.numeric(manoWhite[2:length(manoWhite)])))
+suppressWarnings(dosaBlack <- as.numeric(as.character(finaldata[finaldata$Black == "dosa15",]$Black.ELO)))
+suppressWarnings(atulBlack <- as.numeric(as.character(finaldata[finaldata$Black == "Atul17",]$Black.ELO)))
+suppressWarnings(manoBlack <- as.numeric(as.character(finaldata[finaldata$Black == "manoghn",]$Black.ELO)))
+
+suppressWarnings(cat("Average ELO for Atul: ", mean(c(mean(atulWhite), mean(atulBlack))), "\n"))
+suppressWarnings(cat("Average ELO for Dhushyanth: ", mean(c(mean(dosaWhite), mean(dosaBlack))), "\n"))
+suppressWarnings(cat("Average ELO for Manoghn: ", mean(c(mean(manoWhite), mean(manoBlack))), "\n"))
+suppressWarnings(cat("Average moves per game: ", mean(finaldata$Num.Moves), "\n"))
+```
+
+```{r}
 finaldata
 withoutpawns<-finaldata[c('Queen','Knight','Bishop','Rook')]
 withoutpawns$totalmoves=withoutpawns$Queen+withoutpawns$Knight+withoutpawns$Bishop+withoutpawns$Rook
@@ -25,26 +50,158 @@ finaldatawithoutpawn1<-withoutpawns %>% arrange(desc(totalmoves))
 pieces <- c("Queen","Knight","Bishop","Rook")
 games<-c(1:108)
 
-
 Values <- matrix(c(finaldatawithoutpawn1$Queen,finaldatawithoutpawn1$Knight,finaldatawithoutpawn1$Bishop,finaldatawithoutpawn1$Rook), nrow = 4, ncol = 108, byrow = TRUE)
 
 bargraph<-barplot(Values, main = "Dataset insights",names.arg = games, xlab = "games", ylab = "moves count", col = c("red","green","blue","grey"))
 legend("topright", pieces, cex = 0.5, fill =c("red","green","blue","grey"))
-
 ```
 
 ```{r}
 library(dplyr)
 
-df<-read.csv(file = "D:/college/datavisualization/project/ChessAssistant/clean_ds_post_move_analysis.csv")
+df1<-table(finaldata$Opening)
 
-df1<-table(df$Opening)
-
-barplot(df1,las =2,cex.names = 0.7,xlab = "opening",ylab = "Count")
+barplot(df1,las =2, cex.names = 0.7, xlab = "opening",ylab = "Count", col = rep(c("red", "cyan", "green", "yellow", "blue"), 22))
 ```
 
 ```{r}
-
-plot=ggplot(df,aes(x=Num.Moves,y=X,fill=Winner))
+plot=ggplot(finaldata,aes(x=Num.Moves,y=X,fill=Winner))
 plot+geom_area()
 ```
+
+```{r}
+library(ggplot2)
+chessData <- read.csv("../ChessDataset.csv")
+player <- "dosa"
+dosaElo <- c()
+manoghnElo <- c()
+atulElo <- c()
+
+chessData$Date.of.Game = as.Date(chessData$Date.of.Game)
+chessData[order(chessData$Date.of.Game),]
+
+print(nrow(chessData))
+for(i in 1:nrow(chessData)){
+  if(chessData$White[i] == "dosa15"){
+    dosaElo <- append(dosaElo, chessData$White.ELO[i])
+  }
+  
+  else if(chessData$Black[i] == "dosa15"){
+    dosaElo <- append(dosaElo, chessData$Black.ELO[i])
+  }
+  else if(chessData$White[i] == "manoghn"){
+    manoghnElo <- append(manoghnElo,chessData$White.ELO[i])
+  }
+  
+  else if(chessData$Black[i] == "manoghn"){
+    manoghnElo <- append(manoghnElo, chessData$Black.ELO[i])
+  }
+  else if(chessData$White[i] == "Atul17"){
+    atulElo <- append(atulElo,chessData$White.ELO[i])
+  }
+  
+  else if(chessData$Black[i] == "Atul17"){
+    atulElo <- append(atulElo, chessData$Black.ELO[i])
+  }
+}
+
+dosaElo <- dosaElo[1:34]
+atulElo <- atulElo[1:34]
+
+elo <- data.frame(dosaElo = dosaElo, manoghnElo = manoghnElo, atulElo = atulElo, Games = 34, ELO = c(800:2000))
+print(elo)
+# lines <- data.frame(dosa = dosaElo, manoghn = manoghnElo, atul = atulElo, date = chessData$Date.of.Game)
+
+plot(dosaElo, type = "l", xlab = "Games", ylab = "ELO", col = "red", pch = 15, ylim = c(800, 2000))
+lines(manoghnElo, type = "l", col = "blue")
+lines(atulElo, type = "l", col = "green")
+
+# ggplot(data=lines) + geom_line(aes(dosa, Date.of.Game)) + geom_line(aes(manoghn, Date.of.Game)) + geom_line(aes(atul, Date.of.Game))
+```
+
+```{r}
+library(network)
+library(sna)
+library(ggplot2)
+library(GGally)
+
+chessDataset <- read.csv("ChessDataset.csv")
+# View(chessDataset)
+
+movelists <- list()
+for(movelist in chessDataset$Game.Movelist)
+  movelists <- append(movelists, strsplit(movelist, split = ","))
+col_len <- max(lengths(movelists[1:length(movelists)]))
+
+df <- as.data.frame(cbind(movelists))[[1]]
+# View(df)
+
+firstMove <- c()
+for(i in df) {
+  firstMove <- c(firstMove, i[[1]])
+}
+firstMove <- unique(firstMove)
+firstMove
+
+secondMove <- c()
+for(i in df) {
+  secondMove <- c(secondMove, i[[2]])
+}
+secondMove <- unique(secondMove)
+secondMove
+
+thirdMove <- c()
+for(i in df) {
+  thirdMove <- c(thirdMove, i[[3]])
+}
+thirdMove <- unique(thirdMove)
+thirdMove
+
+fourthMove <- c()
+for(i in df) {
+  fourthMove <- c(fourthMove, i[[4]])
+}
+fourthMove <- unique(fourthMove)
+fourthMove
+
+N <- length(c(firstMove, secondMove, thirdMove, fourthMove))
+adj_matrix <- matrix(rep(0, N*N), N)
+
+for(movelist in df) {
+  for(i1 in 1:length(firstMove)) {
+    for(i2 in 1:length(secondMove)) {
+      for(i3 in 1:length(thirdMove)) {
+        for(i4 in 1:length(fourthMove)) {
+          if(length(movelist) >= 4 && movelist[[1]] == firstMove[i1] && movelist[[2]] == secondMove[i2]) {
+            adj_matrix[i1,length(firstMove)+i2] <- 1
+            # adj_matrix[length(firstMove)+i2,i1] <- 1
+            if(movelist[[3]] == thirdMove[i3]) {
+              adj_matrix[i2,length(c(secondMove, thirdMove))+i3] <- 1
+              # adj_matrix[length(c(secondMove, thirdMove))+i3,i2] <- 1
+              if(movelist[[4]] == fourthMove[i4]) {
+                adj_matrix[i3,length(c(thirdMove, fourthMove))+i4] <- 1
+                # adj_matrix[length(c(thirdMove, fourthMove))+i4,i3] <- 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+nw <- network(adj_matrix, directed = TRUE)
+nodeNames <- c(firstMove, secondMove, thirdMove, fourthMove)
+network.vertex.names(nw) <- nodeNames
+p1 <- ggnet2(nw, size = "indegree", max_size = 30, 
+             label=c(firstMove, secondMove, thirdMove, fourthMove), 
+             node.color="black", 
+             label.color="white", label.size = 5, 
+             edge.color = "blue", edge.size = 0.5,
+             arrow.size = 4, arrow.gap = 0.0005)  #, "#2db339", "#1dd12e", "#0ced21"
+show(p1)
+ggsave("networkgraph.png", plot = p1, width=20, height=25.7,  limitsize = FALSE)
+```
+
+
+

@@ -45,9 +45,11 @@ suppressWarnings(cat("Average ELO for Dhushyanth: ", mean(c(mean(dosaWhite), mea
 suppressWarnings(cat("Average ELO for Manoghn: ", mean(c(mean(manoWhite), mean(manoBlack))), "\n"))
 suppressWarnings(cat("Average moves per game: ", mean(finaldata$Num.Moves), "\n"))
 ```
-## The above calculations help us obtain a rough idea of what the skill level of our chess engine is going to be, as it will be trained based on data retreived from this dataset at hand. \
+
+## The above calculations help us obtain a rough idea of what the skill level of our chess engine is going to be, as it will be trained based on data retreived from this dataset at hand. 
 # \
-# Stacked bar chart of Number of Pieces moved
+
+# Stacked bar chart of Queen, Knight, Bishop and Rook moves 
 ```{r}
 withoutpawns<-finaldata[c('Queen','Knight','Bishop','Rook')]
 withoutpawns$totalmoves=withoutpawns$Queen+withoutpawns$Knight+withoutpawns$Bishop+withoutpawns$Rook
@@ -55,35 +57,36 @@ finaldatawithoutpawn1<-withoutpawns %>% arrange(desc(totalmoves))
 pieces <- c("Queen","Knight","Bishop","Rook")
 games<-c(1:108)
 
-Values <- matrix(c(finaldatawithoutpawn1$Queen,finaldatawithoutpawn1$Knight,
-                   finaldatawithoutpawn1$Bishop,finaldatawithoutpawn1$Rook), 
-                 nrow = 4, ncol = 108, byrow = TRUE)
+Values <- matrix(c(finaldatawithoutpawn1$Queen,finaldatawithoutpawn1$Knight,finaldatawithoutpawn1$Bishop,finaldatawithoutpawn1$Rook), nrow = 4, ncol = 108, byrow = TRUE)
 
-bargraph<-barplot(Values, main = "Dataset insights",names.arg = games, 
-                  xlab = "games", ylab = "moves count", col = c("red","green","blue","grey"))
+bargraph<-barplot(Values, main = "Dataset insights",names.arg = games, xlab = "games", ylab = "moves count", col = c("red","green","blue","grey"))
 legend("topright", pieces, cex = 0.5, fill =c("red","green","blue","grey"))
 ```
 
-## The above generated bar graph denotes how often each different chess piece is moved in each game from our dataset.
+## The above graph displays the number of moves of the Queen, Knight, Bishop and rook per game. It helps in framing a correlation between the moves made by 4 of the most valuable pieces in the game and the outcome of the game. We can observe from the above graph that the usage of the queen alternates in size with the usage of the rook.
+## Other pieces seem to be used in a stable manner, for the most part. This presents us with the fact that bishops and knights are used more as helper pieces, rather than pieces used for attack or sacrifice, while the queen and rook seem to be used for attacking plays.
+
 # \
 # Bar chart of Openings
-```{r}
+```{r} 
 df1<-table(finaldata$Opening)
 
-barplot(df1,las =2, cex.names = 0.7, xlab = "opening",ylab = "Count", 
-        col = rep(c("red", "cyan", "green", "yellow", "blue"), 22))
+barplot(df1,las =2, cex.names = 0.7, xlab = "opening",ylab = "Count", col = rep(c("red", "cyan", "green", "yellow", "blue"), 22))
 ```
 
 ## This bar chart determines the frequency of various openings encountered in our games, which further helps determine what chess strategy our engine is based on, and the kind of openings it is likely to play.
+
 # \
 # Area chart of Game Winner
-```{r}
-plot=ggplot(finaldata,aes(x=Num.Moves,y=X,fill=Winner))
+
+```{r }
+plot=ggplot(finaldata,aes(x=Num.Moves,y=X,fill=Winner), main = "Area graph of number of moves in total number of games in the dataset, coloured winner")
 plot+geom_area()
 ```
 
-## This area chart helps us analyze which side of the board (Black or White) was the more likely side to win a match, given the number of moves played in that same match. Since our engine is set to only play the black pieces, this gives us a rough estimate of how well the engine, as Black, would fare in any game against a user.
+## The above graph represents the total number of moves taken by the winner of each game to win that game. This is very useful information for identifying the trend in playstyles for each colour. For example, on average, black tends to use more moves to win the game. This could mean that black played a more patient, thought out game, which also means that our bot will play a similar game as black. This knowledge can be utilized to it's full extent when playing against black. 
 # \
+
 # Scatter plot of Pieces
 ```{r}
 pairs.panels(finaldata[15:19], 
@@ -95,9 +98,48 @@ pairs.panels(finaldata[15:19],
 ```
 
 ## This scatter plot gives us the correlation between any combination of two pieces on the chess board. It helps us conclude the chess patterns that the engine is expected to follow, as most tactical plays in this game would require some form of  coordiation between 2 or more pieces from White or Black. From our analysis, we can see how the Rook and Pawn combination have the highest correlation of 0.73, which means the engine is likely to advance on the user with a rook-and-pawn offensive gameplay. However, considering the fact that half of the pieces on each side comprises of a pawn, the last column is likely to have a certain bias in its correlation coefficient. Hence a more accurate conclusion would be to consider the next highest coefficient outside of that column, which is 0.45 with the Rook and Knight. Therefore, aside from pawn pushes in the game, the engine is likely to use its Knights and Rooks to its fullest extent in order to best the user.
+
 # \
-## The above plotted line graph gives us an extra insight into the teammates of the project itself. Since the engine is designed to play like us, it is worthy to note our skill progression over all the games we played, constituting this dataset. The green line, which represents Atul, is shown to have a rather steady score over all the games as his playstyle appears to have been the most consistent with an approximate of a 50-50 win/loss rate. The red line which represents Dhushyanth has quite a rocky progression as his gameplay is comparatively more inconsistent. Nevertheless his overall average ELO appears to be higher than the other two team members. Last but not least is the blue line which belongs to Manoghn. He shows a clear improvement over the span of his games, as his ELO went up from approximately 950 to 1250, with the small exception of a downfall as we approach the last few games.
+# Line chart of our individual ELO scores over time
+```{r }
+chessData <- read.csv("../ChessDataset.csv")
+player <- "dosa"
+dosaElo <- c()
+manoghnElo <- c()
+atulElo <- c()
+chessData$Date.of.Game = as.Date(chessData$Date.of.Game, format = '%Y.%m.%d')
+
+for(i in 1:nrow(chessData)){
+if(chessData$White[i] == "dosa15"){
+dosaElo <- append(dosaElo, chessData$White.ELO[i])
+}
+else if(chessData$Black[i] == "dosa15"){
+dosaElo <- append(dosaElo, chessData$Black.ELO[i])
+}
+else if(chessData$White[i] == "manoghn"){
+manoghnElo <- append(manoghnElo,chessData$White.ELO[i])
+}
+else if(chessData$Black[i] == "manoghn"){
+manoghnElo <- append(manoghnElo, chessData$Black.ELO[i])
+}
+else if(chessData$White[i] == "Atul17"){
+atulElo <- append(atulElo,chessData$White.ELO[i])
+}
+else if(chessData$Black[i] == "Atul17"){
+atulElo <- append(atulElo, chessData$Black.ELO[i])
+} }
+dosaElo <- dosaElo[1:34]
+atulElo <- atulElo[1:34]
+plot(dosaElo, type = "l", xlab = "Games", ylab = "ELO", col = "red", pch = 15, ylim = c(800, 2000),
+main = "ELO distributions over time")
+lines(manoghnElo, type = "l", col = "blue")
+lines(atulElo, type = "l", col = "green")
+```
+
+## The above plotted line graph gives us an extra insight into the teammates of the project itself. Since the engine is designed to play like us, it is worthy to note our skill progression over all the games we played, constituting this dataset. The green line, which represents Atul, is shown to have a rather steady score over all the games as his playstyle appears to have been the most consistent with an approximate of a 50-50 win/loss rate. The red line which represents Dhushyanth has quite a rocky progression as his gameplay is comparatively more inconsistent. Nevertheless his overall average ELO appears to be higher than the other two team members. Last but not least is the blue line which belongs to Manoghn. He shows a clear improvement over the span of his games, as his ELO went up from approximately 950 to 1250, with the small exception of a downfall as we approach the last few games. 
+## The average of these three lines would give us the ELO of our bot. 
 # \
+
 # Network map of Openings
 ```{r}
 chessDataset <- read.csv("../ChessDataset.csv")
@@ -180,6 +222,5 @@ show(p1)
 ggsave("networkgraph.png", plot = p1, width=20, height=25.7,  limitsize = FALSE)
 ```
 
-## This highly dense network graph is quite informative from a Chess perspective. It details every single move that is possible for the engine to play as its first 4 moves. The first 4 mores are quite important in determining the exact type of openings chosen by a chess player, and helps determine whether the chosen approach is that of offense or defense. The network is ordered such that the size of the node determines the likelihood of the encompassed move(in Standard Algebraic Notation) being the first move played by Black(the engine), and incidentally the second move of the game. For example, e5 and d5 are two of the most common pawns used in the begining of a chess game (responses to the King's Pawn Opening and Queen's Pawn Opening respectively), and as we can see they are two of the largest nodes in the network. Branching off to another move such as Nf3 (from e5) denotes the move the engine expects the user to play, following with it could play something like f6.
 
 
